@@ -7,6 +7,16 @@ import delegate from '../delegate';
 
 const rootNode: { [imId: string]: Conversation.Item } = {};
 
+const delayFunc = function () {
+    let timer = 0;
+    return function (callback: VoidFunction, ms: number) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+    };
+};
+
+const delay = delayFunc();
+
 export const name = 'im-conversation';
 
 export const defaultConfig: Conversation.Config = {
@@ -257,10 +267,16 @@ function onUnreadCountChanged(): void {
 
 async function writeData(imId: string): Promise<void> {
     await AsyncStorage.set(keys(imId), rootNode[imId], Storage.Part);
+    delay(() => {
+        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
+    }, 3000);
 }
 
 async function deleteData(imId: string): Promise<void> {
     await AsyncStorage.remove(keys(imId), Storage.Part);
+    delay(() => {
+        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
+    }, 3000);
 }
 
 function keys(imId?: string): string[] {
