@@ -37,6 +37,7 @@ export async function init(forceUpdate: boolean): Promise<void> {
         await load();
     }
     onUnreadCountChanged();
+    Listener.trigger([Event.Base, Event.ConversationInitFinish]);
 }
 
 export async function uninit(forceClear: boolean = true): Promise<void> {
@@ -204,12 +205,18 @@ export async function deleteOne(imId: string): Promise<void> {
     Listener.trigger([Event.Base, Event.Conversation]);
     await deleteData(imId);
     onUnreadCountChanged();
+    delay(() => {
+        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
+    }, 10000);
 }
 
 export async function createOne(memberUserIds: string | string[]): Promise<Conversation.Item> {
     const members = Array.isArray(memberUserIds) ? memberUserIds : [memberUserIds];
     const isGroup = members.length > 1;
     const chatType: Conversation.ChatType = isGroup ? Conversation.ChatType.Group : Conversation.ChatType.Single;
+    delay(() => {
+        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
+    }, 10000);
     if (isGroup) {
         const result = await delegate.model.Group.createOne(members);
         return await loadItem(result.groupId, chatType);
@@ -267,16 +274,10 @@ function onUnreadCountChanged(): void {
 
 async function writeData(imId: string): Promise<void> {
     await AsyncStorage.set(keys(imId), rootNode[imId], Storage.Part);
-    delay(() => {
-        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
-    }, 3000);
 }
 
 async function deleteData(imId: string): Promise<void> {
     await AsyncStorage.remove(keys(imId), Storage.Part);
-    delay(() => {
-        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
-    }, 3000);
 }
 
 function keys(imId?: string): string[] {
