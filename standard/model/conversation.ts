@@ -17,6 +17,8 @@ const delayFunc = function () {
 
 const delay = delayFunc();
 
+const delayInitFinish = delayFunc();
+
 export const name = 'im-conversation';
 
 export const defaultConfig: Conversation.Config = {
@@ -37,7 +39,9 @@ export async function init(forceUpdate: boolean): Promise<void> {
         await load();
     }
     onUnreadCountChanged();
-    Listener.trigger([Event.Base, Event.ConversationInitFinish]);
+    delayInitFinish(() => {
+        Listener.trigger([Event.Base, Event.ConversationInitFinish]);
+    }, 3000);
 }
 
 export async function uninit(forceClear: boolean = true): Promise<void> {
