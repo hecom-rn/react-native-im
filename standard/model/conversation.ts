@@ -7,6 +7,18 @@ import delegate from '../delegate';
 
 const rootNode: { [imId: string]: Conversation.Item } = {};
 
+const delayFunc = function () {
+    let timer = 0;
+    return function (callback: VoidFunction, ms: number) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+    };
+};
+
+const delay = delayFunc();
+
+const delayInitFinish = delayFunc();
+
 export const name = 'im-conversation';
 
 export const defaultConfig: Conversation.Config = {
@@ -27,6 +39,9 @@ export async function init(forceUpdate: boolean): Promise<void> {
         await load();
     }
     onUnreadCountChanged();
+    delayInitFinish(() => {
+        Listener.trigger([Event.Base, Event.ConversationInitFinish]);
+    }, 3000);
 }
 
 export async function uninit(forceClear: boolean = true): Promise<void> {
@@ -194,12 +209,18 @@ export async function deleteOne(imId: string): Promise<void> {
     Listener.trigger([Event.Base, Event.Conversation]);
     await deleteData(imId);
     onUnreadCountChanged();
+    delay(() => {
+        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
+    }, 10000);
 }
 
 export async function createOne(memberUserIds: string | string[]): Promise<Conversation.Item> {
     const members = Array.isArray(memberUserIds) ? memberUserIds : [memberUserIds];
     const isGroup = members.length > 1;
     const chatType: Conversation.ChatType = isGroup ? Conversation.ChatType.Group : Conversation.ChatType.Single;
+    delay(() => {
+        Listener.trigger([Event.Base, Event.CreateOrDismissConversation]);
+    }, 10000);
     if (isGroup) {
         const result = await delegate.model.Group.createOne(members);
         return await loadItem(result.groupId, chatType);
