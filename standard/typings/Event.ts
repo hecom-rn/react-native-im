@@ -11,3 +11,5 @@ export const GroupLeave = '__im_group_leave__';
 export const SendMessage = '__im_send_message__';
 export const ReceiveMessage = '__im_receive_message__';
 export const StarUserChange = '__im_star_user_change__';
+export const CreateOrDismissConversation = '__im_create_or_dismiss_conversation__';
+export const ConversationInitFinish = '__im_conversation_init_finish__';
