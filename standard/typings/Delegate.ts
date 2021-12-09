@@ -138,6 +138,12 @@ export interface ConversationApiPart {
         chatType: Conversation.ChatType;
         message: Message.General;
     }) => Promise<void>;
+    fetchHistoryMessagesFromServer: (params: {
+        imId: string;
+        chatType: Conversation.ChatType;
+        lastMessage: Message.General;
+        count: number;
+    }) => Promise<Message.Origin[]>;
 }
 
 export interface GroupApiPart {

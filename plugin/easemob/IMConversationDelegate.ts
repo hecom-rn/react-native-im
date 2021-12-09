@@ -55,4 +55,13 @@ export default function () {
         const {imId, chatType, message: {messageId}} = params;
         return ChatManager.recallMessage(imId, chatType, messageId);
     };
+    Delegate.im.conversation.fetchHistoryMessagesFromServer = (params) => {
+        const {imId, chatType, lastMessage, count} = params;
+        return ChatManager.fetchHistoryMessagesFromServer(
+            imId,
+            chatType,
+            lastMessage ? lastMessage.messageId : undefined,
+            count
+        );
+    };
 }

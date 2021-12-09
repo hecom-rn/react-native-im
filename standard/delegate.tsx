@@ -111,6 +111,7 @@ const im: Delegate.ApiPart = {
         loadMessage: noPromiseDelegate('im.conversation.loadMessage'),
         deleteMessage: noPromiseDelegate('im.conversation.deleteMessage'),
         recallMessage: noPromiseDelegate('im.conversation.recallMessage'),
+        fetchHistoryMessagesFromServer: noPromiseDelegate('im.conversation.fetchHistoryMessagesFromServer'),
     },
     group: {
         loadList: noPromiseDelegate('im.group.loadList'),
