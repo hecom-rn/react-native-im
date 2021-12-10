@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, ImageURISource, Platform, StyleSheet, View} from 'react-native';
+import {Image, ImageURISource, Platform, StyleSheet, View, Dimensions} from 'react-native';
 import RNFS from 'react-native-fs';
 import {IMConstant} from 'react-native-im-easemob'
 import {showPhotoBrowserPage} from 'react-native-photo-browse';
@@ -30,6 +30,14 @@ export default class extends React.PureComponent<Props, State> {
         } else {
             source = {uri: thumbnailRemotePath || remotePath};
         }
+
+        let i:number|undefined = source?.uri?.indexOf('?x-oss-process=image/resize');
+        if ( i < 0) {
+            source = {
+                uri:source?.uri?.concat('?x-oss-process=image/resize,m_lfit,h_276,w_276')
+            };
+        }
+
         this.state = {
             source: source,
             size: size && size.width && size.height ? size : undefined
@@ -75,6 +83,10 @@ export default class extends React.PureComponent<Props, State> {
 
     public onPress() {
         const {message: {data: {remotePath, localPath}, messageId}, messages = []} = this.props;
+        const scale = Dimensions.get('window').scale;
+        const windowWidth = Math.floor(scale * Dimensions.get('window').width);
+        const windowHeight = Math.floor(scale * Dimensions.get('window').height);
+        console.log(windowHeight, "   ", windowWidth);
 
         if (!remotePath && !localPath) {
             return;
@@ -84,9 +96,19 @@ export default class extends React.PureComponent<Props, State> {
              ((remoteP && remoteP.length > 0) || (localP && localP.length > 0))
          }).reverse();
          const currentIndex = images.findIndex(image => image.messageId === messageId);
+         let imgarr = images.length === 0 ? [remotePath] : images.map(({data: {remotePath, localPath}}) => remotePath ? remotePath : localPath);
+         if (imgarr) {
+             imgarr = imgarr.map((item) => {
+                let i:number|undefined = item.indexOf('?x-oss-process=image/resize');
+                if ( i < 0) {
+                    return item.concat(`?x-oss-process=image/resize,m_lfit,h_${windowHeight},w_${windowWidth}`)
+                }
+                return item;
+             })
+         }
          showPhotoBrowserPage({
              currentIndex: currentIndex < 0 ? 0 : currentIndex,
-             images: images.length === 0 ? [remotePath] : images.map(({data: {remotePath, localPath}}) => remotePath ? remotePath : localPath),
+             images: imgarr,
              canSave: true,
              renderIndicator: () => null,
          });
