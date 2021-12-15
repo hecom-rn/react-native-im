@@ -451,6 +451,9 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _onSelectConversation(message, sendCallBackFunc, conversations) {
+        if (!Array.isArray(conversations) || conversations.length === 0) {
+            return;
+        }
         if (message instanceof Array) {
             message.forEach((value, index, array) => {
                 const {messageId,innerId, ...others}=value
