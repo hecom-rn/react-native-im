@@ -48,6 +48,9 @@ export default class extends React.PureComponent<Props> {
     render() {
         const {imId, chatType, separatorLeft} = this.props;
         const name = delegate.model.Conversation.getName(imId);
+        this.state = {
+            ...this._stateWithProps(imId),
+        };
         const content = [];
         this.state.atMe && content.push(this._renderAtMeText());
         this._isSendingMessage() && content.push(this._renderSendMessageText());

@@ -68,9 +68,11 @@ export default class extends React.PureComponent {
 
     _renderRow({item, index}) {
         const isBottom = index === this.state.dataSource.length - 1;
+        const tmpTime = item.latestMessage ? `${item.latestMessage.timestamp}` : '';
         const separatorLeft = !isBottom ? 75 : -1;
         return (
             <delegate.component.ConversationCell
+                tmpTime={tmpTime}
                 imId={item.imId}
                 chatType={item.chatType}
                 separatorLeft={separatorLeft}
