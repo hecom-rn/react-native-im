@@ -57,7 +57,6 @@ export default class extends React.Component {
         return (
             <View style={styles.view}>
                 <NaviBar
-                    titleCenter={false}
                     style={naviBarStyle}
                     navbarHeight={50}
                     title={this._renderSearchBar()}
