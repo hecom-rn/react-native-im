@@ -456,7 +456,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         }
         if (message instanceof Array) {
             message.forEach((value, index, array) => {
-                const {messageId,innerId, ...others}=value
+                const {innerId, ...others}=value
                 this._onSendMessage(
                     conversations[0].imId,
                     conversations[0].chatType,
@@ -465,7 +465,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                 );
             });
         } else {
-            const {messageId,innerId, ...others}=message
+            const {innerId, ...others}=message
             this._onSendMessage(
                 conversations[0].imId,
                 conversations[0].chatType,
