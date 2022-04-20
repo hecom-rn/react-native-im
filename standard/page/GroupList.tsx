@@ -202,6 +202,7 @@ export default class extends React.PureComponent {
                 avatar={{imId: item.groupId, chatType: Conversation.ChatType.Group}}
                 title={title}
                 subTitle={subTitle}
+                onClick={this._clickItem.bind(this, item)}
             />
         );
     };
