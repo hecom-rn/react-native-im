@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/gaoxiaosong/react-native-im#readme",
   "dependencies": {
-    "@hecom-rn/react-native-general-actionsheet": "1.0.5",
     "dateformat": "^3.0.3",
     "i18n-js": "^3.2.1",
     "md5": "^2.3.0",
@@ -27,6 +26,7 @@
     "recyclerlistview": "^3.0.0"
   },
   "peerDependencies": {
+    "@hecom-rn/react-native-general-actionsheet": "1.0.5",
     "@hecom-rn/react-native-full-image-picker": "*",
     "@hecom/badge": "*",
     "@hecom/image-arrow": "*",
@@ -56,6 +56,7 @@
     "react-native-permissions": "*"
   },
   "devDependencies": {
+    "@hecom-rn/react-native-general-actionsheet": "1.0.5",
     "@hecom/badge": "^1.0.3",
     "@hecom/image-arrow": "^1.0.3",
     "@hecom/listener": "^1.0.0",
