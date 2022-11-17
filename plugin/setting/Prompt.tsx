@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, StyleSheet, Dimensions, TextInputProps, Keyboard, Platform } from 'react-native';
+import { TextInput, EmitterSubscription, StyleSheet, Dimensions, TextInputProps, Keyboard, Platform } from 'react-native';
 import Modal, { ModalTitle, ModalButton, ModalContent, ModalFooter} from 'react-native-modals';
 import i18n from 'i18n-js';
 
@@ -25,6 +25,7 @@ export default class extends React.PureComponent<Props, State> {
     };
     keyboardDidShowListener: any;
     keyboardDidHideListener: any;
+    changEmitter: EmitterSubscription | undefined;
 
     constructor(props: Props) {
         super(props);
@@ -32,13 +33,13 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     componentDidMount() {
-        Dimensions.addEventListener('change', this._onOrientationChange);
+        this.changEmitter = Dimensions.addEventListener('change', this._onOrientationChange);
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     }
 
     componentWillUnmount() {
-        Dimensions.removeEventListener('change', this._onOrientationChange);
+        this.changEmitter?.remove();
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
     }

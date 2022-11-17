@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { View, EmitterSubscription, StyleSheet, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
 import i18n from 'i18n-js';
 import { Component } from '../typings';
@@ -15,6 +15,7 @@ export default class extends React.PureComponent<Props> {
     protected readonly padding = 16;
     protected readonly itemEdge = 50;
     protected itemMargin = 0;
+    changEmitter: EmitterSubscription | undefined;
 
     constructor(props: Props) {
         super(props);
@@ -22,11 +23,11 @@ export default class extends React.PureComponent<Props> {
     }
 
     componentDidMount() {
-        Dimensions.addEventListener('change', this._onOrientationChange);
+        this.changEmitter = Dimensions.addEventListener('change', this._onOrientationChange);
     }
 
     componentWillUnmount() {
-        Dimensions.removeEventListener('change', this._onOrientationChange);
+        this.changEmitter?.remove();
     }
 
     render() {
