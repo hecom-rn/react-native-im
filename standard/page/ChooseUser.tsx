@@ -12,15 +12,6 @@ import * as PageKeys from '../pagekey';
 import { Message } from '../typings';
 
 export default class extends React.Component {
-    static navigationOptions = function (options) {
-        if (PickList.initialized(options)) {
-            return PickList.navigationOptions(options);
-        } else {
-            return {
-                title: i18n.t('IMCommonPageTitle'),
-            };
-        }
-    };
 
     // static propTypes = {
     //     ...ChooseUserFromOrgPage.propTypes,
@@ -30,6 +21,7 @@ export default class extends React.Component {
     static defaultProps = {
         ...ChooseUserFromOrgPage.defaultProps,
         showAtAll: false,
+        title: i18n.t('IMCommonPageTitle')
     };
 
     constructor(props) {

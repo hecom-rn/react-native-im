@@ -7,7 +7,6 @@ import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
 
 export default class extends React.PureComponent {
-    static navigationOptions = PickList.navigationOptions;
 
     static propTypes = {
         title: PropTypes.string,
