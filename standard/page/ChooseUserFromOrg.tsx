@@ -20,16 +20,6 @@ export interface Props {
 }
 
 export default class extends React.PureComponent<Props> {
-    static navigationOptions = function (options) {
-        if (PickList.initialized(options)) {
-            return PickList.navigationOptions(options);
-        } else {
-            return {
-                title: i18n.t('IMCommonPageTitle'),
-            };
-        }
-    };
-
     static propTypes = {
         title: PropTypes.string.isRequired,
         firstTitleLine: PropTypes.string,
@@ -48,6 +38,7 @@ export default class extends React.PureComponent<Props> {
         parentOrgId: undefined,
         excludedUserIds: [],
         spaceHeight: 10,
+        title: i18n.t('IMCommonPageTitle')
     };
 
     constructor(props) {
