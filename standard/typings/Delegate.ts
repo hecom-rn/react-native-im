@@ -183,6 +183,7 @@ export interface FuncPart {
 export interface StylePart {
     viewBackgroundColor: string;
     separatorLineColor: string;
+    sectionSeparatorLineColor: string;
 }
 
 export interface PropsPart {

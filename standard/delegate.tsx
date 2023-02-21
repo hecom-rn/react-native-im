@@ -136,6 +136,7 @@ const func: Delegate.FuncPart = {
 const style: Delegate.StylePart = {
     viewBackgroundColor: 'white',
     separatorLineColor: 'gray',
+    sectionSeparatorLineColor: 'gray',
 };
 const config: Delegate.ConfigPart = {
     pinyinField: 'pinyin',

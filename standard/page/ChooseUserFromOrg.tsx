@@ -126,7 +126,7 @@ export default class extends React.PureComponent<Props> {
     _renderSectionFooter({section}) {
         const viewStyle = {
             height: this.props.spaceHeight,
-            backgroundColor: delegate.style.separatorLineColor,
+            backgroundColor: delegate.style.sectionSeparatorLineColor,
         };
         return section.hasFooter ? <View style={viewStyle} /> : null;
     }
