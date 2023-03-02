@@ -319,7 +319,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         }
         return {
             data: result,
-            isEnd: message.length < pageSize,
+            isEnd: message.length == 0,
         };
     }
 
