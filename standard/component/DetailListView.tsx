@@ -56,7 +56,9 @@ export default class extends React.PureComponent {
             <View style={styles.content}>
                 <FlatList
                     ref={ref => this.innerList = ref}
-                    inverted={true}
+                    // fixme: https://github.com/facebook/react-native/issues/34583#issuecomment-1244858120
+                    // inverted在Android 13上有bug，修改实现方式
+                    // inverted={true}
                     bounces={false}
                     contentContainerStyle={styles.content}
                     showsVerticalScrollIndicator={false}
@@ -80,6 +82,7 @@ export default class extends React.PureComponent {
                     }}
                     keyExtractor={item => item.messageId || item.innerId}
                     {...this.props}
+                    style={[styles.list, this.props.style]}
                     renderItem={(arg) => this.props.renderItem(arg, this.state.data)}
                 />
                 {this.state.oldUnreadMessageCount > 12 && this._renderMoreMessageElement({top: 15}, this.state.oldUnreadMessageCount, require('./image/oldUnreadMessage.png'), this._scrollToShowOldUnreadMessage.bind(this))}
@@ -223,6 +226,9 @@ export default class extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+    list:{
+        transform:[{ rotateX:'180deg' }]
+    },
     content: {
     },
     moreMessageContainer: {
