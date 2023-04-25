@@ -227,7 +227,7 @@ export default class extends React.PureComponent {
 
 const styles = StyleSheet.create({
     list:{
-        transform:[{ rotateX:'180deg' }]
+        transform:[{ rotate:'180deg' }]
     },
     content: {
     },

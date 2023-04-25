@@ -224,7 +224,7 @@ export default class extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
     message: {
         marginVertical: 9,
-        transform: [{ rotateY: '180deg' }]
+        transform: [{ rotate: '180deg' }]
     },
     rowRight: {
         flex: 1,
