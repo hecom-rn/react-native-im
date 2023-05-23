@@ -102,7 +102,7 @@ export default class extends React.PureComponent {
                             source={item.icon}
                         />
                     </View>
-                    <Text numberOfLines={1} style={styles.cellText}>
+                    <Text allowFontScaling={false} numberOfLines={1} style={styles.cellText}>
                         {item.text}
                     </Text>
                 </View>
