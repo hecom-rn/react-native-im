@@ -576,17 +576,18 @@ const styles = StyleSheet.create({
     },
     sendTouch: {
         marginRight: 4,
-        marginBottom: 12,
+        marginBottom: 8,
     },
     sendView: {
-        height: 32,
-        width: 40,
+        marginVertical: 5,
+        paddingHorizontal: 5,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#07c160',
         borderRadius: 4,
         overflow: 'hidden',
+        flex: 1,
     },
     sendText: {
         fontSize: 15,
@@ -602,7 +603,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#565656',
     },
-
     msgContainer: {
         flexDirection: 'column',
         alignItems: 'stretch',
