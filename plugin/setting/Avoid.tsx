@@ -54,7 +54,7 @@ export class AvoidCell extends React.PureComponent<Props, State> {
         this.setState({avoid});
         Delegate.model.Conversation.updateConfig(imId, chatType, {avoid})
             .then(()=> {
-                APNs.ignoreGroupPush(imId, chatType, avoid);
+                APNs.setIgnoreGroupPush(imId, chatType, avoid);
             })
             .catch(() => {
                 Toast.show(i18n.t('IMToastError', {
