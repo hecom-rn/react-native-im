@@ -31,13 +31,6 @@ export default class extends React.PureComponent<Props, State> {
             source = {uri: thumbnailRemotePath || remotePath};
         }
 
-        let i:number|undefined = source?.uri?.indexOf('?x-oss-process=image/resize');
-        if ( i < 0) {
-            source = {
-                uri:source?.uri?.concat('?x-oss-process=image/resize,m_lfit,h_276,w_276')
-            };
-        }
-
         this.state = {
             source: source,
             size: size && size.width && size.height ? size : undefined
@@ -97,15 +90,6 @@ export default class extends React.PureComponent<Props, State> {
          }).reverse();
          const currentIndex = images.findIndex(image => image.messageId === messageId);
          let imgarr = images.length === 0 ? [remotePath] : images.map(({data: {remotePath, localPath}}) => remotePath ? remotePath : localPath);
-         if (imgarr) {
-             imgarr = imgarr.map((item) => {
-                let i:number|undefined = item.indexOf('?x-oss-process=image/resize');
-                if ( i < 0) {
-                    return item.concat(`?x-oss-process=image/resize,m_lfit,h_${windowHeight},w_${windowWidth}`)
-                }
-                return item;
-             })
-         }
          showPhotoBrowserPage({
              currentIndex: currentIndex < 0 ? 0 : currentIndex,
              images: imgarr,
