@@ -14,6 +14,7 @@ export enum ChatType {
 export interface Base {
     imId: string;
     chatType: ChatType;
+    label: string;
     config?: Config;
 }
 
