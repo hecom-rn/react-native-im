@@ -48,6 +48,7 @@ export async function onRecallMessage(
     const {messageId, localTime, timestamp, innerId} = message;
     const user = getOperatorName(fromUserId);
     const text = user + '撤回了一条消息';
+    await delegate.im.conversation.recallMessage({imId, chatType, message});
     await delegate.im.conversation.deleteMessage({imId, chatType, message: {messageId}});
     await delegate.model.Conversation.recallMessage(imId, message);
     await delegate.model.Message.insertSystemMessage(imId, Conversation.ChatType.Group, text, localTime, timestamp, innerId);
