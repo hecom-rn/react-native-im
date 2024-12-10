@@ -168,18 +168,18 @@ export default class extends React.PureComponent<Props, State> {
                         autoCorrect={false}
                     />
                 ) : (
-                        <TouchableHighlight
-                            underlayColor={'#d7d8d8'}
-                            onPressIn={this._onStartRecording.bind(this)}
-                            onPressOut={this._onEndRecording.bind(this)}
-                        >
-                            <View style={styles.sound}>
-                                <Text style={styles.soundText}>
-                                    {this.state.isRecording ? i18n.t('IMComponentBottomBarVoiceRelease') : i18n.t('IMComponentBottomBarVoicePress')}
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    )}
+                    <TouchableHighlight
+                        underlayColor={'#d7d8d8'}
+                        onPressIn={this._onStartRecording.bind(this)}
+                        onPressOut={this._onEndRecording.bind(this)}
+                    >
+                        <View style={styles.sound}>
+                            <Text style={styles.soundText}>
+                                {this.state.isRecording ? i18n.t('IMComponentBottomBarVoiceRelease') : i18n.t('IMComponentBottomBarVoicePress')}
+                            </Text>
+                        </View>
+                    </TouchableHighlight>
+                )}
             </View>
         );
     }
@@ -486,45 +486,61 @@ export default class extends React.PureComponent<Props, State> {
         })
     }
 
+    protected checkMicroPhonePermission = (permissionName: string) => {
+        return check(permissionName)
+            .then(result => result === RESULTS.GRANTED ? RESULTS.GRANTED :
+                request(permissionName))
+            .then(result => {
+                if (result === RESULTS.GRANTED) {
+                    this.setState({
+                        showSpeech: !this.state.showSpeech,
+                        showEmojiView: false,
+                        showMoreBoard: false,
+                    });
+                } else if (result === RESULTS.DENIED) {
+                    // do nothing
+                } else {
+                    Toast.show(i18n.t('IMCommonNoRecordAuthority'));
+                }
+            });
+    }
+
+    protected checkIosMicroPhonePermission = () => {
+        return this.checkMicroPhonePermission(PERMISSIONS.IOS.MICROPHONE);
+    }
+
+    protected checkAndroidMicroPhonePermission = () => {
+        return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
+            .then(granted => granted ? PermissionsAndroid.RESULTS.GRANTED :
+                PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO))
+            .then(granted => {
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    this.setState({
+                        showSpeech: !this.state.showSpeech,
+                        showEmojiView: false,
+                        showMoreBoard: false,
+                    });
+                } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
+                    // do nothing
+                } else {
+                    Toast.show(i18n.t('IMCommonNoRecordAuthority'));
+                }
+            });
+    }
+
+    protected checkHarmonyMicroPhonePermission = () => {
+        return this.checkMicroPhonePermission('ohos.permission.MICROPHONE');
+    }
+
     protected _onSwitchSpeechKeyboard() {
         if (!this.state.showSpeech) {
             Keyboard.dismiss();
         }
-        if (this.isIos) {
-            check(PERMISSIONS.IOS.MICROPHONE)
-                .then(result => result === RESULTS.GRANTED ? RESULTS.GRANTED :
-                    request(PERMISSIONS.IOS.MICROPHONE))
-                .then(result => {
-                    if (result === RESULTS.GRANTED) {
-                        this.setState({
-                            showSpeech: !this.state.showSpeech,
-                            showEmojiView: false,
-                            showMoreBoard: false,
-                        });
-                    } else if (result === RESULTS.DENIED) {
-                        // do nothing
-                    } else {
-                        Toast.show(i18n.t('IMCommonNoRecordAuthority'));
-                    }
-                });
-        } else {
-            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
-                .then(granted => granted ? PermissionsAndroid.RESULTS.GRANTED :
-                    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO))
-                .then(granted => {
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        this.setState({
-                            showSpeech: !this.state.showSpeech,
-                            showEmojiView: false,
-                            showMoreBoard: false,
-                        });
-                    } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
-                        // do nothing
-                    } else {
-                        Toast.show(i18n.t('IMCommonNoRecordAuthority'));
-                    }
-                });
-        }
+        Platform.select({
+            ios: this.checkIosMicroPhonePermission,
+            android: this.checkAndroidMicroPhonePermission,
+            harmony: this.checkHarmonyMicroPhonePermission,
+        })?.();
     }
 
     protected _keyboardShow(event: KeyboardEvent) {
