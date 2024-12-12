@@ -22,12 +22,23 @@ import {
     View
 } from 'react-native';
 import Toast from 'react-native-root-toast';
-import SoundRecorder from 'react-native-sound-recorder';
 import delegate from '../delegate';
 import * as PageKeys from '../pagekey';
 import {Component, Contact, Conversation, Message} from '../typings';
 import {IMConstant} from 'react-native-im-easemob';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import AudioRecorderPlayer, {
+    AVEncoderAudioQualityIOSType,
+    AVEncodingOption,
+    AudioEncoderAndroidType,
+    AudioSourceAndroidType,
+    OutputFormatAndroidType,
+} from 'react-native-audio-recorder-player';
+import type {
+    PlayBackType,
+    RecordBackType,
+} from 'react-native-audio-recorder-player';
+import { AudioMimeHarmonyType, AudioFormatHarmonyType, AudioSourceHarmonyType, AudioSet } from "@react-native-oh-tpl/react-native-audio-recorder-player";
 
 export type Props = Component.BottomBarProps;
 
@@ -45,13 +56,15 @@ export interface State {
 export default class extends React.PureComponent<Props, State> {
     static defaultProps = {};
 
-    protected readonly isIos = Platform.OS === 'ios';
     protected selectedEmojiArr: string[] = [];
     protected atMemberList: Contact.User[] = [];
     protected textLocation = 0;
     protected listenKeyboardShow: EmitterSubscription | void = null;
     protected listenKeyboardHide: EmitterSubscription | void = null;
     protected textInput: TextInput | null = null;
+    protected audioRecorderPlayer?: AudioRecorderPlayer;
+    protected audioPath = '';
+    protected duration = 0;
 
 
     state = {
@@ -323,36 +336,53 @@ export default class extends React.PureComponent<Props, State> {
         this.atMemberList = [];
     }
 
-    protected _onStartRecording() {
+    protected async _onStartRecording() {
+        if (!this.audioRecorderPlayer) {
+            this.audioRecorderPlayer = new AudioRecorderPlayer();
+        }
         this.setState({ isRecording: true });
-        const option = !this.isIos ? {
-            format: SoundRecorder.FORMAT_AAC_ADTS,
-            encoder: SoundRecorder.ENCODER_AAC
-        } : {};
-        const time = new Date().getTime();
-        const filepath = SoundRecorder.PATH_CACHE + '/test_' + time + '.aac';
-        SoundRecorder.start(filepath, option);
+        const audioSet: AudioSet = {
+            AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+            AudioSourceAndroid: AudioSourceAndroidType.MIC,
+            AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+            AVNumberOfChannelsKeyIOS: 2,
+            AVFormatIDKeyIOS: AVEncodingOption.aac,
+            OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
+            AudioSourceHarmony: AudioSourceHarmonyType.MIC,
+            AudioMimeHarmony: AudioMimeHarmonyType.AUDIO_AAC,
+            AudioFileFormatHarmony: AudioFormatHarmonyType.MPEG_4A,
+            AudioEncodingBitRateHarmony: 3200,
+            AudioSamplingRateHarmony: 44100,
+            AudioChannelsHarmony: 2,
+        };
+        this.audioPath = await this.audioRecorderPlayer.startRecorder(
+            'imTempAudio.m4a',
+            audioSet,
+        );
+
+        this.audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+            this.duration = e.currentPosition;
+        });
     }
 
-    protected _onEndRecording() {
+    protected async _onEndRecording() {
         this.setState({ isRecording: false });
         const { onSendMessage } = this.props;
-        SoundRecorder.stop()
-            .then((result) => {
-                const time = Math.floor(result.duration / 1000);
-                if (time < 1) {
-                    Toast.show(i18n.t('IMComponentBottomBarVoiceTooShort'));
-                    return;
-                }
-                const message = {
-                    type: delegate.config.messageType.voice,
-                    body: {
-                        duration: result.duration,
-                        localPath: result.path,
-                    },
-                };
-                onSendMessage(message);
-            });
+        this.audioRecorderPlayer.removeRecordBackListener();
+        await this.audioRecorderPlayer.stopRecorder();
+        const time = Math.floor(this.duration / 1000);
+        if (time < 1) {
+            Toast.show(i18n.t('IMComponentBottomBarVoiceTooShort'));
+            return;
+        }
+        const message = {
+            type: delegate.config.messageType.voice,
+            body: {
+                duration: this.duration,
+                localPath: this.audioPath,
+            },
+        };
+        onSendMessage(message);
     }
 
     protected _onPickEmoji(text: string, isDelete: boolean) {
@@ -384,7 +414,10 @@ export default class extends React.PureComponent<Props, State> {
         const isInput = oldText.length < newText.length;
         if (!isInput) {
             // 'onChangeText' and 'onSelectionChange' sequence is different between iOS and Android
-            const textLocation = this.isIos ? this.textLocation : this.textLocation - 1;
+            const textLocation = Platform.select({
+                ios: this.textLocation,
+                default: this.textLocation - 1,
+            });
             const lastChar = oldText.charAt(textLocation);
             if (lastChar === ' ') {
                 const leftStr = oldText.slice(0, textLocation);
