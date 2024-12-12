@@ -68,10 +68,16 @@ export default class extends React.PureComponent<Props, State> {
         } else {
             Listener.trigger(voiceListenerKey);
             setTimeout(() => {
-                const {message: {data: {localPath, remotePath}}} = this.props;
+                const {message: {data: {localPath, remotePath, duration}}} = this.props;
                 this.audioRecorderPlayer?.startPlayer(localPath || remotePath, { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0' }).then(() => {
                     console.log('successfully finished playing');
-                    this.setState({isPlaying: !this.state.isPlaying});
+                    if (duration > 1000) {
+                        setTimeout(() => {
+                            this.setState({isPlaying: !this.state.isPlaying});
+                        }, duration);
+                    } else {
+                        this.setState({isPlaying: !this.state.isPlaying});
+                    }
                 }).catch(() => {
                     console.log('playback failed due to audio decoding errors');
                     this.setState({isPlaying: !this.state.isPlaying});
