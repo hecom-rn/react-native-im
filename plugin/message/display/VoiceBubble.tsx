@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, StyleSheet, View, Text } from 'react-native';
-import Sound from 'react-native-sound';
 import { Typings } from '../../../standard';
 import Listener from '@hecom/listener';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
 const voiceListenerKey = 'react-native-im_VoiceBubble_voice_listener_key'
 
@@ -13,7 +13,7 @@ export interface State {
 }
 
 export default class extends React.PureComponent<Props, State> {
-    protected sound: Sound;
+    protected audioRecorderPlayer?: AudioRecorderPlayer;
 
     state: State = {
         isPlaying: false,
@@ -22,17 +22,10 @@ export default class extends React.PureComponent<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        const {message: {data: {localPath, remotePath}}} = this.props;
-        this.sound = new Sound(localPath || remotePath, '', (error) => {
-            if (error) {
-                console.log('failed to load the sound', error);
-            }
-        });
+        this.audioRecorderPlayer = new AudioRecorderPlayer();
         this.voiceListener = Listener.register(voiceListenerKey, ()=>{
-            if (this.sound.isPlaying()) {
-                this.sound.stop();
-                this.setState({isPlaying: false});
-            }
+            this.audioRecorderPlayer?.stopPlayer?.();
+            this.setState({isPlaying: false});
         });
     }
 
@@ -41,7 +34,6 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     componentWillUnmount() {
-        this.sound.release();
         Listener.unregister(voiceListenerKey, this.voiceListener);
     }
 
@@ -72,16 +64,16 @@ export default class extends React.PureComponent<Props, State> {
 
     public onPress() {
         if (this.state.isPlaying) {
-            this.sound.stop();
+            this.audioRecorderPlayer?.stopPlayer();
         } else {
             Listener.trigger(voiceListenerKey);
             setTimeout(() => {
-                this.sound.play((success) => {
-                    if (success) {
-                        console.log('successfully finished playing');
-                    } else {
-                        console.log('playback failed due to audio decoding errors');
-                    }
+                const {message: {data: {localPath, remotePath}}} = this.props;
+                this.audioRecorderPlayer?.startPlayer(localPath || remotePath, { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0' }).then(() => {
+                    console.log('successfully finished playing');
+                    this.setState({isPlaying: !this.state.isPlaying});
+                }).catch(() => {
+                    console.log('playback failed due to audio decoding errors');
                     this.setState({isPlaying: !this.state.isPlaying});
                 });
             }, 100);
