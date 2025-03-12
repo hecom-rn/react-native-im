@@ -6,9 +6,11 @@ import {
     Image,
     Keyboard,
     SafeAreaView,
+    StatusBar,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
+    KeyboardAvoidingView,
     View
 } from 'react-native';
 import Toast from 'react-native-root-toast';
@@ -16,11 +18,11 @@ import Listener from '@hecom/listener';
 import i18n from 'i18n-js';
 import * as PageKeys from '../pagekey';
 import * as Model from '../model';
-import {DateUtil, guid} from '../util';
-import {Conversation, Event, Message} from '../typings';
+import { DateUtil, guid } from '../util';
+import { Conversation, Event, Message } from '../typings';
 import delegate from '../delegate';
-import {StackActions} from '@react-navigation/native';
-import {IMConstant} from 'react-native-im-easemob';
+import { StackActions } from '@react-navigation/native';
+import { IMConstant } from 'react-native-im-easemob';
 
 interface ChatDetailProps {
     imId: string
@@ -28,7 +30,7 @@ interface ChatDetailProps {
 }
 
 export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
-    static navigationOptions = function({ route }) {
+    static navigationOptions = function ({ route }) {
         const { _title_, _right_, _marginHorizontal_, _left_ } = route.params;
         const titleContainerStyle = !!_marginHorizontal_ ? { marginHorizontal: _marginHorizontal_ } : {};
         return {
@@ -43,7 +45,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     static defaultProps = {};
 
-    selectMessages= Array<Message.General>();
+    selectMessages = Array<Message.General>();
     listeners = new Array(5);
     isGroup: boolean;
     pageCount: number;
@@ -79,7 +81,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             this._setNaviBar();
             this._unRegisterListener();
             this._registerListener();
-            this.setState({listKey: guid()});
+            this.setState({ listKey: guid() });
         }
     }
 
@@ -114,10 +116,10 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     _onBackPress = () => {
         const { hasCheckBox } = this.state;
-        if(hasCheckBox){
-            this.selectMessages.length=0;
-            this.setState({hasCheckBox:false});
-        }else {
+        if (hasCheckBox) {
+            this.selectMessages.length = 0;
+            this.setState({ hasCheckBox: false });
+        } else {
             this.props.navigation.goBack();
         }
         return true;
@@ -128,8 +130,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             Toast.show('请选择消息');
             return;
         }
-        this.selectMessages.forEach(value=>{
-            value.data.quoteMsg=undefined;
+        this.selectMessages.forEach(value => {
+            value.data.quoteMsg = undefined;
         });
         if (this.selectMessages.findIndex(msg => msg.type == delegate.config.messageType.voice) >= 0) {
             Alert.alert('', '你选择的消息中，语音特殊消息不能转发给朋友，是否继续？', [
@@ -146,7 +148,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                             this.props.navigation.navigate(PageKeys.ChooseConversation, {
                                 title: i18n.t('IMPageChooseConversationTitle'),
                                 onSelectData:
-                                    this._onSelectConversation.bind(this, this.selectMessages,()=>{
+                                    this._onSelectConversation.bind(this, this.selectMessages, () => {
                                         this.selectMessages.length = 0;
                                         this.setState({ hasCheckBox: false });
                                     }),
@@ -162,7 +164,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         this.props.navigation.navigate(PageKeys.ChooseConversation, {
             title: i18n.t('IMPageChooseConversationTitle'),
             onSelectData:
-                this._onSelectConversation.bind(this, this.selectMessages,()=>{
+                this._onSelectConversation.bind(this, this.selectMessages, () => {
                     this.selectMessages.length = 0;
                     this.setState({ hasCheckBox: false });
                 }),
@@ -173,7 +175,11 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     render() {
         const { imId, chatType } = this.props;
         return (
-            <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
+            <KeyboardAvoidingView
+                behavior={'padding'}
+                keyboardVerticalOffset={StatusBar.currentHeight * 2}
+                style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}
+            >
                 <SafeAreaView
                     style={styles.innerview}
                 >
@@ -201,7 +207,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                     onClose={this._onCloseMenu.bind(this)}
                     actionList={this.state.actionList}
                 />
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 
@@ -226,7 +232,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _renderContent() {
-        const {imId} = this.props;
+        const { imId } = this.props;
         const conversation = delegate.model.Conversation.getOne(imId, false)
         return (
             <View style={styles.container}>
@@ -249,10 +255,10 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         return (<TouchableOpacity
                 onPress={() => {
                     const { hasCheckBox } = this.state;
-                    if(hasCheckBox){
-                        this.selectMessages.length=0;
-                        this.setState({hasCheckBox:false});
-                    }else {
+                    if (hasCheckBox) {
+                        this.selectMessages.length = 0;
+                        this.setState({ hasCheckBox: false });
+                    } else {
                         navigation.goBack();
                     }
                 }}
@@ -267,7 +273,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _renderRightElement() {
-        const {imId, chatType} = this.props;
+        const { imId, chatType } = this.props;
         const onSendMsg = this._onSendMessage.bind(this, imId, chatType)
         const moreImage = require('./image/showMore.png');
         return (<TouchableOpacity
@@ -357,7 +363,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         this._markAllRead()
     }
 
-    _onSendMultiMessage(imId, chatType, {type, bodies}) {
+    _onSendMultiMessage(imId, chatType, { type, bodies }) {
         const messages = bodies.map(body => this._generateMessage(type, body));
         this._sendMessage(imId, chatType, messages, delegate.model.Message.sendMultiMessage);
     }
@@ -378,35 +384,35 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                         action: i18n.t('IMCommonSendMessage')
                     }));
                 }
-                sendCallBackFunc&&sendCallBackFunc();
+                sendCallBackFunc && sendCallBackFunc();
             })
             .catch(() => {
                 Toast.show(i18n.t('IMToastError', {
                     action: i18n.t('IMCommonSendMessage')
                 }));
-                sendCallBackFunc&&sendCallBackFunc();
+                sendCallBackFunc && sendCallBackFunc();
             });
     }
 
     _onShowMenu(params) {
-        const {ref, isSender, message} = params;
+        const { ref, isSender, message } = params;
         const messageType = message.type;
         const actionList = [];
         const interval = (new Date().getTime() - message.timestamp) / 1000;
         const canRecall = interval < 5 * 60;
         if (messageType === delegate.config.messageType.text) {
-            actionList.push({title: '复制', action: this._onCopy.bind(this, message)});
+            actionList.push({ title: '复制', action: this._onCopy.bind(this, message) });
         }
-        if (messageType != delegate.config.messageType.voice){
+        if (messageType != delegate.config.messageType.voice) {
             actionList.push({
                 title: '引用',
                 action: this._onQuote.bind(this, message)
             });
         }
-        actionList.push({title: '转发', action: this._onForward.bind(this, message)});
+        actionList.push({ title: '转发', action: this._onForward.bind(this, message) });
         actionList.push({ title: '多选', action: this._onForwardMultiMessage.bind(this, message) });
         if (isSender && canRecall) {
-            actionList.push({title: '撤回', action: this._onRecall.bind(this, message)});
+            actionList.push({ title: '撤回', action: this._onRecall.bind(this, message) });
         }
         this.setState({
             menuShow: true,
@@ -416,7 +422,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _onCloseMenu() {
-        this.setState({menuShow: false});
+        this.setState({ menuShow: false });
     }
 
     _onCopy(message) {
@@ -426,16 +432,16 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _onForward(message) {
-        message.data.quoteMsg=undefined;
+        message.data.quoteMsg = undefined;
         this.props.navigation.navigate(PageKeys.ChooseConversation, {
             title: i18n.t('IMPageChooseConversationTitle'),
-            onSelectData: this._onSelectConversation.bind(this, message,undefined),
+            onSelectData: this._onSelectConversation.bind(this, message, undefined),
             excludedIds: [this.props.imId]
         });
     }
 
     async _onRecall(message) {
-        const {imId, chatType} = this.props;
+        const { imId, chatType } = this.props;
         await delegate.model.External.onRecallMessage(
             imId,
             chatType,
@@ -455,7 +461,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         }
         if (message instanceof Array) {
             message.forEach((value, index, array) => {
-                const {innerId, ...others}=value
+                const { innerId, ...others } = value
                 this._onSendMessage(
                     conversations[0].imId,
                     conversations[0].chatType,
@@ -464,7 +470,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                 );
             });
         } else {
-            const {innerId, ...others}=message
+            const { innerId, ...others } = message
             this._onSendMessage(
                 conversations[0].imId,
                 conversations[0].chatType,
@@ -475,11 +481,11 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     protected async _markAllRead() {
-        const {imId, chatType} = this.props;
+        const { imId, chatType } = this.props;
         return await delegate.model.Conversation.markReadStatus(imId, chatType, true);
     }
 
-    _renderItem=({ item, index }, messageList) => {
+    _renderItem = ({ item, index }, messageList) => {
         const isMe = item.from === delegate.user.getMine().userId;
         const position = item.data.isSystem ? 0 : isMe ? 1 : -1;
         const { hasCheckBox } = this.state;
@@ -546,15 +552,15 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         });
     };
 
-    _isMessageSelected=(msg: Message.General)=>{
-        const removeIndex = this.selectMessages.findIndex(((value, index, iter) => value.messageId===msg.messageId));
-        return removeIndex>=0;
+    _isMessageSelected = (msg: Message.General) => {
+        const removeIndex = this.selectMessages.findIndex(((value, index, iter) => value.messageId === msg.messageId));
+        return removeIndex >= 0;
     }
 
-    _onChangeSelectState=(oriState:boolean,msg: Message.General)=>{
-        if(oriState){
+    _onChangeSelectState = (oriState: boolean, msg: Message.General) => {
+        if (oriState) {
             this._unSelectMessage(msg);
-        }else {
+        } else {
             this._selectMessage(msg)
         }
     }
@@ -566,7 +572,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     _unSelectMessage = (msg: Message.General) => {
         const removeIndex = this.selectMessages.findIndex(((value, index, iter) => value.messageId === msg.messageId));
-        this.selectMessages.splice(removeIndex,1);
+        this.selectMessages.splice(removeIndex, 1);
         this.setState({ refresh: !this.state.refresh });
     }
 }
