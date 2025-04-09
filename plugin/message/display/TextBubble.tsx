@@ -38,7 +38,7 @@ export default class extends React.PureComponent<Props> {
 
     render() {
         // TODO IOS Image inside Text 有问题，表情对不齐
-        const Comp = Platform.OS === 'ios' ? View : Text;
+        const Comp = Platform.OS !== 'android' ? View : Text;
         // TODO URL、电话支持，居中对齐
         return (
             <Comp style={styles.view}>
