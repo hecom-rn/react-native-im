@@ -18,7 +18,6 @@ export function showDateTime(
     const timeStr = (isSameDay || showTime) ? that.toLocaleTimeString(locale, {
         hour: 'numeric',
         minute: 'numeric',
-        hour12: RNLocalize.uses24HourClock(),
     }) : '';
     const dayStr = isSameDay ? '' : isSameWeek ? that.toLocaleDateString(locale, {
         weekday: 'long',
