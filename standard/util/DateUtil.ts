@@ -1,5 +1,3 @@
-import * as RNLocalize from 'react-native-localize';
-import i18n from 'i18n-js';
 import {General} from "standard/typings/Message";
 
 export function showDateTime(
@@ -9,38 +7,16 @@ export function showDateTime(
     if (isNaN(timestamp)) {
         return '';
     }
-    const now = new Date();
-    const that = new Date(timestamp);
-    const locale = i18n.locale;
-    const options: Intl.DateTimeFormatOptions = {};
-    const isSameDay = sameDay(now, that);
-    const isSameWeek = sameWeek(now, that);
-    const timeStr = (isSameDay || showTime) ? that.toLocaleTimeString(locale, {
-        hour: 'numeric',
-        minute: 'numeric',
-    }) : '';
-    const dayStr = isSameDay ? '' : isSameWeek ? that.toLocaleDateString(locale, {
-        weekday: 'long',
-    }) : that.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: showTime ? 'short' : 'numeric',
-        day: 'numeric',
-    });
-    return [dayStr, timeStr].filter(i => i.length > 0).join(' ');
-}
-
-function sameWeek(now: Date, that: Date) {
-    return isInNDay(now, that, 7);
-}
-
-function sameDay(now: Date, that: Date) {
-    return now.getYear() === that.getYear() && now.getMonth() === that.getMonth() && now.getDate() === that.getDate();
-}
-
-function isInNDay(now: Date, that: Date, number: number) {
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    const before = new Date(today - 24 * 3600 * 1000 * number).getTime();
-    return that.getTime() < today && before <= that.getTime();
+    const date = new Date(timestamp);
+    
+    // 获取各个时间部分
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份是0-11
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return showTime ? `${year}-${month}-${day} ${hours}:${minutes}` : `${year}-${month}-${day}`;
 }
 
 export function needShowTime(forward: General, current: General) {
