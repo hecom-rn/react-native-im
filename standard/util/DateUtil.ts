@@ -12,33 +12,16 @@ export function showDateTime(
     if (isNaN(timestamp)) {
         return '';
     }
-    const now = new Date();
-    const that = new Date(timestamp);
-    const isSameDay = sameDay(now, that);
-    const isSameWeek = sameWeek(now, that);
-    const year = that.getFullYear();
-    const month = String(that.getMonth() + 1); // 月份从0开始，需要加1
-    const day = String(that.getDate());
-    const hours = String(that.getHours()).padStart(2, '0');
-    const minutes = String(that.getMinutes()).padStart(2, '0');
-    const dayOfWeek = getDayOfWeek(that);
-    const timeStr = (isSameDay || showTime) ? `${hours}:${minutes}` : '';
-    const dayStr = isSameDay ? '' : isSameWeek ? dayOfWeek : `${year}-${month}-${day}`;
-    return [dayStr, timeStr].filter(i => i.length > 0).join(' ');
-}
+    const date = new Date(timestamp);
 
-function sameWeek(now: Date, that: Date) {
-    return isInNDay(now, that, 7);
-}
+    // 获取各个时间部分
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份是0-11
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
 
-function sameDay(now: Date, that: Date) {
-    return now.getYear() === that.getYear() && now.getMonth() === that.getMonth() && now.getDate() === that.getDate();
-}
-
-function isInNDay(now: Date, that: Date, number: number) {
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    const before = new Date(today - 24 * 3600 * 1000 * number).getTime();
-    return that.getTime() < today && before <= that.getTime();
+    return showTime ? `${year}-${month}-${day} ${hours}:${minutes}` : `${year}-${month}-${day}`;
 }
 
 export function needShowTime(forward: General, current: General) {
