@@ -82,6 +82,7 @@
     "react-native-swipe-list-view": "^1.5.0",
     "react-navigation-header-buttons": "^2.1.1",
     "tslib": "^1.9.3",
-    "react-native-permissions": "^2.2.2"
+    "react-native-permissions": "^2.2.2",
+    "@hecom/aDate": "https://github.com/hecom-rn/aDate.git"
   }
 }
