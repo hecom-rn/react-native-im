@@ -21,6 +21,8 @@ import {Conversation, Event, Message} from '../typings';
 import delegate from '../delegate';
 import {StackActions} from '@react-navigation/native';
 import {IMConstant} from 'react-native-im-easemob';
+import Meta from '@hecom/meta';
+import Detail from '@hecom/detail';
 
 interface ChatDetailProps {
     imId: string
@@ -316,6 +318,26 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             .sort((a, b) => a.timestamp >= b.timestamp ? -1 : 1);
         if (result && result.length > 0) {
             this.lastMessage = result[result.length - 1];
+        }
+        
+        // 循环处理 result 数组中的每条消息
+        for (let i = 0; i < result.length; i++) {
+            const message = result[i] as any;
+            if (message?.data?.object?.metaName) {
+                try {
+                    await Meta.loadIfInvalid(message.data.object.metaName);
+                    const newResult = await Detail.load(message.data.object.metaName, message.data.object.code);
+                    // 在这里根据 newResult 修改当前消息
+                    if (newResult && newResult.record) {
+                        (result[i] as any).enrichedData = newResult;
+                        // 合并 newResult.record 到消息数据
+                        (result[i] as any).data.object = { ...(result[i] as any).data.object, ...newResult.record };
+                    }
+                } catch (error) {
+                    console.warn(`Meta/Detail load failed for message ${i}:`, error);
+                    // 加载失败时继续处理下一条消息
+                }
+            }
         }
         return {
             data: result,
