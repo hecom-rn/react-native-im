@@ -2,6 +2,8 @@ import delegate from 'react-native-im/standard/delegate';
 import { guid } from 'react-native-im/standard/util/index';
 import { Message } from 'react-native-im/standard/typings/index';
 import { IMConstant } from 'react-native-im-easemob';
+import { TimeUtils } from '@hecom/aDate';
+
 export function  sendFileMessage(imId: any, chatType: any, body: { length, size, name, path }, sendCallBackFunc?: Function) {
     const message = _generateMessage(imId, IMConstant.MessageType.file, body);
     _sendMessage(imId, chatType, message, delegate.model.Message.sendMessage, sendCallBackFunc);
@@ -19,8 +21,8 @@ function _generateMessage(imId, type, body, others = {}) {
         type: type,
         from: delegate.user.getMine().userId,
         to: imId,
-        localTime: new Date().getTime(),
-        timestamp: new Date().getTime(),
+        localTime: TimeUtils.create().valueOf(),
+        timestamp: TimeUtils.create().valueOf(),
         data: body,
         ...others
     };

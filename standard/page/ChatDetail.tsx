@@ -23,6 +23,7 @@ import {StackActions} from '@react-navigation/native';
 import {IMConstant} from 'react-native-im-easemob';
 import Meta from '@hecom/meta';
 import Detail from '@hecom/detail';
+import { TimeUtils } from '@hecom/aDate';
 
 interface ChatDetailProps {
     imId: string
@@ -414,7 +415,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         const {ref, isSender, message} = params;
         const messageType = message.type;
         const actionList = [];
-        const interval = (new Date().getTime() - message.timestamp) / 1000;
+        const interval = (TimeUtils.create().valueOf() - message.timestamp) / 1000;
         const canRecall = interval < 5 * 60;
         if (messageType === delegate.config.messageType.text) {
             actionList.push({title: '复制', action: this._onCopy.bind(this, message)});
@@ -550,8 +551,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             type: type,
             from: delegate.user.getMine().userId,
             to: this.props.imId,
-            localTime: new Date().getTime(),
-            timestamp: new Date().getTime(),
+            localTime: TimeUtils.create().valueOf(),
+            timestamp: TimeUtils.create().valueOf(),
             data: body,
             ...others,
         };
