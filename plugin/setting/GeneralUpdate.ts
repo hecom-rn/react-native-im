@@ -1,5 +1,4 @@
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Delegate, PageKeys, Typings } from '../../standard';
 
 export async function onAddMembers(props: Typings.Action.Setting.Params,
@@ -11,7 +10,7 @@ export async function onAddMembers(props: Typings.Action.Setting.Params,
             await Delegate.model.Group.addMembers(imId, memberUserIds);
             onDataChange();
         } catch (err) {
-            Toast.show(i18n.t('IMSettingAddGroupMemberFail'));
+            Toast.show('群主已禁止添加成员');
         }
     } else {
         const newMembers = [imId, ...memberUserIds];
@@ -22,9 +21,7 @@ export async function onAddMembers(props: Typings.Action.Setting.Params,
                 chatType: result.chatType,
             });
         } catch (err) {
-            Toast.show(i18n.t('IMToastError', {
-                action: i18n.t('IMCreateGroup'),
-            }));
+            Toast.show('创建群聊失败');
         }
     }
     return Delegate.model.Group.getMembers(imId);
@@ -37,9 +34,7 @@ export async function onRemoveMembers(props: Typings.Action.Setting.Params,
         await Delegate.model.Group.removeMembers(imId, memberUserIds);
         onDataChange();
     } catch (err) {
-        Toast.show(i18n.t('IMToastError', {
-            action: i18n.t('IMSettingRemoveGroupMember'),
-        }));
+        Toast.show('删除群成员失败');
     }
     return Delegate.model.Group.getMembers(imId);
 }

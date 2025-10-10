@@ -1,7 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 
 export const name = 'IMSettingGroupDataInfo';
@@ -43,7 +42,7 @@ export class GroupDataInfoCell extends React.PureComponent<Props,State> {
             <View>
                 <Delegate.component.SettingItem
                     type={Typings.Component.SettingItemType.Text}
-                    title={i18n.t('IMSettingGroupDataInfo')}
+                    title={'资料'}
                     data={""}
                     onPressLine={this._clickLine.bind(this)}
                 />
@@ -55,9 +54,7 @@ export class GroupDataInfoCell extends React.PureComponent<Props,State> {
         const {imId} = this.props;
         Delegate.model.Group.showGroupDataRecord(imId)
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingGroupDataInfo'),
-                }));
+                Toast.show('资料失败');
             });
     }
 }

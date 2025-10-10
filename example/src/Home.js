@@ -2,14 +2,13 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
 import { Client } from 'react-native-im-easemob';
 import { IMStandard } from 'react-native-im';
-import i18n from 'i18n-js';
 import ArrowImage from '@hecom/image-arrow';
 import * as Constant from './Constant';
 
 export default class extends React.PureComponent {
     static navigationOptions = function () {
         return {
-            title: i18n.t('HomeTitle'),
+            title: '示例首页',
         };
     };
 
@@ -29,8 +28,8 @@ export default class extends React.PureComponent {
     render() {
         return (
             <ScrollView style={styles.view}>
-                {this._renderLine(i18n.t('Register'), this._register.bind(this))}
-                {this._renderLine(i18n.t('Login'), this._login.bind(this))}
+                {this._renderLine('注册', this._register.bind(this))}
+                {this._renderLine('登录', this._login.bind(this))}
             </ScrollView>
         );
     }

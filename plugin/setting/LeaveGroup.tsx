@@ -1,6 +1,5 @@
 import { StackActions } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 import getGeneralButton from './GeneralButton';
 import { Alert } from 'react-native';
@@ -15,7 +14,7 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
     }
     const groupOwner = Delegate.model.Group.getOwner(imId);
     const isOwner = groupOwner === Delegate.user.getMine().userId;
-    const text = isOwner ? i18n.t('IMSettingLeaveGroupDestroy') : i18n.t('IMSettingLeaveGroupQuit');
+    const text = isOwner ? '解散群聊' : '退出群聊';
     return getGeneralButton(key, text, () => _clickLeave(props, text, isOwner));
 }
 
@@ -27,7 +26,7 @@ async function _clickLeave(
     try {
         // dismissGroup, need confirm again
         if (isOwner) {
-            Alert.alert('提示','是否' + i18n.t('IMSettingLeaveGroupDestroy') + '?', [
+            Alert.alert('提示','是否解散群聊?', [
                 {
                     text: '取消',
                     onPress: () => {},
@@ -54,7 +53,7 @@ async function _clickLeave(
             ]);
         }
     } catch (err) {
-        Toast.show(i18n.t('IMToastError', {action: text}));
+        Toast.show(text + '失败');
     }
 }
 
@@ -77,5 +76,5 @@ async function leaveDidTrue(
     } else {
         await Delegate.model.Group.quitOne(imId);
      }
-    Toast.show(i18n.t('IMToastSuccess', {action: text}));
+    Toast.show(text + '成功');
 }

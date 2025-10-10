@@ -1,7 +1,6 @@
 import React from 'react';
 import { TextInput, EmitterSubscription, StyleSheet, Dimensions, TextInputProps, Keyboard, Platform } from 'react-native';
 import Modal, { ModalTitle, ModalButton, ModalContent, ModalFooter} from 'react-native-modals';
-import i18n from 'i18n-js';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -72,14 +71,14 @@ export default class extends React.PureComponent<Props, State> {
                     <ModalFooter style={styles.footer}>
                         <ModalButton
                             key={'cancel'}
-                            text={i18n.t('IMCommonCancel')}
+                            text={'取消'}
                             onPress={onCancel}
                             style={styles.action}
                             textStyle={styles.actionText}
                         />
                         <ModalButton
                             key={'ok'}
-                            text={i18n.t('IMCommonOK')}
+                            text={'确定'}
                             onPress={() => onSubmit(this.state.text)}
                             style={styles.action}
                             textStyle={styles.actionText}

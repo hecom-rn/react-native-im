@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, EmitterSubscription, StyleSheet, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
-import i18n from 'i18n-js';
 import { Component } from '../typings';
 import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
@@ -149,8 +148,8 @@ export default class extends React.PureComponent<Props> {
 
     protected _onItemPress(rowItem: string) {
         if (rowItem === this.add) {
-            this.props.navigation.navigate(PageKeys.ChooseUser,{
-                    title: i18n.t('IMSettingChooseGroupMember'),
+        this.props.navigation.navigate(PageKeys.ChooseUser,{
+            title: '选择群成员',
                     multiple: true,
                     onSelectData: this.props.onAddMembers,
                     selectedIds: [],
@@ -161,7 +160,8 @@ export default class extends React.PureComponent<Props> {
                 .filter(item => item !== this.props.owner)
                 .map(item => delegate.user.getUser(item));
             this.props.navigation.navigate(PageKeys.ChooseUser,{
-                    title: i18n.t('IMSettingChooseGroupMember'),
+        this.props.navigation.navigate(PageKeys.ChooseUser,{
+            title: '选择群成员',
                     multiple: true,
                     onSelectData: this.props.onRemoveMembers,
                     selectedIds: [],

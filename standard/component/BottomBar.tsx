@@ -1,5 +1,4 @@
 import {getSafeAreaInset} from '@hecom/react-native-pure-navigation-bar';
-import i18n from 'i18n-js';
 import React from 'react';
 import {
     EmitterSubscription,
@@ -176,7 +175,7 @@ export default class extends React.PureComponent<Props, State> {
                         >
                             <View style={styles.sound}>
                                 <Text style={styles.soundText}>
-                                    {this.state.isRecording ? i18n.t('IMComponentBottomBarVoiceRelease') : i18n.t('IMComponentBottomBarVoicePress')}
+                                    {this.state.isRecording ? '松开 结束' : '按住 说话'}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -271,9 +270,7 @@ export default class extends React.PureComponent<Props, State> {
                         style={styles.sendTouch}
                     >
                         <View style={styles.sendView}>
-                            <Text style={styles.sendText}>
-                                {i18n.t('IMCommonSend')}
-                            </Text>
+                            <Text style={styles.sendText}>发送</Text>
                         </View>
                     </TouchableOpacity>
                 )}
@@ -342,7 +339,7 @@ export default class extends React.PureComponent<Props, State> {
             .then((result) => {
                 const time = Math.floor(result.duration / 1000);
                 if (time < 1) {
-                    Toast.show(i18n.t('IMComponentBottomBarVoiceTooShort'));
+                    Toast.show('录音时间太短');
                     return;
                 }
                 const message = {
@@ -409,7 +406,7 @@ export default class extends React.PureComponent<Props, State> {
         let item = {};
         if (dataFirst === Message.AtAll) {
             item.imId = Message.AtAll;
-            item.name = i18n.t('IMPageChooseUserAll');
+            item.name = '所有人';
         } else {
             item = delegate.user.getUser(data[0]);
         }
@@ -437,7 +434,7 @@ export default class extends React.PureComponent<Props, State> {
             const groupOwner = delegate.model.Group.getOwner(this.props.imId);
             const isOwner = groupOwner === delegate.user.getMine().userId;
             this.props.navigation.navigate(PageKeys.ChooseUser, {
-                title: i18n.t('IMComponentBottomBarChooseAtPerson'),
+                title: '选择@的人',
                 multiple: false,
                 onSelectData: this._onSelectData.bind(this),
                 selectedIds: [],
@@ -505,7 +502,7 @@ export default class extends React.PureComponent<Props, State> {
                     } else if (result === RESULTS.DENIED) {
                         // do nothing
                     } else {
-                        Toast.show(i18n.t('IMCommonNoRecordAuthority'));
+                        Toast.show('您未设置录音权限，请去设置中打开');
                     }
                 });
         } else {
@@ -522,7 +519,7 @@ export default class extends React.PureComponent<Props, State> {
                     } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
                         // do nothing
                     } else {
-                        Toast.show(i18n.t('IMCommonNoRecordAuthority'));
+                        Toast.show('您未设置录音权限，请去设置中打开');
                     }
                 });
         }

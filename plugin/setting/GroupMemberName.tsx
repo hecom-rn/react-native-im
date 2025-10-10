@@ -1,6 +1,5 @@
 import React from 'react';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 
 export const name = 'IMSettingGroupMemberName';
@@ -39,7 +38,8 @@ export class GroupMemberNameCell extends React.PureComponent<Props, State> {
         return (
             <Delegate.component.SettingItem
                 type={Typings.Component.SettingItemType.Switch}
-                title={i18n.t('IMSettingGroupMemberName')}
+                // 显示群成员昵称 （原 key: IMSettingGroupMemberName）
+                title={"显示群成员昵称"}
                 data={this.state.showMembersName}
                 onPressSwitch={this._clickConfig.bind(this)}
             />
@@ -57,9 +57,7 @@ export class GroupMemberNameCell extends React.PureComponent<Props, State> {
         this.setState({showMembersName});
         Delegate.model.Conversation.updateConfig(imId, chatType, {showMembersName})
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingConfigChange'),
-                }));
+                Toast.show('更新设置失败');
             })
             .finally(() => {
                 this.setState(this._state());

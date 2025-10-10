@@ -2700,11 +2700,6 @@ http-errors@~1.6.2:
     setprototypeof "1.1.0"
     statuses ">= 1.4.0 < 2"
 
-i18n-js@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-3.2.1.tgz#26cea8e327207bebccf1030baa761c5245ceb63b"
-  integrity sha512-AN8Ol+7QMcRml338l5W7JeNsJgXZqXHOwF+e2iKu6gqRM87bmbxk3g2CAfapo7+5ASKOhl+0PiH+YP8OjN+rXg==
-
 iconv-lite@^0.4.17, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
   version "0.4.24"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -4578,7 +4573,6 @@ react-native-im@../:
     "@hecom/image-arrow" "^1.0.3"
     "@hecom/listener" "^1.0.0"
     dateformat "^3.0.3"
-    i18n-js "^3.2.1"
     react-native-fs "^2.13.3"
     react-native-general-searchbar "^1.0.6"
     react-native-general-storage "^1.0.4"

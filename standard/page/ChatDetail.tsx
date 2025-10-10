@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import Toast from 'react-native-root-toast';
 import Listener from '@hecom/listener';
-import i18n from 'i18n-js';
 import * as PageKeys from '../pagekey';
 import * as Model from '../model';
 import {DateUtil, guid} from '../util';
@@ -147,7 +146,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                         }
                         if (this.selectMessages.length > 0) {
                             this.props.navigation.navigate(PageKeys.ChooseConversation, {
-                                title: i18n.t('IMPageChooseConversationTitle'),
+                                title: '选择聊天',
                                 onSelectData:
                                     this._onSelectConversation.bind(this, this.selectMessages,()=>{
                                         this.selectMessages.length = 0;
@@ -163,7 +162,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             return;
         }
         this.props.navigation.navigate(PageKeys.ChooseConversation, {
-            title: i18n.t('IMPageChooseConversationTitle'),
+            title: '选择聊天',
             onSelectData:
                 this._onSelectConversation.bind(this, this.selectMessages,()=>{
                     this.selectMessages.length = 0;
@@ -213,7 +212,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         let title;
         let marginHorizontal;
         if (this.isGroup) {
-            const groupName = delegate.model.Group.getName(imId, false) || i18n.t('IMCommonChatTypeGroup');
+            const groupName = delegate.model.Group.getName(imId, false) || '群聊';
             title = groupName + ' (' + delegate.model.Group.getMembers(imId).length + ')';
             marginHorizontal = 97;
         } else {
@@ -359,7 +358,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             this._unRegisterListener();
             Alert.alert('提示', message, [
                 {
-                    text: i18n.t('IMCommonOK'), onPress: () => {
+                    text: '确定', onPress: () => {
                         this.props.navigation.dispatch(
                             StackActions.popToTop({})
                         );
@@ -397,16 +396,12 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                 if (isCurrent) {
                     this._markAllRead();
                 } else {
-                    Toast.show(i18n.t('IMToastSuccess', {
-                        action: i18n.t('IMCommonSendMessage')
-                    }));
+                    Toast.show('发送消息成功');
                 }
                 sendCallBackFunc&&sendCallBackFunc();
             })
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMCommonSendMessage')
-                }));
+                Toast.show('发送消息失败');
                 sendCallBackFunc&&sendCallBackFunc();
             });
     }
@@ -451,7 +446,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     _onForward(message) {
         message.data.quoteMsg=undefined;
         this.props.navigation.navigate(PageKeys.ChooseConversation, {
-            title: i18n.t('IMPageChooseConversationTitle'),
+            title: '选择聊天',
+            title: '选择聊天',
             onSelectData: this._onSelectConversation.bind(this, message,undefined),
             excludedIds: [this.props.imId]
         });

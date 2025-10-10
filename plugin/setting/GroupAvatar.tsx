@@ -2,7 +2,6 @@ import React from 'react';
 import Toast from 'react-native-root-toast';
 import ActionSheet from 'react-native-general-actionsheet';
 import * as ImagePicker from '@hecom-rn/react-native-full-image-picker';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 
 export const name = 'IMSettingGroupAvatar';
@@ -26,7 +25,7 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
         <Delegate.component.SettingItem
             key={key}
             type={Typings.Component.SettingItemType.Image}
-            title={i18n.t('IMSettingGroupAvatar')}
+            title={'群头像'}
             data={avatar}
             onPressLine={isOwner ? () => _clickGroupAvatar(props) : undefined}
         />
@@ -40,9 +39,9 @@ function _clickGroupAvatar(props: Typings.Action.Setting.Params) {
         callback: (data: Array<{uri: string}>) => _onImagePickerFinish(props, data),
     };
     const actions = [
-        i18n.t('IMCommonTakeCamera'),
-        i18n.t('IMCommonSelectFromPhotoLibrary'),
-        i18n.t('IMCommonCancel')
+        '拍照',
+        '从相册选择',
+        '取消'
     ];
     ActionSheet.showActionSheetWithOptions({
         options: actions,
@@ -70,8 +69,6 @@ function _onImagePickerFinish(props: UiParams, data: Array<{uri: string}>) {
             onDataChange();
         })
         .catch(() => {
-            Toast.show(i18n.t('IMToastError', {
-                action: i18n.t('IMSettingGroupAvatarChange'),
-            }));
+            Toast.show('设置头像失败');
         });
 }

@@ -3,7 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Toast from 'react-native-root-toast';
 import Listener from '@hecom/listener';
-import i18n from 'i18n-js';
 import * as PageKeys from '../pagekey';
 import { Event } from '../typings';
 import delegate from '../delegate';
@@ -11,7 +10,7 @@ import delegate from '../delegate';
 export default class extends React.PureComponent {
     static navigationOptions = function () {
         return {
-            title: i18n.t('IMPageChatListTitle')
+            title: '聊天列表'
         };
     };
 

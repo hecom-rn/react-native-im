@@ -3,7 +3,6 @@ import { InteractionManager, StyleSheet, Text, TouchableOpacity, View, Image } f
 import PropTypes from 'prop-types';
 import Toast from 'react-native-root-toast';
 import PickList from '@hecom/react-native-picklist';
-import i18n from 'i18n-js';
 import ArrowImage from '@hecom/image-arrow';
 import ChooseUserFromOrgPage from './ChooseUserFromOrg';
 import delegate from '../delegate';
@@ -21,7 +20,7 @@ export default class extends React.Component {
     static defaultProps = {
         ...ChooseUserFromOrgPage.defaultProps,
         showAtAll: false,
-        title: i18n.t('IMCommonPageTitle')
+        title: '加载中',
     };
 
     constructor(props) {
@@ -48,9 +47,7 @@ export default class extends React.Component {
                     this.setState({users});
                 })
                 .catch(() => {
-                    Toast.show(i18n.t('IMToastError', {
-                        action: i18n.t('IMLoadOrganization')
-                    }));
+                    Toast.show('加载组织架构失败');
                 });
         }
     }
@@ -108,22 +105,20 @@ export default class extends React.Component {
                 </View>
             </TouchableOpacity >
         ) : undefined;
+        const separatorStyle = {
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderBottomColor: delegate.style.separatorLineColor,
+        };
         const fromOrgView = dataSource ? undefined : (
             <View style={styles.row}>
                 <TouchableOpacity onPress={this._clickHeader.bind(this)}>
-                    <View style={[styles.container, style]}>
-                        <Text style={styles.text}>
-                            {i18n.t('IMPageChooseUserSelectFromOrg')}
-                        </Text>
+                    <View style={[styles.container, separatorStyle]}>
+                        <Text style={styles.text}>按部门选同事</Text>
                         <ArrowImage style={styles.icon} />
                     </View>
                 </TouchableOpacity>
             </View>
-        )
-        const style = {
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: delegate.style.separatorLineColor,
-        };
+        );
         return (
             <View>
                 {atAllView}
@@ -187,7 +182,7 @@ export default class extends React.Component {
     }
 
     _onAtAll() {
-        this.props.onSelectData && this.props.onSelectData([Message.AtAll], i18n.t('IMPageChooseUserAll'));
+        this.props.onSelectData && this.props.onSelectData([Message.AtAll], '所有人');
         this.props.navigation && this.props.navigation.goBack();
     }
 

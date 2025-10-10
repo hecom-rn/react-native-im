@@ -2,7 +2,6 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import PickList, { PickListRowUtil } from '@hecom/react-native-picklist';
-import i18n from 'i18n-js';
 import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
 
@@ -17,7 +16,7 @@ export default class extends React.PureComponent {
     };
 
     static defaultProps = {
-        title: i18n.t('IMPageChooseConversationTitle'),
+        title: '选择聊天',
         allowMulti: true,
         selectedIds: [],
         excludedIds: [],
@@ -42,10 +41,10 @@ export default class extends React.PureComponent {
         const {title} = this.props;
         const rights = {};
         if (this.state.multi) {
-            rights.rightTitle = i18n.t('IMCommonSingleSelect');
+            rights.rightTitle = '单选';
             rights.rightClick = this._clickChangeMulti.bind(this, false);
         } else if (this.props.allowMulti) {
-            rights.rightTitle = i18n.t('IMCommonMultiSelect');
+            rights.rightTitle = '多选';
             rights.rightClick = this._clickChangeMulti.bind(this, true);
         }
         return this.state.dataSource === undefined ? null : (
@@ -77,9 +76,7 @@ export default class extends React.PureComponent {
             <View style={styles.row}>
                 <TouchableOpacity onPress={this._clickHeader.bind(this)}>
                     <View style={[styles.container, style]}>
-                        <Text style={styles.text}>
-                            {i18n.t('IMPageChooseConversationCreateNew')}
-                        </Text>
+                        <Text style={styles.text}>创建新聊天</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -133,8 +130,8 @@ export default class extends React.PureComponent {
     }
 
     _clickHeader() {
-        this.props.navigation.navigate(PageKeys.ChooseUser, {
-                title: i18n.t('IMPageChooseConversationCreateNew'),
+    this.props.navigation.navigate(PageKeys.ChooseUser, {
+        title: '创建新聊天',
                 multiple: true,
                 onSelectData: this._onCreateNew.bind(this),
                 selectedIds: [],

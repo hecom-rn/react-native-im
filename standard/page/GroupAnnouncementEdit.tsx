@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import NaviBar, {getSafeAreaInset} from '@hecom/react-native-pure-navigation-bar';
 import {Delegate} from "react-native-im/standard/index";
 import Toast from "react-native-root-toast";
-import i18n from 'i18n-js';
 import Navigation from "@hecom/navigation/src/index";
 import {Message} from "react-native-im/standard/typings/index";
 import delegate from "react-native-im/standard/delegate";
@@ -108,9 +107,7 @@ export default class extends React.PureComponent {
             })
             .catch(() => {
                 this.props.apiRefresh(false);
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingGroupAnnouncementChange'),
-                }));
+                Toast.show('保存失败');
             });
     };
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 
 export const name = 'IMSettingTop';
@@ -35,7 +34,7 @@ export class TopCell extends React.PureComponent<Props, State> {
         return (
             <Delegate.component.SettingItem
                 type={Typings.Component.SettingItemType.Switch}
-                title={i18n.t('IMSettingTop')}
+                title={'置顶聊天'}
                 data={this.state.top}
                 onPressSwitch={this._clickConfig.bind(this)}
             />
@@ -53,9 +52,7 @@ export class TopCell extends React.PureComponent<Props, State> {
         this.setState({top});
         Delegate.model.Conversation.updateConfig(imId, chatType, {top})
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingConfigChange'),
-                }));
+                Toast.show('更新设置失败');
             })
             .finally(() => {
                 this.setState(this._state());

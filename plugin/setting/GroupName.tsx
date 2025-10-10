@@ -1,7 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate, PageKeys } from '../../standard';
 import Prompt from './Prompt';
 
@@ -54,17 +53,11 @@ export class GroupNameCell extends React.PureComponent<Props, State> {
             <View>
                 <Delegate.component.SettingItem
                     type={Typings.Component.SettingItemType.Text}
-                    title={i18n.t('IMSettingGroupName')}
+                    title={'群聊名称'}
                     data={groupName}
                     onPressLine={showNameLineFunc}
                 />
-                {/* <Prompt
-                    visible={this.state.showPrompt}
-                    title={i18n.t('IMSettingGroupNameChangeTips')}
-                    onCancel={this._changePromptStatus.bind(this, false)}
-                    onSubmit={this._clickName.bind(this)}
-                    textInputProps={{secureTextEntry: false}}
-                /> */}
+                {/* 原弹窗 (包含群名称修改提示) 已移除 */}
             </View>
         );
     }
@@ -76,7 +69,7 @@ export class GroupNameCell extends React.PureComponent<Props, State> {
     protected _clickName(newName: string) {
         this._changePromptStatus(false);
         if (!newName || newName.length === 0) {
-            Toast.show(i18n.t('IMSettingGroupNameNotEmpty'));
+            Toast.show('群聊名称不能为空');
             return;
         }
         const {imId, onDataChange} = this.props;
@@ -85,9 +78,7 @@ export class GroupNameCell extends React.PureComponent<Props, State> {
                 onDataChange();
             })
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingGroupNameChange'),
-                }));
+                Toast.show('更改群聊名称失败');
             });
     }
 

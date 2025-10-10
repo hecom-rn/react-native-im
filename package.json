@@ -20,7 +20,6 @@
   "homepage": "https://github.com/gaoxiaosong/react-native-im#readme",
   "dependencies": {
     "dateformat": "^3.0.3",
-    "i18n-js": "^3.2.1",
     "md5": "^2.3.0",
     "react-native-section-list-get-item-layout": "^2.2.3",
     "recyclerlistview": "^3.0.0"
@@ -61,7 +60,6 @@
     "@hecom/image-arrow": "^1.0.3",
     "@hecom/listener": "^1.0.0",
     "@hecom/storage": "1.1.0",
-    "@types/i18n-js": "^3.0.1",
     "@types/promise.prototype.finally": "^2.0.3",
     "@types/react": "^16.8.14",
     "@types/react-native": "^0.57.46",

@@ -1,5 +1,4 @@
 import React from 'react';
-import i18n from 'i18n-js';
 import { Typings, Delegate, PageKeys } from '../../standard';
 import { onAddMembers, onRemoveMembers } from './GeneralUpdate';
 import { Dimensions, TouchableHighlight, StyleSheet, View, Text} from 'react-native';
@@ -21,7 +20,7 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
     return (
         <AllMembersCell
             key={key}
-            title={i18n.t('IMSettingAllMembers', {length: groupMembers.length})}
+            title={`查看全体群成员(${groupMembers.length})`}
             onPressLine={() => _clickAllMembers(props)}
         />
     );

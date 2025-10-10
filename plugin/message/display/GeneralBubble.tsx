@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import i18n from 'i18n-js';
 import { Typings } from '../../../standard';
 
 export type Props = Typings.Action.Display.Params;
@@ -14,7 +13,7 @@ export default class extends React.PureComponent<Props> {
         return (
             <View style={styles.view}>
                 <Text style={styles.text}>
-                    {i18n.t('IMToastMessageNotSupport')}
+                    {'当前版本暂不支持该消息'}
                 </Text>
             </View>
         );

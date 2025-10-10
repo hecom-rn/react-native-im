@@ -6,7 +6,6 @@ import {
     TouchableHighlight,
     View
 } from 'react-native';
-import i18n from 'i18n-js';
 import { Typings, Delegate, PageKeys } from '../../standard';
 import delegate from "react-native-im/standard/delegate";
 import ArrowImage from '@hecom/image-arrow';
@@ -51,7 +50,7 @@ export class GroupAnnouncementCell extends React.PureComponent<Props, State> {
 
     render() {
         const {isOwner, groupAnnouncement} = this.props;
-        let title = i18n.t('IMSettingGroupAnnouncement')
+    let title = '群公告'
         const hasContent = groupAnnouncement != null && groupAnnouncement.length > 0;
         let onPressFunc = (isOwner || hasContent) ? this._clickAnnouncement.bind(this) : this._noSetting.bind(this)
         return (

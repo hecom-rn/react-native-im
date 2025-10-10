@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
-import i18n from 'i18n-js';
 import * as Model from '../model';
 import { Conversation } from '../typings';
 import delegate from '../delegate';
@@ -10,7 +9,7 @@ export default class extends React.PureComponent {
     static navigationOptions = function ({route}) {
         const {chatType} = route.params;
         const isGroup = chatType === Conversation.ChatType.Group;
-        const title = isGroup ? i18n.t('IMPageChatSettingTitleGroup') : i18n.t('IMPageChatSettingTitleSingle');
+    const title = isGroup ? '群设置' : '聊天设置';
         return {title};
     };
 

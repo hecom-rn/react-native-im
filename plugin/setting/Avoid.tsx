@@ -1,6 +1,5 @@
 import React from 'react';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 import { APNs } from 'react-native-im-easemob';
 
@@ -36,7 +35,7 @@ export class AvoidCell extends React.PureComponent<Props, State> {
         return (
             <Delegate.component.SettingItem
                 type={Typings.Component.SettingItemType.Switch}
-                title={i18n.t('IMSettingAvoid')}
+                title={'消息免打扰'}
                 data={this.state.avoid}
                 onPressSwitch={this._clickConfig.bind(this)}
             />
@@ -57,9 +56,7 @@ export class AvoidCell extends React.PureComponent<Props, State> {
                 APNs.setIgnoreGroupPush(imId, chatType, avoid);
             })
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingConfigChange'),
-                }));
+                Toast.show('更新设置失败');
             })
             .finally(() => {
                 this.setState(this._state());

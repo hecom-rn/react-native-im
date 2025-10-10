@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import NaviBar, {getSafeAreaInset} from '@hecom/react-native-pure-navigation-bar';
 import {Delegate} from "react-native-im/standard/index";
 import Toast from "react-native-root-toast";
-import i18n from 'i18n-js';
 import Navigation from "@hecom/navigation/src/index";
 import delegate from "react-native-im/standard/delegate";
 
@@ -109,7 +108,7 @@ export default class extends React.PureComponent {
         this.props.apiRefresh(true);
     
             if (!newName || newName.length === 0) {
-                Toast.show(i18n.t('IMSettingGroupNameNotEmpty'));
+                Toast.show('群聊名称不能为空');
                 return;
             }
             const {groupId, onDataChange} = this.props;
@@ -122,9 +121,7 @@ export default class extends React.PureComponent {
                 })
                 .catch(() => {
                     this.props.apiRefresh(false);
-                    Toast.show(i18n.t('IMToastError', {
-                        action: i18n.t('IMSettingGroupNameChange'),
-                    }));
+                    Toast.show('保存失败');
                 });
     };
 

@@ -3,7 +3,6 @@ import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Toast from 'react-native-root-toast';
 import PickList, { PickListRowUtil } from '@hecom/react-native-picklist';
-import i18n from 'i18n-js';
 import { deepExport } from '../util';
 import delegate from '../delegate';
 
@@ -38,7 +37,7 @@ export default class extends React.PureComponent<Props> {
         parentOrgId: undefined,
         excludedUserIds: [],
         spaceHeight: 10,
-        title: i18n.t('IMCommonPageTitle')
+    title: '加载中'
     };
 
     constructor(props) {
@@ -64,9 +63,7 @@ export default class extends React.PureComponent<Props> {
                 this.setState({tree});
             })
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMLoadOrganization')
-                }));
+                Toast.show('加载组织架构失败');
             });
     }
 

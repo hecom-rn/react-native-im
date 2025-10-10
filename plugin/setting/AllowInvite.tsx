@@ -1,6 +1,5 @@
 import React from 'react';
 import Toast from 'react-native-root-toast';
-import i18n from 'i18n-js';
 import { Typings, Delegate } from '../../standard';
 
 export const name = 'IMSettingAllowInvite';
@@ -42,7 +41,7 @@ export class AllowInviteCell extends React.PureComponent<Props, State> {
         return (
             <Delegate.component.SettingItem
                 type={Typings.Component.SettingItemType.Switch}
-                title={i18n.t('IMSettingAllowInvite')}
+                title={'允许添加成员'}
                 data={this.state.allowInvites}
                 onPressSwitch={this._clickConfig.bind(this)}
             />
@@ -60,9 +59,7 @@ export class AllowInviteCell extends React.PureComponent<Props, State> {
         this.setState({allowInvites});
         Delegate.model.Group.changeAllowInvites(imId, allowInvites)
             .catch(() => {
-                Toast.show(i18n.t('IMToastError', {
-                    action: i18n.t('IMSettingConfigChange'),
-                }));
+                Toast.show('更新设置失败');
             })
             .finally(() => {
                 this.setState(this._state());
