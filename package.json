@@ -5,7 +5,11 @@
   "description": "一个通用的IM视图框架",
   "main": "index.ts",
   "scripts": {
-    "test": "./node_modules/.bin/eslint --ext .js,.ts,.tsx ."
+    "test": "./node_modules/.bin/eslint --ext .js,.ts,.tsx .",
+    "i18n:replace": "npx hecom-i18n-tools replace --excel=i18n/im_i18n.xlsx --importPath='core/utils/i18n' --fixLint=true --prettier-config=.prettierrc.js",
+    "i18n:scan": "npx hecom-i18n-tools scan --src=standard,plugin --out=i18n/im_i18n.xlsx --gitlab=https://github.com/hecom-rn/react-native-im/blob/master --config=i18nScannerOptions.js",
+    "i18n:static-consts": "npx hecom-i18n-tools static-consts --src=standard,plugin",
+    "i18n:gen": "npx hecom-i18n-tools gen --excel=i18n/im_i18n.xlsx --out=i18n/locales"
   },
   "repository": {
     "type": "git",
