@@ -140,8 +140,12 @@ const style: Delegate.StylePart = {
 };
 const config: Delegate.ConfigPart = {
     pinyinField: 'pinyin',
-    titleLoading: '加载中',
-    buttonOK: '确定',
+    get titleLoading() {
+        return '加载中';
+    },
+    get buttonOK() {
+        return '确定';
+    },
     messageType: {
         text: -1,
         voice: -1,

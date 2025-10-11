@@ -5,7 +5,9 @@ export type Result = Typings.Action.MoreBoard.GeneralResult<Typings.Message.Loca
 export type Params = Typings.Action.MoreBoard.PressParams<Typings.Message.LocationBody>;
 
 const obj: Result = {
-    text: '位置',
+    get text() {
+        return '位置';
+    },
     icon: require('./image/more_location.png'),
     onPress: (params: Params) => {
         Delegate.func.pushToLocationChoosePage({

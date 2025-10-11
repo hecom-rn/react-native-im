@@ -37,7 +37,6 @@ export default class extends React.PureComponent<Props> {
         parentOrgId: undefined,
         excludedUserIds: [],
         spaceHeight: 10,
-    title: '加载中'
     };
 
     constructor(props) {
@@ -68,7 +67,7 @@ export default class extends React.PureComponent<Props> {
     }
 
     render() {
-        const {navigation, title, firstTitleLine, selectedIds, multiple} = this.props;
+        const {navigation, title = '加载中', firstTitleLine, selectedIds, multiple} = this.props;
         const {tree = []} = this.state;
         let data, titleLine, rawRootPath;
         if (tree.length === 1) {

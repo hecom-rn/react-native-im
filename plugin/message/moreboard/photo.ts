@@ -12,7 +12,9 @@ export type VideoParams = Typings.Action.MoreBoard.PressParams<Typings.Message.V
 export type callbackParams = Array<{uri: string}>;
 
 export const takePhoto: ImageResult = {
-    text: '照片',
+    get text() {
+        return '照片';
+    },
     icon: require('./image/more_photo.png'),
     onPress: (params: ImageParams) => {
         ImagePicker.getAlbum({
@@ -25,7 +27,9 @@ export const takePhoto: ImageResult = {
 };
 
 export const takeVideo: VideoResult = {
-    text: '视频',
+    get text() {
+        return '视频';
+    },
     icon: require('./image/more_video.png'),
     onPress: (params: VideoParams) => {
         ImagePicker.getVideo({
@@ -36,7 +40,9 @@ export const takeVideo: VideoResult = {
 };
 
 export const takeCamera: ImageResult = {
-    text: '拍摄',
+    get text() {
+        return '拍摄';
+    },
     icon: require('./image/more_camera.png'),
     onPress: (params: ImageParams) => {
         ImagePicker.getCamera({

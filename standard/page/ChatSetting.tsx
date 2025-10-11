@@ -9,7 +9,7 @@ export default class extends React.PureComponent {
     static navigationOptions = function ({route}) {
         const {chatType} = route.params;
         const isGroup = chatType === Conversation.ChatType.Group;
-    const title = isGroup ? '群设置' : '聊天设置';
+        const title = isGroup ? '群设置' : '聊天设置';
         return {title};
     };
 

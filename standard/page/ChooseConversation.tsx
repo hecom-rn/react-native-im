@@ -16,7 +16,6 @@ export default class extends React.PureComponent {
     };
 
     static defaultProps = {
-        title: '选择聊天',
         allowMulti: true,
         selectedIds: [],
         excludedIds: [],
@@ -38,7 +37,7 @@ export default class extends React.PureComponent {
     }
 
     render() {
-        const {title} = this.props;
+        const {title = '选择聊天'} = this.props;
         const rights = {};
         if (this.state.multi) {
             rights.rightTitle = '单选';
@@ -131,7 +130,7 @@ export default class extends React.PureComponent {
 
     _clickHeader() {
     this.props.navigation.navigate(PageKeys.ChooseUser, {
-        title: '创建新聊天',
+                title: '创建新聊天',
                 multiple: true,
                 onSelectData: this._onCreateNew.bind(this),
                 selectedIds: [],

@@ -20,7 +20,6 @@ export default class extends React.Component {
     static defaultProps = {
         ...ChooseUserFromOrgPage.defaultProps,
         showAtAll: false,
-        title: '加载中',
     };
 
     constructor(props) {
@@ -53,7 +52,7 @@ export default class extends React.Component {
     }
 
     render() {
-        const {navigation, title, selectedIds, multiple, dataSource, showBottomView} = this.props;
+        const {navigation, title = '加载中', selectedIds, multiple, dataSource, showBottomView} = this.props;
         return this.state.users !== undefined && (
             <PickList
 		ref={(ref) => (this.pickList = ref)}
@@ -198,7 +197,7 @@ export default class extends React.Component {
                 this.props.navigation.goBack();
             });
         };
-        const { title, multiple, hasSelf, parentOrgId, excludedUserIds, spaceHeight } = this.props;
+        const { title = '加载中', multiple, hasSelf, parentOrgId, excludedUserIds, spaceHeight } = this.props;
         this.props.navigation.navigate(PageKeys.ChooseUserFromOrg, {
             title,
             multiple,
