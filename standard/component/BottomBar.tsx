@@ -28,6 +28,7 @@ import * as PageKeys from '../pagekey';
 import {Component, Contact, Conversation, Message} from '../typings';
 import {IMConstant} from 'react-native-im-easemob';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import { TimeUtils } from '@hecom/aDate';
 
 export type Props = Component.BottomBarProps;
 
@@ -329,7 +330,7 @@ export default class extends React.PureComponent<Props, State> {
             format: SoundRecorder.FORMAT_AAC_ADTS,
             encoder: SoundRecorder.ENCODER_AAC
         } : {};
-        const time = new Date().getTime();
+        const time = TimeUtils.create().valueOf();
         const filepath = SoundRecorder.PATH_CACHE + '/test_' + time + '.aac';
         SoundRecorder.start(filepath, option);
     }
