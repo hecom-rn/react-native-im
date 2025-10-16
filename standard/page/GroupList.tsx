@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import NaviBar, { forceInset } from '@hecom/react-native-pure-navigation-bar';
@@ -29,28 +30,23 @@ export default class extends React.PureComponent {
         );
         delegate.model.Group.load()
             .then(this._refresh)
-            .catch(() => Toast.show('加载群列表失败'));
+            .catch(() => Toast.show(t('i18n_im_8e086745d38948eb')));
     }
 
     componentWillUnmount() {
-        Listener.unregister(
-            [Event.Base, Event.Group],
-            this.listenGroupLoaded
-        );
+        Listener.unregister([Event.Base, Event.Group], this.listenGroupLoaded);
     }
 
     render() {
         return (
             <View style={styles.view}>
-                <NaviBar title='群聊' />
+                <NaviBar title={t('i18n_im_35b49ee58a4a0e82')} />
                 <delegate.component.FakeSearchBar
                     onFocus={this._clickFakeSearchBar}
-                    placeholder={'搜索'}
+                    placeholder={t('i18n_im_44ce7ae909bbb28b')}
                 />
-                <SafeAreaView
-                    style={styles.safeview}
-                    forceInset={forceInset(0, 1, 1, 1)}
-                >
+
+                <SafeAreaView style={styles.safeview} forceInset={forceInset(0, 1, 1, 1)}>
                     <FlatList
                         style={styles.list}
                         data={this.state.groups}
@@ -63,12 +59,12 @@ export default class extends React.PureComponent {
         );
     }
 
-    _renderItem = ({item}) => {
+    _renderItem = ({ item }) => {
         return (
             <delegate.component.ListCell
-                avatar={{imId: item.groupId, chatType: Conversation.ChatType.Group}}
+                avatar={{ imId: item.groupId, chatType: Conversation.ChatType.Group }}
                 title={delegate.model.Group.getName(item.groupId)}
-                subTitle={'' + item.memberObjList.length + '人'}
+                subTitle={'' + item.memberObjList.length + t('i18n_im_50f5d65d57290f75')}
                 right={this._renderItemRight(item)}
                 onClick={this._clickItem.bind(this, item)}
             />
@@ -77,18 +73,14 @@ export default class extends React.PureComponent {
 
     _renderItemRight = (item) => {
         const text = DateUtil.showDateTime(item.createdOn, false);
-        return (
-            <Text style={styles.right}>
-                {text}
-            </Text>
-        );
+        return <Text style={styles.right}>{text}</Text>;
     };
 
     _renderFooterComponent = () => {
         return (
             <View style={styles.footerview}>
                 <Text style={styles.footertext}>
-                    {'' + this.state.groups.length + '个群聊'}
+                    {'' + this.state.groups.length + t('i18n_im_e660a4d6b0bfc245')}
                 </Text>
             </View>
         );
@@ -96,41 +88,43 @@ export default class extends React.PureComponent {
 
     _clickItem = (item) => {
         this.props.navigation.navigate(PageKeys.ChatDetail, {
-                imId: item.groupId,
-                chatType: Conversation.ChatType.Group,
-            });
+            imId: item.groupId,
+            chatType: Conversation.ChatType.Group,
+        });
     };
 
     _clickFakeSearchBar = () => {
-        this.props.navigation.navigate(PageKeys.SearchMore,{
-                keyExtractor: item => item.groupId,
-                showHistory: false,
-                searchHint: '搜索群名称、群成员',
-                historyKey: '',
-                maxSectionItemLength: 0,
-                doSearch: this._search,
-                renderItem: this._renderSearchItem,
-                searchOnTextChange: true,
-            });
+        this.props.navigation.navigate(PageKeys.SearchMore, {
+            keyExtractor: (item) => item.groupId,
+            showHistory: false,
+            searchHint: t('i18n_im_99fb2263ba473236'),
+            historyKey: '',
+            maxSectionItemLength: 0,
+            doSearch: this._search,
+            renderItem: this._renderSearchItem,
+            searchOnTextChange: true,
+        });
     };
 
     _refresh = () => {
         this.setState({
-            groups: this._getGroups()
+            groups: this._getGroups(),
         });
     };
 
     _getGroups = () => {
-        const groups = delegate.model.Group.get()
-            .sort((a, b) => a.createdOn < b.createdOn ? 1 : -1);
-        groups.forEach(group => {
-            const {groupId} = group;
+        const groups = delegate.model.Group.get().sort((a, b) =>
+            a.createdOn < b.createdOn ? 1 : -1
+        );
+        groups.forEach((group) => {
+            const { groupId } = group;
             if (!group.name) {
                 group.name = delegate.model.Group.getName(groupId);
             }
             if (!group.memberObjList) {
-                group.memberObjList = delegate.model.Group.getMembers(groupId)
-                    .map((userId) => delegate.user.getUser(userId));
+                group.memberObjList = delegate.model.Group.getMembers(groupId).map((userId) =>
+                    delegate.user.getUser(userId)
+                );
             }
         });
         return groups;
@@ -138,34 +132,31 @@ export default class extends React.PureComponent {
 
     _search = (text) => {
         this.searchText = text;
-        return this.state.groups
-            .filter((group) => {
-                const {name = '', name_py = '', memberObjList} = group;
-                group.matchInMember = memberObjList
-                    .find(({name, name_py = ''}) =>
-                        name.includes(text) || name_py.includes(text)
-                    );
-                return name.includes(text) || name_py.includes(text) || group.matchInMember;
-            });
+        return this.state.groups.filter((group) => {
+            const { name = '', name_py = '', memberObjList } = group;
+            group.matchInMember = memberObjList.find(
+                ({ name, name_py = '' }) => name.includes(text) || name_py.includes(text)
+            );
+            return name.includes(text) || name_py.includes(text) || group.matchInMember;
+        });
     };
 
-    _renderSearchItem = ({item}) => {
+    _renderSearchItem = ({ item }) => {
         const searchText = this.searchText;
         const length = searchText.length;
         let title = item.name;
-        let subTitle = '共' + item.memberObjList.length + '人';
+        let subTitle =
+            t('i18n_im_76e547a8fa546381') +
+            item.memberObjList.length +
+            t('i18n_im_50f5d65d57290f75');
         const index = title.indexOf(searchText);
         if (index > -1) {
             title = [
-                <Text key={1}>
-                    {title.substring(0, index)}
-                </Text>,
+                <Text key={1}>{title.substring(0, index)}</Text>,
                 <Text key={2} style={styles.text}>
                     {searchText}
                 </Text>,
-                <Text key={3}>
-                    {title.substring(index + length)}
-                </Text>
+                <Text key={3}>{title.substring(index + length)}</Text>,
             ];
         }
         if (item.matchInMember) {
@@ -174,32 +165,28 @@ export default class extends React.PureComponent {
                     const i = user.name.indexOf(searchText);
                     if (i > -1) {
                         return [
-                            <Text key={user.code + '1'}>
-                                {user.name.substring(0, i)}
-                            </Text>,
+                            <Text key={user.code + '1'}>{user.name.substring(0, i)}</Text>,
                             <Text key={user.code + '2'} style={styles.text}>
                                 {searchText}
                             </Text>,
-                            <Text key={user.code + '3'}>
-                                {user.name.substring(i + length)}
-                            </Text>
+                            <Text key={user.code + '3'}>{user.name.substring(i + length)}</Text>,
                         ];
                     } else {
                         return null;
                     }
                 })
-                .filter(i => !!i)
+                .filter((i) => !!i)
                 .reduce((pre, cur) => {
                     if (pre.length > 0) pre.push('，');
                     return [...pre, ...cur];
                 }, []);
             if (matchUser.length > 0) {
-                subTitle = ['群成员：'].concat(matchUser);
+                subTitle = [t('i18n_im_85ce71acbbc8057a')].concat(matchUser);
             }
         }
         return (
             <delegate.component.ListCell
-                avatar={{imId: item.groupId, chatType: Conversation.ChatType.Group}}
+                avatar={{ imId: item.groupId, chatType: Conversation.ChatType.Group }}
                 title={title}
                 subTitle={subTitle}
                 onClick={this._clickItem.bind(this, item)}
@@ -236,6 +223,6 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         alignSelf: 'stretch',
         fontSize: 11,
-        color: "#aaaaaa",
+        color: '#aaaaaa',
     },
 });

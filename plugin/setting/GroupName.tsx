@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-root-toast';
@@ -7,7 +8,7 @@ import Prompt from './Prompt';
 export const name = 'IMSettingGroupName';
 
 export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Setting.Result {
-    const {key, imId, chatType, onDataChange,navigation} = props;
+    const { key, imId, chatType, onDataChange, navigation } = props;
     const isGroup = chatType === Typings.Conversation.ChatType.Group;
     if (!isGroup) {
         return null;
@@ -47,52 +48,53 @@ export class GroupNameCell extends React.PureComponent<Props, State> {
     };
 
     render() {
-        const {groupName, isOwner} = this.props;
+        const { groupName, isOwner } = this.props;
         const showNameLineFunc = !isOwner ? undefined : this._clickNameEdit.bind(this);
         return (
             <View>
                 <Delegate.component.SettingItem
                     type={Typings.Component.SettingItemType.Text}
-                    title={'群聊名称'}
+                    title={t('i18n_im_12633e741c9ab2ed')}
                     data={groupName}
                     onPressLine={showNameLineFunc}
                 />
+
                 {/* 原弹窗 (包含群名称修改提示) 已移除 */}
             </View>
         );
     }
-    
+
     protected _changePromptStatus(status: boolean) {
-        this.setState({showPrompt: status});
+        this.setState({ showPrompt: status });
     }
 
     protected _clickName(newName: string) {
         this._changePromptStatus(false);
         if (!newName || newName.length === 0) {
-            Toast.show('群聊名称不能为空');
+            Toast.show(t('i18n_im_80554a49f3f890eb'));
             return;
         }
-        const {imId, onDataChange} = this.props;
+        const { imId, onDataChange } = this.props;
         Delegate.model.Group.changeName(imId, newName)
             .then(() => {
                 onDataChange();
             })
             .catch(() => {
-                Toast.show('更改群聊名称失败');
+                Toast.show(t('i18n_im_7ddfd2b3c5fae13b'));
             });
     }
 
     protected _clickNameEdit() {
-        const {imId, onDataChange, groupName, navigation, onSendMessage} = this.props;
-        const curGroupName = (groupName != null) ? groupName : ''
-        const groupAvatar = { imId: imId, chatType:Typings.Conversation.ChatType.Group };
+        const { imId, onDataChange, groupName, navigation, onSendMessage } = this.props;
+        const curGroupName = groupName != null ? groupName : '';
+        const groupAvatar = { imId: imId, chatType: Typings.Conversation.ChatType.Group };
 
-        navigation.navigate( PageKeys.GroupNameEdit, {
+        navigation.navigate(PageKeys.GroupNameEdit, {
             groupId: imId,
             groupName: curGroupName,
             groupAvatar: groupAvatar,
             onDataChange: onDataChange,
             onSendMessage: onSendMessage,
-        })
+        });
     }
 }

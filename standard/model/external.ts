@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import Listener from '@hecom/listener';
 import { Message, Conversation, Event } from '../typings';
 import * as Action from './action';
@@ -8,23 +9,23 @@ export interface ProcessedMessage<T extends Message.Body = Message.GeneralBody>
     chatType: Conversation.ChatType;
 }
 
-export async function onMessageReceived(
-    originMessage: Message.Origin
-): Promise<ProcessedMessage> {
+export async function onMessageReceived(originMessage: Message.Origin): Promise<ProcessedMessage> {
     //语音消息插入未读标志
     //语音消息插入未点击标志
-    const {ext} = originMessage;
-    if (ext &&
+    const { ext } = originMessage;
+    if (
+        ext &&
         ext.extend_message_body &&
         ext.extend_message_body.messageType &&
-        ext.extend_message_body.messageType == 5) {
+        ext.extend_message_body.messageType == 5
+    ) {
         originMessage.ext.shouldRead = true;
         delegate.im.conversation.updateMessageExt(originMessage.messageId, originMessage.ext);
     }
 
     const message = Action.Parse.get([], originMessage, originMessage);
     if (!message) {
-        throw new Error('无法处理该消息');
+        throw new Error(t('i18n_im_0fa0bb961120b871'));
     }
     const imId = message.conversationId;
     const chatType = message.chatType;
@@ -32,11 +33,8 @@ export async function onMessageReceived(
         await delegate.model.Conversation.loadItem(imId, chatType);
     }
     await delegate.model.Conversation.updateMessage(imId, message);
-    Listener.trigger(
-        [Event.Base, Event.ReceiveMessage, imId],
-        message
-    );
-    return {chatType, ...message};
+    Listener.trigger([Event.Base, Event.ReceiveMessage, imId], message);
+    return { chatType, ...message };
 }
 
 export async function onRecallMessage(
@@ -45,12 +43,19 @@ export async function onRecallMessage(
     fromUserId: string,
     message: Message.General
 ): Promise<void> {
-    const {messageId, localTime, timestamp, innerId} = message;
+    const { messageId, localTime, timestamp, innerId } = message;
     const user = getOperatorName(fromUserId);
-    const text = user + '撤回了一条消息';
-    await delegate.im.conversation.deleteMessage({imId, chatType, message: {messageId}});
+    const text = user + t('i18n_im_4ddf313f8a105007');
+    await delegate.im.conversation.deleteMessage({ imId, chatType, message: { messageId } });
     await delegate.model.Conversation.recallMessage(imId, message);
-    await delegate.model.Message.insertSystemMessage(imId, Conversation.ChatType.Group, text, localTime, timestamp, innerId);
+    await delegate.model.Message.insertSystemMessage(
+        imId,
+        Conversation.ChatType.Group,
+        text,
+        localTime,
+        timestamp,
+        innerId
+    );
 }
 
 export async function onGroupCreate(
@@ -75,10 +80,8 @@ export async function onUserJoin(
     timestamp: number
 ): Promise<void> {
     const invitor = getOperatorName(invitorId);
-    const users = userJoinedIds
-        .map(userId => getOperatorName(userId))
-        .join(',');
-    const text = invitor + '邀请' + users + '加入了群聊';
+    const users = userJoinedIds.map((userId) => getOperatorName(userId)).join(',');
+    const text = invitor + t('i18n_im_1955b265d56843b1') + users + t('i18n_im_66fab88b15d1b84a');
     await groupUpdateOperation(groupId, text, localTime, timestamp);
 }
 
@@ -89,23 +92,22 @@ export async function onUserLeave(
     localTime: number,
     timestamp: number
 ): Promise<void> {
-    const users = userLeavedIds
-        .map(userId => getOperatorName(userId))
-        .join(',');
+    const users = userLeavedIds.map((userId) => getOperatorName(userId)).join(',');
     const isUserQuit = userLeavedIds.length === 1 && userLeavedIds[0] === operatorId;
-    const text =  users + (isUserQuit ? '退出了群聊' : '被移出群聊');
+    const text =
+        users + (isUserQuit ? t('i18n_im_5201d174b040bc31') : t('i18n_im_8ddc53f4eaec8e24'));
     await groupUpdateOperation(groupId, text, localTime, timestamp);
 }
 
-export async function onUserDidLeaveGroup(
-    group: object,
-    reason: number,
-){
+export async function onUserDidLeaveGroup(group: object, reason: number) {
     if (reason == 0) {
         await delegate.model.Conversation.deleteOne(group.groupId);
         await delegate.model.Group.deleteOne(group.groupId);
     }
-    Listener.trigger([Event.Base, Event.GroupLeave, group.groupId], {group: group, reason: reason});
+    Listener.trigger([Event.Base, Event.GroupLeave, group.groupId], {
+        group: group,
+        reason: reason,
+    });
 }
 
 export async function onUpdateName(
@@ -116,7 +118,7 @@ export async function onUpdateName(
     timestamp: number
 ): Promise<void> {
     const updator = getOperatorName(updatorId);
-    const text = updator + '修改群名称为' + newGroupName;
+    const text = updator + t('i18n_im_0b8b035b6960dfc7') + newGroupName;
     await groupUpdateOperation(groupId, text, localTime, timestamp);
 }
 
@@ -127,20 +129,18 @@ export async function onUpdateOwner(
     timestamp: number
 ): Promise<void> {
     const user = getOperatorName(newOwnerId);
-    const text = '群主已经更换为' + user;
+    const text = t('i18n_im_802a73c243b4876d') + user;
     await groupUpdateOperation(groupId, text, localTime, timestamp);
 }
 
-export async function onGroupDelete(
-    groupId: string,
-): Promise<void> {
+export async function onGroupDelete(groupId: string): Promise<void> {
     await delegate.model.Conversation.deleteOne(groupId);
     await delegate.model.Group.deleteOne(groupId);
 }
 
 export function getOperatorName(userId?: string): string {
     const isMe = userId === delegate.user.getMine().userId;
-    return isMe ? '你' : delegate.user.getUser(userId).name;
+    return isMe ? t('i18n_im_a0c7716669b5ded0') : delegate.user.getUser(userId).name;
 }
 
 export async function groupUpdateOperation(
@@ -151,6 +151,12 @@ export async function groupUpdateOperation(
 ): Promise<void> {
     await delegate.model.Group.loadItem(groupId);
     if (text && text.length > 0) {
-        await delegate.model.Message.insertSystemMessage(groupId, Conversation.ChatType.Group, text, localTime, timestamp);
+        await delegate.model.Message.insertSystemMessage(
+            groupId,
+            Conversation.ChatType.Group,
+            text,
+            localTime,
+            timestamp
+        );
     }
 }

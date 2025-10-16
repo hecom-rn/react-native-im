@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import { Typings, Delegate } from '../../../standard';
 
 export type Params = Typings.Action.Abstract.Params<Typings.Message.LocationBody>;
@@ -9,9 +10,9 @@ export default function (params: Params): Result {
     const { message } = params;
     const isSend = message.from === myUserId;
     if (isSend) {
-        return '[我的位置]';
+        return t('i18n_im_19f3c787e8e28c53');
     } else {
         const user = Delegate.user.getUser(message.from);
-        return '[' + user.name + '的位置]';
+        return '[' + user.name + t('i18n_im_fee7e8072ac6fff3');
     }
 }

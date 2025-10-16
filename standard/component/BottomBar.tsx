@@ -1,4 +1,5 @@
-import {getSafeAreaInset} from '@hecom/react-native-pure-navigation-bar';
+import { t } from '@hecom/basecore/util/i18';
+import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
 import React from 'react';
 import {
     EmitterSubscription,
@@ -18,15 +19,15 @@ import {
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    View
+    View,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
 import SoundRecorder from 'react-native-sound-recorder';
 import delegate from '../delegate';
 import * as PageKeys from '../pagekey';
-import {Component, Contact, Conversation, Message} from '../typings';
-import {IMConstant} from 'react-native-im-easemob';
-import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import { Component, Contact, Conversation, Message } from '../typings';
+import { IMConstant } from 'react-native-im-easemob';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import { TimeUtils } from '@hecom/aDate';
 
 export type Props = Component.BottomBarProps;
@@ -53,7 +54,6 @@ export default class extends React.PureComponent<Props, State> {
     protected listenKeyboardHide: EmitterSubscription | void = null;
     protected textInput: TextInput | null = null;
 
-
     state = {
         message: '',
         keyboardHeight: 0,
@@ -66,8 +66,14 @@ export default class extends React.PureComponent<Props, State> {
     };
 
     componentDidMount() {
-        this.listenKeyboardShow = Keyboard.addListener('keyboardWillShow', this._keyboardShow.bind(this));
-        this.listenKeyboardHide = Keyboard.addListener('keyboardWillHide', this._keyboardHide.bind(this));
+        this.listenKeyboardShow = Keyboard.addListener(
+            'keyboardWillShow',
+            this._keyboardShow.bind(this)
+        );
+        this.listenKeyboardHide = Keyboard.addListener(
+            'keyboardWillHide',
+            this._keyboardHide.bind(this)
+        );
     }
 
     componentWillUnmount() {
@@ -79,13 +85,14 @@ export default class extends React.PureComponent<Props, State> {
         const { batchOptionMode, onBatchForward } = this.props;
         return batchOptionMode ? (
             <SafeAreaView style={styles.safeview}>
-                <TouchableWithoutFeedback onPress={()=>onBatchForward()}>
+                <TouchableWithoutFeedback onPress={() => onBatchForward()}>
                     <View style={styles.container}>
-                        <Text style={styles.btnText}>转发</Text>
+                        <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
                     </View>
                 </TouchableWithoutFeedback>
             </SafeAreaView>
-        ) : (<SafeAreaView style={styles.safeview}>
+        ) : (
+            <SafeAreaView style={styles.safeview}>
                 <View style={styles.container}>
                     {this._renderLeftBtn()}
                     <View style={styles.msgContainer}>
@@ -126,7 +133,7 @@ export default class extends React.PureComponent<Props, State> {
 
     public insertAtMember(userId: string) {
         const text = this.state.message;
-        const newText = text.slice(0, this.textLocation) + '@' + text.slice(this.textLocation);;
+        const newText = text.slice(0, this.textLocation) + '@' + text.slice(this.textLocation);
         this.setState({ message: newText }, () => {
             this.textLocation++;
             this._onSelectData([userId]);
@@ -134,9 +141,9 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     protected _renderLeftBtn() {
-        const icon = this.state.showSpeech ?
-            require('./image/chat_keyboard.png') :
-            require('./image/chat_sound.png');
+        const icon = this.state.showSpeech
+            ? require('./image/chat_keyboard.png')
+            : require('./image/chat_sound.png');
         const touchStyle = {
             marginHorizontal: 4,
         };
@@ -156,7 +163,7 @@ export default class extends React.PureComponent<Props, State> {
             <View style={styles.inputBorder}>
                 {!this.state.showSpeech ? (
                     <TextInput
-                        ref={ref => this.textInput = ref}
+                        ref={(ref) => (this.textInput = ref)}
                         multiline={true}
                         style={styles.input}
                         value={this.state.message}
@@ -168,23 +175,25 @@ export default class extends React.PureComponent<Props, State> {
                         autoCorrect={false}
                     />
                 ) : (
-                        <TouchableHighlight
-                            underlayColor={'#d7d8d8'}
-                            onPressIn={this._onStartRecording.bind(this)}
-                            onPressOut={this._onEndRecording.bind(this)}
-                        >
-                            <View style={styles.sound}>
-                                <Text style={styles.soundText}>
-                                    {this.state.isRecording ? '松开 结束' : '按住 说话'}
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    )}
+                    <TouchableHighlight
+                        underlayColor={'#d7d8d8'}
+                        onPressIn={this._onStartRecording.bind(this)}
+                        onPressOut={this._onEndRecording.bind(this)}
+                    >
+                        <View style={styles.sound}>
+                            <Text style={styles.soundText}>
+                                {this.state.isRecording
+                                    ? t('i18n_im_9be40c5aa39e8740')
+                                    : t('i18n_im_022ed89e94a88dd4')}
+                            </Text>
+                        </View>
+                    </TouchableHighlight>
+                )}
             </View>
         );
     }
     protected _renderQuoteView() {
-        if(this.state.showSpeech ){
+        if (this.state.showSpeech) {
             return;
         }
         let quoteMsg: Message.General | undefined = this.state.quoteMsg;
@@ -195,53 +204,47 @@ export default class extends React.PureComponent<Props, State> {
                     msgDesc = (quoteMsg as Message.General).data.text;
                     break;
                 case IMConstant.MessageType.image:
-                    msgDesc='[图片]';
+                    msgDesc = t('i18n_im_a71f445d35779ede');
                     break;
                 case IMConstant.MessageType.video:
-                    msgDesc='[视频]';
+                    msgDesc = t('i18n_im_da5d0399eba80b23');
                     break;
                 case IMConstant.MessageType.location:
-                    msgDesc='[位置]';
+                    msgDesc = t('i18n_im_4d65f3d737a1a175');
                     break;
                 case IMConstant.MessageType.file:
-                    msgDesc='[文件]';
+                    msgDesc = t('i18n_im_54e20fcfb5abb867');
                     break;
                 case IMConstant.MessageType.material:
-                    msgDesc='[资料]';
+                    msgDesc = t('i18n_im_36e69ffa241b5f91');
                     break;
             }
         }
-        return quoteMsg ?
-            (<View style={styles.quoteTextBorder}>
-                <Text
-                    numberOfLines={1}
-                    ellipsizeMode={'tail'}
-                    style={styles.quoteText} >
+        return quoteMsg ? (
+            <View style={styles.quoteTextBorder}>
+                <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.quoteText}>
                     {/* {delegate.user.getUser('test__c_v2011_1122225706').name + ':'} */}
 
-                    {delegate.user.getUser((quoteMsg as Message.General).from).name + ':' +msgDesc}
+                    {delegate.user.getUser((quoteMsg as Message.General).from).name + ':' + msgDesc}
                 </Text>
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={this._onQuoteMsgDel.bind(this)}
                     style={[styles.delIconTouch]}
                 >
-                    <Image
-                        source={require('./image/clear.png')}
-                        style={styles.delIcon}
-                    />
+                    <Image source={require('./image/clear.png')} style={styles.delIcon} />
                 </TouchableOpacity>
-            </View>)
-            : undefined
+            </View>
+        ) : undefined;
     }
 
     protected _renderRightBtn() {
-        const firstIcon = this.state.showEmojiView ?
-            require('./image/chat_keyboard.png') :
-            require('./image/chat_emoji.png');
-        const secondIcon = this.state.showMoreBoard ?
-            require('./image/chat_keyboard.png') :
-            require('./image/chat_add.png');
+        const firstIcon = this.state.showEmojiView
+            ? require('./image/chat_keyboard.png')
+            : require('./image/chat_emoji.png');
+        const secondIcon = this.state.showMoreBoard
+            ? require('./image/chat_keyboard.png')
+            : require('./image/chat_add.png');
         const isEmpty = !this.state.message || this.state.message.length === 0;
         const touchStyle = {
             marginHorizontal: 2,
@@ -270,7 +273,7 @@ export default class extends React.PureComponent<Props, State> {
                         style={styles.sendTouch}
                     >
                         <View style={styles.sendView}>
-                            <Text style={styles.sendText}>发送</Text>
+                            <Text style={styles.sendText}>{t('i18n_im_edecf0ae6e5144f9')}</Text>
                         </View>
                     </TouchableOpacity>
                 )}
@@ -295,17 +298,19 @@ export default class extends React.PureComponent<Props, State> {
 
     protected _onSendMessageText() {
         let atMemberList: Message.AtList = [];
-        const all = this.atMemberList.filter(item => item.imId === Message.AtAll);
+        const all = this.atMemberList.filter((item) => item.imId === Message.AtAll);
         if (all.length > 0) {
             atMemberList = Message.AtAll;
         } else {
-            const memberMap = this.atMemberList
-                .reduce((prv: { [key: string]: Contact.User }, cur: Contact.User) => {
+            const memberMap = this.atMemberList.reduce(
+                (prv: { [key: string]: Contact.User }, cur: Contact.User) => {
                     if (!prv[cur.userId]) {
                         prv[cur.userId] = cur;
                     }
                     return prv;
-                }, {});
+                },
+                {}
+            );
             atMemberList = Object.keys(memberMap);
         }
         const message = {
@@ -313,7 +318,7 @@ export default class extends React.PureComponent<Props, State> {
             body: {
                 text: this.state.message,
                 atMemberList: atMemberList,
-                quoteMsg:this.state.quoteMsg,
+                quoteMsg: this.state.quoteMsg,
             },
         };
         this.props.onSendMessage(message);
@@ -323,10 +328,12 @@ export default class extends React.PureComponent<Props, State> {
 
     protected _onStartRecording() {
         this.setState({ isRecording: true });
-        const option = !this.isIos ? {
-            format: SoundRecorder.FORMAT_AAC_ADTS,
-            encoder: SoundRecorder.ENCODER_AAC
-        } : {};
+        const option = !this.isIos
+            ? {
+                  format: SoundRecorder.FORMAT_AAC_ADTS,
+                  encoder: SoundRecorder.ENCODER_AAC,
+              }
+            : {};
         const time = TimeUtils.create().valueOf();
         const filepath = SoundRecorder.PATH_CACHE + '/test_' + time + '.aac';
         SoundRecorder.start(filepath, option);
@@ -335,22 +342,21 @@ export default class extends React.PureComponent<Props, State> {
     protected _onEndRecording() {
         this.setState({ isRecording: false });
         const { onSendMessage } = this.props;
-        SoundRecorder.stop()
-            .then((result) => {
-                const time = Math.floor(result.duration / 1000);
-                if (time < 1) {
-                    Toast.show('录音时间太短');
-                    return;
-                }
-                const message = {
-                    type: delegate.config.messageType.voice,
-                    body: {
-                        duration: result.duration,
-                        localPath: result.path,
-                    },
-                };
-                onSendMessage(message);
-            });
+        SoundRecorder.stop().then((result) => {
+            const time = Math.floor(result.duration / 1000);
+            if (time < 1) {
+                Toast.show(t('i18n_im_a59f5356a3fad0af'));
+                return;
+            }
+            const message = {
+                type: delegate.config.messageType.voice,
+                body: {
+                    duration: result.duration,
+                    localPath: result.path,
+                },
+            };
+            onSendMessage(message);
+        });
     }
 
     protected _onPickEmoji(text: string, isDelete: boolean) {
@@ -389,7 +395,9 @@ export default class extends React.PureComponent<Props, State> {
                 const atIndex = leftStr.lastIndexOf('@');
                 if (atIndex !== -1) {
                     const targetStr = leftStr.slice(atIndex + 1, textLocation);
-                    const memberIndex = this.atMemberList.map(item => item.name).indexOf(targetStr);
+                    const memberIndex = this.atMemberList
+                        .map((item) => item.name)
+                        .indexOf(targetStr);
                     if (memberIndex !== -1) {
                         const rightStr = oldText.slice(textLocation);
                         newText = oldText.slice(0, atIndex) + rightStr;
@@ -406,35 +414,42 @@ export default class extends React.PureComponent<Props, State> {
         let item = {};
         if (dataFirst === Message.AtAll) {
             item.imId = Message.AtAll;
-            item.name = '所有人';
+            item.name = t('i18n_im_06d9ae036b346af3');
         } else {
             item = delegate.user.getUser(data[0]);
         }
         const text = this.state.message;
-        const newText = text.slice(0, this.textLocation) + item.name + ' ' + text.slice(this.textLocation);
+        const newText =
+            text.slice(0, this.textLocation) + item.name + ' ' + text.slice(this.textLocation);
         this.setState({ message: newText });
         this.atMemberList.push(item);
         this.textInput && this.textInput.focus();
     }
 
     protected _onSelectionChange(event: NativeSyntheticEvent<TextInputSelectionChangeEventData>) {
-        const { nativeEvent: { selection: { start, end } } } = event;
+        const {
+            nativeEvent: {
+                selection: { start, end },
+            },
+        } = event;
         if (start === end) {
             this.textLocation = start;
         }
     }
 
     protected _onKeyPress(event: NativeSyntheticEvent<TextInputKeyPressEventData>) {
-        const { nativeEvent: { key } } = event;
+        const {
+            nativeEvent: { key },
+        } = event;
         if (key === '@' && this.props.chatType === Conversation.ChatType.Group) {
             const members = delegate.model.Group.getMembers(this.props.imId);
             const dataSource = members
-                .filter(userId => userId !== delegate.user.getMine().userId)
-                .map(userId => delegate.user.getUser(userId));
+                .filter((userId) => userId !== delegate.user.getMine().userId)
+                .map((userId) => delegate.user.getUser(userId));
             const groupOwner = delegate.model.Group.getOwner(this.props.imId);
             const isOwner = groupOwner === delegate.user.getMine().userId;
             this.props.navigation.navigate(PageKeys.ChooseUser, {
-                title: '选择@的人',
+                title: t('i18n_im_3754200aefd1fa17'),
                 multiple: false,
                 onSelectData: this._onSelectData.bind(this),
                 selectedIds: [],
@@ -481,7 +496,7 @@ export default class extends React.PureComponent<Props, State> {
     protected _onQuoteMsgDel() {
         this.setState({
             quoteMsg: undefined,
-        })
+        });
     }
 
     protected _onSwitchSpeechKeyboard() {
@@ -490,9 +505,12 @@ export default class extends React.PureComponent<Props, State> {
         }
         if (this.isIos) {
             check(PERMISSIONS.IOS.MICROPHONE)
-                .then(result => result === RESULTS.GRANTED ? RESULTS.GRANTED :
-                    request(PERMISSIONS.IOS.MICROPHONE))
-                .then(result => {
+                .then((result) =>
+                    result === RESULTS.GRANTED
+                        ? RESULTS.GRANTED
+                        : request(PERMISSIONS.IOS.MICROPHONE)
+                )
+                .then((result) => {
                     if (result === RESULTS.GRANTED) {
                         this.setState({
                             showSpeech: !this.state.showSpeech,
@@ -502,14 +520,17 @@ export default class extends React.PureComponent<Props, State> {
                     } else if (result === RESULTS.DENIED) {
                         // do nothing
                     } else {
-                        Toast.show('您未设置录音权限，请去设置中打开');
+                        Toast.show(t('i18n_im_0089f124e7fec588'));
                     }
                 });
         } else {
             PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
-                .then(granted => granted ? PermissionsAndroid.RESULTS.GRANTED :
-                    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO))
-                .then(granted => {
+                .then((granted) =>
+                    granted
+                        ? PermissionsAndroid.RESULTS.GRANTED
+                        : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
+                )
+                .then((granted) => {
                     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                         this.setState({
                             showSpeech: !this.state.showSpeech,
@@ -519,7 +540,7 @@ export default class extends React.PureComponent<Props, State> {
                     } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
                         // do nothing
                     } else {
-                        Toast.show('您未设置录音权限，请去设置中打开');
+                        Toast.show(t('i18n_im_0089f124e7fec588'));
                     }
                 });
         }
@@ -617,20 +638,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         ...Platform.select({
             ios: { lineHeight: 20 },
-            android: { textAlignVertical: 'center' }
+            android: { textAlignVertical: 'center' },
         }),
         minHeight: 30,
         maxHeight: 120,
         marginHorizontal: 5,
     } as TextStyle,
     quoteTextBorder: {
-        flexDirection: "row",
+        flexDirection: 'row',
         marginBottom: 13,
         backgroundColor: '#cccccc',
         overflow: 'hidden',
         borderRadius: 4,
-        alignItems: "center",
-        justifyContent: "flex-end",
+        alignItems: 'center',
+        justifyContent: 'flex-end',
         paddingEnd: 6,
         height: 30,
     },
@@ -639,7 +660,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         ...Platform.select({
             ios: { lineHeight: 20 },
-            android: { textAlignVertical: 'center' }
+            android: { textAlignVertical: 'center' },
         }),
         marginEnd: 10,
         marginHorizontal: 5,
@@ -655,19 +676,18 @@ const styles = StyleSheet.create({
         height: 16,
     },
     btnText: {
-        fontSize:17,
-        flex:1,
-        color:'black',
-        textAlign:'center',
-        alignItems:'center',
-        justifyContent:'center',
-        textAlignVertical:'center',
+        fontSize: 17,
+        flex: 1,
+        color: 'black',
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlignVertical: 'center',
         ...Platform.select({
-            ios:{
-                lineHeight:40,
+            ios: {
+                lineHeight: 40,
             },
-            android:{
-            }
+            android: {},
         }),
         height: 40, // TODO
     },

@@ -1,6 +1,15 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import { TextInput, EmitterSubscription, StyleSheet, Dimensions, TextInputProps, Keyboard, Platform } from 'react-native';
-import Modal, { ModalTitle, ModalButton, ModalContent, ModalFooter} from 'react-native-modals';
+import {
+    TextInput,
+    EmitterSubscription,
+    StyleSheet,
+    Dimensions,
+    TextInputProps,
+    Keyboard,
+    Platform,
+} from 'react-native';
+import Modal, { ModalTitle, ModalButton, ModalContent, ModalFooter } from 'react-native-modals';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -14,13 +23,13 @@ export interface Props {
 
 export interface State {
     text: string;
-    keyBoardShow: boolean
+    keyBoardShow: boolean;
 }
 
 export default class extends React.PureComponent<Props, State> {
     state: State = {
         text: '',
-        keyBoardShow: false
+        keyBoardShow: false,
     };
     keyboardDidShowListener: any;
     keyboardDidHideListener: any;
@@ -33,8 +42,14 @@ export default class extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         this.changEmitter = Dimensions.addEventListener('change', this._onOrientationChange);
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow.bind(this)
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide.bind(this)
+        );
     }
 
     componentWillUnmount() {
@@ -45,20 +60,22 @@ export default class extends React.PureComponent<Props, State> {
 
     _keyboardDidShow(e: any) {
         this.setState({
-            keyBoardShow: true
+            keyBoardShow: true,
         });
     }
     _keyboardDidHide() {
         this.setState({
-            keyBoardShow: false
+            keyBoardShow: false,
         });
     }
 
     render() {
-        const {visible, onCancel, onSubmit, textInputProps} = this.props;
-        const {width, height} = Dimensions.get('window');
+        const { visible, onCancel, onSubmit, textInputProps } = this.props;
+        const { width, height } = Dimensions.get('window');
         const dialogWidth = Math.min(width - 15 * 2, 300);
-        const marginStyle = isAndroid ? {} : {marginBottom: this.state.keyBoardShow ? height / 2 : 0};
+        const marginStyle = isAndroid
+            ? {}
+            : { marginBottom: this.state.keyBoardShow ? height / 2 : 0 };
         return (
             <Modal
                 visible={visible}
@@ -71,14 +88,15 @@ export default class extends React.PureComponent<Props, State> {
                     <ModalFooter style={styles.footer}>
                         <ModalButton
                             key={'cancel'}
-                            text={'取消'}
+                            text={t('i18n_im_2cd0f3be8738a86c')}
                             onPress={onCancel}
                             style={styles.action}
                             textStyle={styles.actionText}
                         />
+
                         <ModalButton
                             key={'ok'}
-                            text={'确定'}
+                            text={t('i18n_im_fac2a67ad87807c4')}
                             onPress={() => onSubmit(this.state.text)}
                             style={styles.action}
                             textStyle={styles.actionText}
@@ -89,7 +107,7 @@ export default class extends React.PureComponent<Props, State> {
                 <ModalContent style={styles.content}>
                     <TextInput
                         style={styles.input}
-                        onChangeText={(text) => this.setState({text})}
+                        onChangeText={(text) => this.setState({ text })}
                         autoFocus={true}
                         {...textInputProps}
                     />
@@ -97,16 +115,10 @@ export default class extends React.PureComponent<Props, State> {
             </Modal>
         );
     }
-    
+
     protected _renderPromptTitle() {
-        const {title} = this.props;
-        return (
-            <ModalTitle
-                title={title}
-                style={styles.title}
-                textStyle={styles.titleText}
-            />
-        );
+        const { title } = this.props;
+        return <ModalTitle title={title} style={styles.title} textStyle={styles.titleText} />;
     }
 
     protected _onOrientationChange() {
@@ -136,14 +148,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     content: {
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
     },
     input: {
         height: 30,
         fontSize: 14,
         borderWidth: 1,
         borderColor: '#e6e6ea',
-        paddingVertical: 0
+        paddingVertical: 0,
     },
     footer: {
         borderTopWidth: StyleSheet.hairlineWidth,
@@ -158,6 +170,6 @@ const styles = StyleSheet.create({
     actionText: {
         fontSize: 16,
         textAlign: 'center',
-        color: '#666666'
+        color: '#666666',
     },
 });

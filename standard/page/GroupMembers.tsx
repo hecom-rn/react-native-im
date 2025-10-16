@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { LayoutAnimation, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -33,21 +34,22 @@ export default class extends React.PureComponent {
     }
 
     render() {
-        const {canAdd} = this.props;
+        const { canAdd } = this.props;
         const rights = {};
         if (canAdd) {
-            rights.rightElement = '添加';
+            rights.rightElement = t('i18n_im_7a8a11ead50742a2');
             rights.onRight = this._onRight;
         }
         const data = this._filterBySearchText(this.state.searchText);
         return (
             <View style={styles.container}>
-                <NaviBar title={'群成员'} {...rights} />
+                <NaviBar title={t('i18n_im_9d8692671d208b74')} {...rights} />
                 <SearchBar
                     searchText={this.state.searchText}
                     canClear={true}
                     onChangeText={this._onChangeText}
                 />
+
                 <delegate.component.SeekBarSectionList
                     sections={data}
                     itemHeight={64}
@@ -55,17 +57,17 @@ export default class extends React.PureComponent {
                     renderSectionHeader={this._renderSectionHeader}
                     renderItem={this._renderItem}
                     stickySectionHeadersEnabled={true}
-                    keyExtractor={item => item.userId}
+                    keyExtractor={(item) => item.userId}
                 />
             </View>
         );
     }
 
-    _renderSectionHeader = ({section: {title}}) => {
+    _renderSectionHeader = ({ section: { title } }) => {
         return <delegate.component.SectionHeader title={title} />;
     };
 
-    _renderItem = ({item}) => {
+    _renderItem = ({ item }) => {
         const title = this._renderSearchItem(item.name);
         const subTitle = this._renderSearchItem(item.dept && item.dept.name);
         const longPresses = {};
@@ -77,7 +79,7 @@ export default class extends React.PureComponent {
                 title={title}
                 subTitle={subTitle}
                 labels={item.label}
-                avatar={{imId: item.imId, chatType: Conversation.ChatType.Single}}
+                avatar={{ imId: item.imId, chatType: Conversation.ChatType.Single }}
                 {...longPresses}
             />
         );
@@ -85,39 +87,40 @@ export default class extends React.PureComponent {
 
     _renderSearchItem = (text = '') => {
         const index = text.indexOf(this.state.searchText);
-        return !text || index < 0 ? text : [
-            <Text key={1}>
-                {text.substring(0, index)}
-            </Text>,
-            <Text key={2} style={styles.text}>
-                {this.state.searchText}
-            </Text>,
-            <Text key={3}>
-                {text.substring(index + this.state.searchText.length)}
-            </Text>
-        ];
+        return !text || index < 0
+            ? text
+            : [
+                  <Text key={1}>{text.substring(0, index)}</Text>,
+                  <Text key={2} style={styles.text}>
+                      {this.state.searchText}
+                  </Text>,
+                  <Text key={3}>{text.substring(index + this.state.searchText.length)}</Text>,
+              ];
     };
 
     _onLongPress = (item) => {
-        ActionSheet.showActionSheetWithOptions({
-            options: ['删除' + item.name, '取消'],
-            destructiveButtonIndex: 0,
-            cancelButtonIndex: 1,
-        }, (index) => {
-            if (index === 0) {
-                this._onRemoveMembers([item.userId]);
+        ActionSheet.showActionSheetWithOptions(
+            {
+                options: [t('i18n_im_2f9daa828907b93f') + item.name, t('i18n_im_2cd0f3be8738a86c')],
+                destructiveButtonIndex: 0,
+                cancelButtonIndex: 1,
+            },
+            (index) => {
+                if (index === 0) {
+                    this._onRemoveMembers([item.userId]);
+                }
             }
-        });
+        );
     };
-    
+
     _generateSections = (members, admins) => {
         members = members || this.state.members;
         admins = admins || this.state.admins;
         const adminSet = new Set(admins);
         const memberObjs = members
-            .filter(memberId => !adminSet.has(memberId))
-            .map(memberId => delegate.user.getUser(memberId))
-            .filter(i => i);
+            .filter((memberId) => !adminSet.has(memberId))
+            .map((memberId) => delegate.user.getUser(memberId))
+            .filter((i) => i);
         const list = mapListToSection(memberObjs, delegate.config.pinyinField);
         return [
             {
@@ -127,49 +130,50 @@ export default class extends React.PureComponent {
                     .map((adminId) => {
                         const user = delegate.user.getUser(adminId);
                         if (user) {
-                            user.label = [{
-                                name: '群主',
-                                color: '#00ffff',
-                            }];
+                            user.label = [
+                                {
+                                    name: t('i18n_im_81d4acd17ee028f1'),
+                                    color: '#00ffff',
+                                },
+                            ];
                             user.disableRemove = true;
                             return user;
                         } else {
                             return null;
                         }
                     })
-                    .filter(i => i)
+                    .filter((i) => i),
             },
-            ...list
-        ]
-            .filter(section => section.data.length > 0);
+            ...list,
+        ].filter((section) => section.data.length > 0);
     };
 
     _onRight = () => {
-        const excludedUserIds = this.allMembers
-            .reduce((prv, cur) => prv.concat(cur.data.map(i => i.userId)), []);
-        this.props.navigation.navigate( PageKeys.ChooseUser,{
-                title: '添加群成员',
-                multiple: true,
-                excludedUserIds: excludedUserIds,
-                selectedIds: [],
-                onSelectData: this._onAddMembers,
-            });
+        const excludedUserIds = this.allMembers.reduce(
+            (prv, cur) => prv.concat(cur.data.map((i) => i.userId)),
+            []
+        );
+        this.props.navigation.navigate(PageKeys.ChooseUser, {
+            title: t('i18n_im_0eabb74eaf726370'),
+            multiple: true,
+            excludedUserIds: excludedUserIds,
+            selectedIds: [],
+            onSelectData: this._onAddMembers,
+        });
     };
 
     _onAddMembers = (memberIds) => {
-        this.props.onAddMembers(memberIds)
-            .then((newMembers) => {
-                this.allMembers = this._generateSections(newMembers, undefined);
-                this.setState({members: newMembers});
-            });
+        this.props.onAddMembers(memberIds).then((newMembers) => {
+            this.allMembers = this._generateSections(newMembers, undefined);
+            this.setState({ members: newMembers });
+        });
     };
 
     _onRemoveMembers = (memberIds) => {
-        this.props.onRemoveMembers(memberIds)
-            .then((newMembers) => {
-                this.allMembers = this._generateSections(newMembers, undefined);
-                this.setState({members: newMembers});
-            });
+        this.props.onRemoveMembers(memberIds).then((newMembers) => {
+            this.allMembers = this._generateSections(newMembers, undefined);
+            this.setState({ members: newMembers });
+        });
     };
 
     _filterBySearchText = (text) => {
@@ -178,16 +182,17 @@ export default class extends React.PureComponent {
         } else {
             const field = delegate.config.pinyinField;
             return this.allMembers
-                .map(({title, data}) => {
-                    const result = data.filter((user) =>
-                        user.name.includes(text) ||
-                        user.dept && user.dept.name && user.dept.name.includes(text) ||
-                        user.phone && user.phone.includes(text) ||
-                        user[field] && user[field].includes(text)
+                .map(({ title, data }) => {
+                    const result = data.filter(
+                        (user) =>
+                            user.name.includes(text) ||
+                            (user.dept && user.dept.name && user.dept.name.includes(text)) ||
+                            (user.phone && user.phone.includes(text)) ||
+                            (user[field] && user[field].includes(text))
                     );
-                    return result.length > 0 ? {title, data: result} : undefined;
+                    return result.length > 0 ? { title, data: result } : undefined;
                 })
-                .filter(i => i);
+                .filter((i) => i);
         }
     };
 
@@ -201,6 +206,6 @@ export default class extends React.PureComponent {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
     },
 });

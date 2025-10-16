@@ -1,14 +1,22 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import { Platform, LayoutAnimation, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+    Platform,
+    LayoutAnimation,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View,
+} from 'react-native';
 import delegate from '../delegate';
-import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
+import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import StickyContainer from 'recyclerlistview/sticky';
 
 const ViewTypes = {
     CELL: 0,
     SECTION: 1,
     HEADER: 2,
-    NULL: 3
+    NULL: 3,
 };
 
 export interface FixedSectionListProps {
@@ -16,16 +24,15 @@ export interface FixedSectionListProps {
     renderSectionHeader: (title: String) => JSX.Element | JSX.Element[] | null;
     renderHeaderComponent: () => JSX.Element | JSX.Element[] | null;
     sections: Array<any>;
-    itemHeight: number,
-    sectionHeight: number,
-    headerHeight: number,
-    itemWidth: number,
-    hasHeader: number,
+    itemHeight: number;
+    sectionHeight: number;
+    headerHeight: number;
+    itemWidth: number;
+    hasHeader: number;
     renderAheadOffset?: number;
 }
 
 export default class extends React.PureComponent<FixedSectionListProps> {
-
     static defaultProps = {
         headerHeight: 0,
         itemHeight: 0,
@@ -48,7 +55,7 @@ export default class extends React.PureComponent<FixedSectionListProps> {
             (index) => {
                 if (props.hasHeader && index == 0) {
                     return ViewTypes.HEADER;
-                }else if (this.headerIndexs.includes(index)) {
+                } else if (this.headerIndexs.includes(index)) {
                     return ViewTypes.SECTION;
                 } else if (index < this.dataLength) {
                     return ViewTypes.CELL;
@@ -79,21 +86,21 @@ export default class extends React.PureComponent<FixedSectionListProps> {
         const dataList = this._setDataList(this.props.sections);
         this.state = {
             dataList: dataList,
-            isShowBackTop: false
-        }
+            isShowBackTop: false,
+        };
     }
 
-    _setDataList = (data: Array<any>)=>{
+    _setDataList = (data: Array<any>) => {
         let arr: Array<any> = [];
-        let i = 0
+        let i = 0;
         if (this.props.hasHeader) {
             arr[i] = i;
             i++;
         }
 
         this.headerIndexs = [];
-        data.forEach(element => {
-            const header = {key: element.key, title: element.title}
+        data.forEach((element) => {
+            const header = { key: element.key, title: element.title };
             arr[i] = header;
             this.headerIndexs.push(i);
             i++;
@@ -105,60 +112,58 @@ export default class extends React.PureComponent<FixedSectionListProps> {
         this.dataLength = arr.length;
         const dataList = this._dataProvider.cloneWithRows(arr);
         return dataList;
-    }
+    };
 
     render() {
-        const {sections = []} = this.props;
+        const { sections = [] } = this.props;
         return (
             <View style={styles.container}>
                 <StickyContainer
                     stickyHeaderIndices={this.headerIndexs}
-                    overrideRowRenderer={this._rowRenderer.bind(this)}>  
+                    overrideRowRenderer={this._rowRenderer.bind(this)}
+                >
                     <RecyclerListView
-                        ref={v => this.list = v}
+                        ref={(v) => (this.list = v)}
                         layoutProvider={this._layoutProvider}
                         dataProvider={this.state.dataList}
                         rowRenderer={this._rowRenderer.bind(this)}
                         onScroll={this._onScroll.bind(this)}
-                        renderAheadOffset = {this.props.renderAheadOffset}
-                        canChangeSize = {true}
+                        renderAheadOffset={this.props.renderAheadOffset}
+                        canChangeSize={true}
                     />
                 </StickyContainer>
-                {sections && sections.length > 0 && <delegate.component.SelectList
-                    sections={['↑'].concat(sections.map(i => i.key))}
-                    onItemChange={this._scrollToLocation}
-                />}
+                {sections && sections.length > 0 && (
+                    <delegate.component.SelectList
+                        sections={['↑'].concat(sections.map((i) => i.key))}
+                        onItemChange={this._scrollToLocation}
+                    />
+                )}
                 {this.state.isShowBackTop && this._renderBackTop()}
             </View>
         );
     }
 
-    _rowRenderer = (type, data)=> {
+    _rowRenderer = (type, data) => {
         switch (type) {
             case ViewTypes.SECTION: {
                 return this.props.renderSectionHeader(data.title);
-            };
+            }
             case ViewTypes.CELL: {
                 return this.props.renderItem(data);
-            };
+            }
             case ViewTypes.HEADER: {
                 return this.props.renderHeaderComponent();
-            };
+            }
             default:
                 return null;
         }
-    }
+    };
 
     _renderBackTop = () => {
         return (
-            <TouchableHighlight
-                style={styles.backTop}
-                onPress={() => this.list.scrollToTop(false)}
-            >
+            <TouchableHighlight style={styles.backTop} onPress={() => this.list.scrollToTop(false)}>
                 <View>
-                    <Text style={styles.backTopText}>
-                        {'返回顶部'}
-                    </Text>
+                    <Text style={styles.backTopText}>{t('i18n_im_071b374af1b861ac')}</Text>
                 </View>
             </TouchableHighlight>
         );
@@ -166,16 +171,19 @@ export default class extends React.PureComponent<FixedSectionListProps> {
 
     _scrollToLocation = (index) => {
         if (index == 0) {
-            this.list.scrollToTop(false)
+            this.list.scrollToTop(false);
         } else {
             if (index - 1 < this.headerIndexs.length) {
-                this.list.scrollToIndex(this.headerIndexs[index - 1], false) 
+                this.list.scrollToIndex(this.headerIndexs[index - 1], false);
             }
         }
     };
 
     _onScroll = (event) => {
-        const {contentOffset: {y}, layoutMeasurement: {height}} = event.nativeEvent;
+        const {
+            contentOffset: { y },
+            layoutMeasurement: { height },
+        } = event.nativeEvent;
         const needShowBtn = y > height;
         if (needShowBtn && !this.state.isShowBackTop) {
             this._showBackTopBtn(true);

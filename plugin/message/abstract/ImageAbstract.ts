@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import { Typings } from '../../../standard';
 
 export type Params = Typings.Action.Abstract.Params<Typings.Message.ImageBody>;
@@ -5,5 +6,5 @@ export type Params = Typings.Action.Abstract.Params<Typings.Message.ImageBody>;
 export type Result = Typings.Action.Abstract.Result;
 
 export default function (_: Params): Result {
-    return '[图片]';
+    return t('i18n_im_a71f445d35779ede');
 }

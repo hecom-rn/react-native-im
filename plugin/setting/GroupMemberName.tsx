@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import Toast from 'react-native-root-toast';
 import { Typings, Delegate } from '../../standard';
@@ -5,18 +6,12 @@ import { Typings, Delegate } from '../../standard';
 export const name = 'IMSettingGroupMemberName';
 
 export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Setting.Result {
-    const {key, imId, chatType} = props;
+    const { key, imId, chatType } = props;
     const isGroup = chatType === Typings.Conversation.ChatType.Group;
     if (!isGroup) {
         return null;
     }
-    return (
-        <GroupMemberNameCell
-            key={key}
-            imId={imId}
-            chatType={chatType}
-        />
-    );
+    return <GroupMemberNameCell key={key} imId={imId} chatType={chatType} />;
 }
 
 export interface Props {
@@ -39,7 +34,7 @@ export class GroupMemberNameCell extends React.PureComponent<Props, State> {
             <Delegate.component.SettingItem
                 type={Typings.Component.SettingItemType.Switch}
                 // 显示群成员昵称 （原 key: IMSettingGroupMemberName）
-                title={"显示群成员昵称"}
+                title={t('i18n_im_c3a53d7746dea3e6')}
                 data={this.state.showMembersName}
                 onPressSwitch={this._clickConfig.bind(this)}
             />
@@ -47,17 +42,17 @@ export class GroupMemberNameCell extends React.PureComponent<Props, State> {
     }
 
     protected _state() {
-        const {imId} = this.props;
-        const {showMembersName} = Delegate.model.Conversation.getConfig(imId);
-        return {showMembersName};
+        const { imId } = this.props;
+        const { showMembersName } = Delegate.model.Conversation.getConfig(imId);
+        return { showMembersName };
     }
 
     protected _clickConfig(showMembersName: boolean) {
-        const {imId, chatType} = this.props;
-        this.setState({showMembersName});
-        Delegate.model.Conversation.updateConfig(imId, chatType, {showMembersName})
+        const { imId, chatType } = this.props;
+        this.setState({ showMembersName });
+        Delegate.model.Conversation.updateConfig(imId, chatType, { showMembersName })
             .catch(() => {
-                Toast.show('更新设置失败');
+                Toast.show(t('i18n_im_7cfdd71e7e3c1cf7'));
             })
             .finally(() => {
                 this.setState(this._state());

@@ -1,8 +1,11 @@
+import { t } from '@hecom/basecore/util/i18';
 import Toast from 'react-native-root-toast';
 import { Delegate, PageKeys, Typings } from '../../standard';
 
-export async function onAddMembers(props: Typings.Action.Setting.Params,
-                                   memberUserIds: string[]): Promise<void> {
+export async function onAddMembers(
+    props: Typings.Action.Setting.Params,
+    memberUserIds: string[]
+): Promise<void> {
     const { imId, chatType, onDataChange, navigation } = props;
     const isGroup = chatType === Typings.Conversation.ChatType.Group;
     if (isGroup) {
@@ -10,7 +13,7 @@ export async function onAddMembers(props: Typings.Action.Setting.Params,
             await Delegate.model.Group.addMembers(imId, memberUserIds);
             onDataChange();
         } catch (err) {
-            Toast.show('群主已禁止添加成员');
+            Toast.show(t('i18n_im_a1143a6d33b79d62'));
         }
     } else {
         const newMembers = [imId, ...memberUserIds];
@@ -21,20 +24,22 @@ export async function onAddMembers(props: Typings.Action.Setting.Params,
                 chatType: result.chatType,
             });
         } catch (err) {
-            Toast.show('创建群聊失败');
+            Toast.show(t('i18n_im_e76fafa24e583a23'));
         }
     }
     return Delegate.model.Group.getMembers(imId);
 }
 
-export async function onRemoveMembers(props: Typings.Action.Setting.Params,
-                                      memberUserIds: string[]): Promise<void> {
+export async function onRemoveMembers(
+    props: Typings.Action.Setting.Params,
+    memberUserIds: string[]
+): Promise<void> {
     const { imId, onDataChange } = props;
     try {
         await Delegate.model.Group.removeMembers(imId, memberUserIds);
         onDataChange();
     } catch (err) {
-        Toast.show('删除群成员失败');
+        Toast.show(t('i18n_im_662871c77511fdf0'));
     }
     return Delegate.model.Group.getMembers(imId);
 }

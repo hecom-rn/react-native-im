@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -6,7 +7,6 @@ import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
 
 export default class extends React.PureComponent {
-
     static propTypes = {
         title: PropTypes.string,
         allowMulti: PropTypes.bool,
@@ -25,8 +25,8 @@ export default class extends React.PureComponent {
         super(props);
         this.selectedIndexs = Array.from(new Set(props.selectedIds));
         const dataSource = delegate.model.Conversation.get()
-            .filter(item => props.excludedIds.indexOf(item.imId) < 0)
-            .map(item => ({
+            .filter((item) => props.excludedIds.indexOf(item.imId) < 0)
+            .map((item) => ({
                 ...item,
                 label: delegate.model.Conversation.getName(item.imId),
             }));
@@ -37,13 +37,13 @@ export default class extends React.PureComponent {
     }
 
     render() {
-        const {title = '选择聊天'} = this.props;
+        const { title = t('i18n_im_d66a56bd18840849') } = this.props;
         const rights = {};
         if (this.state.multi) {
-            rights.rightTitle = '单选';
+            rights.rightTitle = t('i18n_im_4214b9af7ae0cdcc');
             rights.rightClick = this._clickChangeMulti.bind(this, false);
         } else if (this.props.allowMulti) {
-            rights.rightTitle = '多选';
+            rights.rightTitle = t('i18n_im_461e085d5ca266fb');
             rights.rightClick = this._clickChangeMulti.bind(this, true);
         }
         return this.state.dataSource === undefined ? null : (
@@ -75,7 +75,7 @@ export default class extends React.PureComponent {
             <View style={styles.row}>
                 <TouchableOpacity onPress={this._clickHeader.bind(this)}>
                     <View style={[styles.container, style]}>
-                        <Text style={styles.text}>创建新聊天</Text>
+                        <Text style={styles.text}>{t('i18n_im_0b2b098fb0c2c395')}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -92,25 +92,15 @@ export default class extends React.PureComponent {
         let image = undefined;
         if (this.state.multi) {
             if (isSelected) {
-                image = (
-                    <Image
-                        source={PickListRowUtil.select_image()}
-                        style={styles.image}
-                    />
-                );
+                image = <Image source={PickListRowUtil.select_image()} style={styles.image} />;
             } else {
-                image = (
-                    <Image
-                        source={PickListRowUtil.notselect_image()}
-                        style={styles.image}
-                    />
-                );
+                image = <Image source={PickListRowUtil.notselect_image()} style={styles.image} />;
             }
         }
         return (
             <delegate.component.ListCell
                 style={style}
-                avatar={{imId: info.imId, chatType: info.chatType}}
+                avatar={{ imId: info.imId, chatType: info.chatType }}
                 title={delegate.model.Conversation.getName(info.imId)}
                 right={image}
             />
@@ -118,7 +108,7 @@ export default class extends React.PureComponent {
     }
 
     _onFinish(selectedTreeNodes) {
-        const selectedInfos = selectedTreeNodes.map(treeNode => treeNode.getInfo());
+        const selectedInfos = selectedTreeNodes.map((treeNode) => treeNode.getInfo());
         this.props.onSelectData && this.props.onSelectData(selectedInfos);
     }
 
@@ -129,24 +119,23 @@ export default class extends React.PureComponent {
     }
 
     _clickHeader() {
-    this.props.navigation.navigate(PageKeys.ChooseUser, {
-                title: '创建新聊天',
-                multiple: true,
-                onSelectData: this._onCreateNew.bind(this),
-                selectedIds: [],
-            });
+        this.props.navigation.navigate(PageKeys.ChooseUser, {
+            title: t('i18n_im_0b2b098fb0c2c395'),
+            multiple: true,
+            onSelectData: this._onCreateNew.bind(this),
+            selectedIds: [],
+        });
     }
 
     _onCreateNew(data, label) {
         if (!data || data.length <= 0) {
             return;
         }
-        delegate.model.Conversation.createOne(data)
-            .then(({imId, chatType}) => {
-                const items = [{imId, chatType, label}];
-                this.props.onSelectData && this.props.onSelectData(items);
-                this.props.navigation.goBack();
-            });
+        delegate.model.Conversation.createOne(data).then(({ imId, chatType }) => {
+            const items = [{ imId, chatType, label }];
+            this.props.onSelectData && this.props.onSelectData(items);
+            this.props.navigation.goBack();
+        });
     }
 }
 

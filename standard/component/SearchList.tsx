@@ -1,10 +1,23 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import { Image, Keyboard, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View, SafeAreaView} from 'react-native';
+import {
+    Image,
+    Keyboard,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    TouchableOpacity,
+    View,
+    SafeAreaView,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import NaviBar from '@hecom/react-native-pure-navigation-bar';
 import SearchBar from 'react-native-general-searchbar';
 import AsyncStorage from '@hecom/storage';
-import { KeyboardAwareFlatList, KeyboardAwareSectionList } from 'react-native-keyboard-aware-scroll-view';
+import {
+    KeyboardAwareFlatList,
+    KeyboardAwareSectionList,
+} from 'react-native-keyboard-aware-scroll-view';
 import { Storage } from '../typings';
 import delegate from '../delegate';
 
@@ -52,27 +65,27 @@ export default class extends React.Component {
             ItemSeparatorComponent = this._renderDefaultSeparator,
             SectionSeparatorComponent = this._renderDefaultSeparator,
         } = this.props;
-        const {result} = this.state;
+        const { result } = this.state;
         const List = renderSectionHeader ? KeyboardAwareSectionList : KeyboardAwareFlatList;
         return (
             <View style={styles.view}>
-                <NaviBar
-                    style={naviBarStyle}
-                    navbarHeight={50}
-                    title={this._renderSearchBar()}
-                />
-                {showHistory && !result ? this._renderHistory() : (
+                <NaviBar style={naviBarStyle} navbarHeight={50} title={this._renderSearchBar()} />
+
+                {showHistory && !result ? (
+                    this._renderHistory()
+                ) : (
                     <>
                         <List
                             {...this.props}
                             data={result || []}
                             sections={result || []}
-                            ListEmptyComponent={this._renderEmpty('没有结果')}
+                            ListEmptyComponent={this._renderEmpty(t('i18n_im_88d91fa49b2c19a9'))}
                             renderSectionFooter={this._renderSectionFooter}
                             renderItem={this._renderResultItem()}
                             ItemSeparatorComponent={ItemSeparatorComponent}
                             SectionSeparatorComponent={SectionSeparatorComponent}
                         />
+
                         <SafeAreaView />
                     </>
                 )}
@@ -81,7 +94,7 @@ export default class extends React.Component {
     }
 
     _renderSearchBar = () => {
-        const {searchHint} = this.props;
+        const { searchHint } = this.props;
         return (
             <SearchBar
                 style={searchBarStyle}
@@ -99,13 +112,8 @@ export default class extends React.Component {
         return this.state.searchHistory.length > 0 ? (
             <View style={styles.list}>
                 <View style={styles.listHeaderContainer}>
-                    <Text style={styles.listHeaderText}>
-                        {'搜索历史'}
-                    </Text>
-                    <TouchableOpacity
-                        style={styles.clearHistoryBtn}
-                        onPress={this._clearHistory}
-                    >
+                    <Text style={styles.listHeaderText}>{t('i18n_im_f244a2842f425c27')}</Text>
+                    <TouchableOpacity style={styles.clearHistoryBtn} onPress={this._clearHistory}>
                         <Image
                             style={styles.clearHistoryImage}
                             source={require('./image/delete.png')}
@@ -116,7 +124,9 @@ export default class extends React.Component {
                     {this.state.searchHistory.map(this._renderHistoryRow)}
                 </View>
             </View>
-        ) : this._renderEmpty('暂无搜索历史');
+        ) : (
+            this._renderEmpty(t('i18n_im_0451c77017f6bcdb'))
+        );
     };
 
     _renderHistoryRow = (searchText) => {
@@ -126,31 +136,28 @@ export default class extends React.Component {
                 style={styles.historyItemContainer}
                 onPress={this._clickHistory.bind(this, searchText)}
             >
-                <Text style={styles.historyItemText}>
-                    {searchText}
-                </Text>
+                <Text style={styles.historyItemText}>{searchText}</Text>
             </TouchableHighlight>
         );
     };
 
-    _renderSectionFooter = ({section: {title, hasMore}}) => {
+    _renderSectionFooter = ({ section: { title, hasMore } }) => {
         if (this.props.maxSectionItemLength && hasMore) {
             const onPress = () => {
-                const {onSectionFooterClick} = this.props;
-                onSectionFooterClick && onSectionFooterClick({
-                    title,
-                    searchText: this.state.searchText,
-                });
+                const { onSectionFooterClick } = this.props;
+                onSectionFooterClick &&
+                    onSectionFooterClick({
+                        title,
+                        searchText: this.state.searchText,
+                    });
             };
             return (
                 <TouchableHighlight onPress={onPress}>
                     <View style={styles.footer}>
-                        <Image
-                            style={styles.footerImage}
-                            source={require('./image/search.png')}
-                        />
+                        <Image style={styles.footerImage} source={require('./image/search.png')} />
+
                         <Text style={styles.footerText}>
-                            {'更多' + title}
+                            {t('i18n_im_38844b135cf70dfc') + title}
                         </Text>
                     </View>
                 </TouchableHighlight>
@@ -160,30 +167,30 @@ export default class extends React.Component {
         }
     };
 
-    _renderResultItem = (renderItem = this.props.renderItem) => ({item, index}) => {
-        const {onItemClick, itemKey} = this.props;
-        const {searchText} = this.state;
-        const onPress = () => {
-            this._addHistory(item[itemKey]);
-            onItemClick({item, index, searchText});
+    _renderResultItem =
+        (renderItem = this.props.renderItem) =>
+        ({ item, index }) => {
+            const { onItemClick, itemKey } = this.props;
+            const { searchText } = this.state;
+            const onPress = () => {
+                this._addHistory(item[itemKey]);
+                onItemClick({ item, index, searchText });
+            };
+            return onItemClick ? (
+                <TouchableHighlight onPress={onPress}>
+                    {renderItem({ item, index, searchText })}
+                </TouchableHighlight>
+            ) : (
+                renderItem({ item, index, searchText })
+            );
         };
-        return onItemClick ? (
-            <TouchableHighlight onPress={onPress}>
-                {renderItem({item, index, searchText})}
-            </TouchableHighlight>
-        ) : renderItem({item, index, searchText});
-    };
 
     _renderEmpty = (text) => {
         return (
             <View style={styles.emptyContainer}>
-                <Image
-                    style={styles.emptyImage}
-                    source={require('./image/empty_search.png')}
-                />
-                <Text style={styles.emptyText}>
-                    {text}
-                </Text>
+                <Image style={styles.emptyImage} source={require('./image/empty_search.png')} />
+
+                <Text style={styles.emptyText}>{text}</Text>
             </View>
         );
     };
@@ -196,7 +203,7 @@ export default class extends React.Component {
     };
 
     _clickHistory = (searchText) => {
-        this.setState({searchText}, () => {
+        this.setState({ searchText }, () => {
             this._submit();
         });
     };
@@ -205,7 +212,7 @@ export default class extends React.Component {
         if (searchText === this.state.searchText) {
             return;
         }
-        const state = {searchText};
+        const state = { searchText };
         if (!searchText) {
             state.result = null;
         }
@@ -218,7 +225,7 @@ export default class extends React.Component {
         const myUserId = delegate.user.getMine().userId;
         return AsyncStorage.get([myUserId, this.props.historyKey], Storage.Part)
             .then((result) => {
-                this.setState({searchHistory: result || []});
+                this.setState({ searchHistory: result || [] });
             })
             .catch(() => {
                 console.log(this.props.historyKey + ' Failed');
@@ -239,25 +246,23 @@ export default class extends React.Component {
         if (this.props.historyKey) {
             const myUserId = delegate.user.getMine().userId;
             const history = getNewHistory();
-            AsyncStorage.set([myUserId, this.props.historyKey], history, Storage.Part)
-                .then(() => {
-                    this.setState({searchHistory: history});
-                });
+            AsyncStorage.set([myUserId, this.props.historyKey], history, Storage.Part).then(() => {
+                this.setState({ searchHistory: history });
+            });
         } else {
             const history = getNewHistory();
-            this.setState({searchHistory: history});
+            this.setState({ searchHistory: history });
         }
     };
 
     _clearHistory = () => {
         if (this.props.historyKey) {
             const myUserId = delegate.user.getMine().userId;
-            AsyncStorage.set([myUserId, this.props.historyKey], [], Storage.Part)
-                .then(() => {
-                    this.setState({searchHistory: []});
-                });
+            AsyncStorage.set([myUserId, this.props.historyKey], [], Storage.Part).then(() => {
+                this.setState({ searchHistory: [] });
+            });
         } else {
-            this.setState({searchHistory: []});
+            this.setState({ searchHistory: [] });
         }
     };
 
@@ -266,22 +271,25 @@ export default class extends React.Component {
         if (text === undefined || text.length === 0) {
             return;
         }
-        this.props.doCustomSearch && this.props.doCustomSearch(text).then((result) => {
-            if (result && result.length > 0) {
-                let stateResult = this.state.result || [];
-                //去重
-                stateResult = stateResult.filter((itemO) => {
-                    return result.filter((itemT) => {
-                        return itemO.title === itemT.title;
-                    }).length == 0
-                });
-                stateResult.unshift(...result);
-                this.setState({ result: stateResult });
-            }
-        })
+        this.props.doCustomSearch &&
+            this.props.doCustomSearch(text).then((result) => {
+                if (result && result.length > 0) {
+                    let stateResult = this.state.result || [];
+                    //去重
+                    stateResult = stateResult.filter((itemO) => {
+                        return (
+                            result.filter((itemT) => {
+                                return itemO.title === itemT.title;
+                            }).length == 0
+                        );
+                    });
+                    stateResult.unshift(...result);
+                    this.setState({ result: stateResult });
+                }
+            });
         !this.props.onItemClick && this._addHistory(text);
         !this.props.searchOnTextChange && Keyboard.dismiss();
-        const result = this.props.doSearch(text).filter(i => i);
+        const result = this.props.doSearch(text).filter((i) => i);
         if (this.props.maxSectionItemLength) {
             result.forEach((section) => {
                 const hasMore = section.data.length > this.props.maxSectionItemLength;
@@ -294,7 +302,7 @@ export default class extends React.Component {
         result.forEach((item) => {
             item.renderItem = item.renderItem && this._renderResultItem(item.renderItem);
         });
-        this.setState({result});
+        this.setState({ result });
     };
 }
 
@@ -374,7 +382,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 4,
         borderRadius: 4,
         borderWidth: 1,
-        borderColor: '#666666'
+        borderColor: '#666666',
     },
     historyItemText: {
         fontSize: 14,

@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import {
     ActivityIndicator,
@@ -7,11 +8,11 @@ import {
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
-    View
+    View,
 } from 'react-native';
 import Listener from '@hecom/listener';
 import Toast from 'react-native-root-toast';
-import {Component, Event, Message} from '../typings';
+import { Component, Event, Message } from '../typings';
 import delegate from '../delegate';
 import { DateUtil } from '../util';
 import { Icon } from 'core/common';
@@ -45,7 +46,7 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     render() {
-        const {position, showTime} = this.props;
+        const { position, showTime } = this.props;
         let msgContent = null;
         if (position < 0) {
             msgContent = this._renderLeft();
@@ -63,35 +64,39 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     protected _renderTime() {
-        const {message: {timestamp}} = this.props;
+        const {
+            message: { timestamp },
+        } = this.props;
         return (
-            <Text style={[styles.center, {marginBottom: 18}]}>
+            <Text style={[styles.center, { marginBottom: 18 }]}>
                 {DateUtil.showDateTime(timestamp, true)}
             </Text>
         );
     }
 
     protected _renderLeft() {
-        const { message, onShowMenu, messages, hasCheckBox, isSelected, changeSelectState } = this.props;
+        const { message, onShowMenu, messages, hasCheckBox, isSelected, changeSelectState } =
+            this.props;
         const user = delegate.user.getUser(message.from);
         return (
-            <TouchableWithoutFeedback disabled={!hasCheckBox} onPress={()=>changeSelectState(isSelected,message)}>
+            <TouchableWithoutFeedback
+                disabled={!hasCheckBox}
+                onPress={() => changeSelectState(isSelected, message)}
+            >
                 <View style={styles.rowLeft}>
-                    {(hasCheckBox && (
+                    {hasCheckBox && (
                         <Icon
                             name={isSelected ? 'e66d' : 'e66f'}
                             size={18}
                             style={{
-                                color: HecomModel.entConfig.getThemeColor('#ef4140') as string
+                                color: HecomModel.entConfig.getThemeColor('#ef4140') as string,
                             }}
                         />
-                    ))}
+                    )}
                     {this._renderAvatar(styles.avatarLeft, hasCheckBox)}
                     <View>
                         {this.state.showMembersName && (
-                            <Text style={styles.userName}>
-                                {user.name}
-                            </Text>
+                            <Text style={styles.userName}>{user.name}</Text>
                         )}
                         <delegate.component.MessageBubble
                             imId={this.props.imId}
@@ -110,17 +115,12 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     protected _renderRight() {
-        const { message, onShowMenu, messages, hasCheckBox, isSelected, changeSelectState } = this.props;
+        const { message, onShowMenu, messages, hasCheckBox, isSelected, changeSelectState } =
+            this.props;
         const status = message.status;
         let leftItem = null;
-        if (status === Message.Status.Delivering ||
-            status === Message.Status.Pending) {
-            leftItem = (
-                <ActivityIndicator
-                    size="small"
-                    color="#999999"
-                />
-            );
+        if (status === Message.Status.Delivering || status === Message.Status.Pending) {
+            leftItem = <ActivityIndicator size="small" color="#999999" />;
         } else if (status === Message.Status.Failed) {
             leftItem = (
                 <TouchableWithoutFeedback onPress={this._resend.bind(this)}>
@@ -132,17 +132,20 @@ export default class extends React.PureComponent<Props, State> {
             );
         }
         return (
-            <TouchableWithoutFeedback disabled={!hasCheckBox} onPress={()=>changeSelectState(isSelected,message)}>
+            <TouchableWithoutFeedback
+                disabled={!hasCheckBox}
+                onPress={() => changeSelectState(isSelected, message)}
+            >
                 <View style={styles.rowLeft}>
-                    {(hasCheckBox && (
+                    {hasCheckBox && (
                         <Icon
                             name={isSelected ? 'e66d' : 'e66f'}
                             size={18}
                             style={{
-                                color: HecomModel.entConfig.getThemeColor('#ef4140') as string
+                                color: HecomModel.entConfig.getThemeColor('#ef4140') as string,
                             }}
                         />
-                    ))}
+                    )}
                     <View style={styles.rowRight}>
                         {leftItem}
                         <delegate.component.MessageBubble
@@ -155,6 +158,7 @@ export default class extends React.PureComponent<Props, State> {
                             touchable={hasCheckBox}
                             navigation={this.props.navigation}
                         />
+
                         {this._renderAvatar(styles.avatarRight, hasCheckBox)}
                     </View>
                 </View>
@@ -163,20 +167,18 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     protected _renderCenter() {
-        const {message: {data: {text}}} = this.props;
-        return (
-            <Text style={styles.center}>
-                {text}
-            </Text>
-        );
+        const {
+            message: {
+                data: { text },
+            },
+        } = this.props;
+        return <Text style={styles.center}>{text}</Text>;
     }
 
     protected _renderAvatar(style: ImageStyle, touchable: boolean) {
         const { position, message } = this.props;
-        const user = position < 0 ?
-            delegate.user.getUser(message.from) :
-            delegate.user.getMine();
-        const {userId, avatar, imId} = user;
+        const user = position < 0 ? delegate.user.getUser(message.from) : delegate.user.getMine();
+        const { userId, avatar, imId } = user;
         const defaultImage = delegate.func.getDefaultUserHeadImage(userId);
         const size = 41;
         const innerStyle = {
@@ -185,28 +187,26 @@ export default class extends React.PureComponent<Props, State> {
             borderRadius: size / 2,
         };
         const image = avatar
-            ? {uri: delegate.func.fitUrlForAvatarSize(avatar, size)}
+            ? { uri: delegate.func.fitUrlForAvatarSize(avatar, size) }
             : defaultImage;
         return (
             <TouchableWithoutFeedback
                 disabled={touchable}
                 onPress={() => delegate.func.pushToUserDetailPage(imId)}
-                onLongPress={() => this.props.onLongPressAvatar && this.props.onLongPressAvatar(this.props.message)}
+                onLongPress={() =>
+                    this.props.onLongPressAvatar && this.props.onLongPressAvatar(this.props.message)
+                }
             >
-                <Image
-                    style={[styles.userImage, innerStyle, style]}
-                    source={image}
-                />
+                <Image style={[styles.userImage, innerStyle, style]} source={image} />
             </TouchableWithoutFeedback>
         );
     }
 
     protected _resend() {
-        const {imId, chatType, message} = this.props;
-        delegate.model.Message.sendMessage(imId, chatType, message, {})
-            .then(() => {
-                Toast.show('发送成功');
-            });
+        const { imId, chatType, message } = this.props;
+        delegate.model.Message.sendMessage(imId, chatType, message, {}).then(() => {
+            Toast.show(t('i18n_im_34c680feb9c93f0c'));
+        });
     }
 
     protected _showMembersName() {
@@ -224,7 +224,7 @@ export default class extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
     message: {
         marginVertical: 9,
-        transform: [{ rotate: '180deg' }]
+        transform: [{ rotate: '180deg' }],
     },
     rowRight: {
         flex: 1,

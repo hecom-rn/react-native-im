@@ -1,7 +1,8 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import * as PageKeys from '../pagekey';
-import {Conversation} from '../typings';
+import { Conversation } from '../typings';
 import delegate from '../delegate';
 
 export default class extends React.PureComponent {
@@ -21,13 +22,14 @@ export default class extends React.PureComponent {
         if (props.canSearchGroup) {
             const groups = delegate.model.Group.get();
             groups.forEach((group) => {
-                const {groupId} = group;
+                const { groupId } = group;
                 if (!group.name) {
                     group.name = delegate.model.Group.getName(groupId);
                 }
                 if (!group.memberObjList) {
-                    group.memberObjList = delegate.model.Group.getMembers(groupId)
-                        .map((userId) => delegate.user.getUser(userId));
+                    group.memberObjList = delegate.model.Group.getMembers(groupId).map((userId) =>
+                        delegate.user.getUser(userId)
+                    );
                 }
             });
             this.groups = groups;
@@ -39,8 +41,7 @@ export default class extends React.PureComponent {
     }
 
     componentDidMount() {
-        delegate.contact.loadAllUser(true)
-            .then((users) => this.employees = users);
+        delegate.contact.loadAllUser(true).then((users) => (this.employees = users));
     }
 
     render() {
@@ -49,12 +50,12 @@ export default class extends React.PureComponent {
             hints.push(...this.props.customHint);
         }
         if (this.props.canSearchContact) {
-            hints.push('员工');
+            hints.push(t('i18n_im_a1f5d5fcbdc4d510'));
         }
         if (this.props.canSearchGroup) {
-            hints.push('群聊');
+            hints.push(t('i18n_im_35b49ee58a4a0e82'));
         }
-        const hint = '搜索' + hints.join('、');
+        const hint = t('i18n_im_44ce7ae909bbb28b') + hints.join('、');
         const props = {
             renderSectionHeader: this._renderSectionHeader,
             onItemClick: this._onItemClick,
@@ -80,9 +81,12 @@ export default class extends React.PureComponent {
             searchHint: title,
             searchText: searchText,
             maxSectionItemLength: 0,
-            doSearch: title === '通讯录' ? this._searchFromContacts : this._searchFromGroup,
+            doSearch:
+                title === t('i18n_im_06657c279571d394')
+                    ? this._searchFromContacts
+                    : this._searchFromGroup,
         });
-    };
+    }
 
     _doSearch = (text) => {
         const result = [];
@@ -95,45 +99,48 @@ export default class extends React.PureComponent {
         return result;
     };
 
-    _doCustomSearch = ()=>Promise.resolve()
+    _doCustomSearch = () => Promise.resolve();
 
     _searchFromGroup = (text) => {
-        const result = this.groups
-            .filter((group) => {
-                const {name = '', name_py = '', memberObjList} = group;
-                group.matchInMember = memberObjList
-                    .find((user) => {
-                        const {name = '', name_py = ''} = user;
-                        return name.includes(text) || name_py.includes(text);
-                    });
-                return name.includes(text) || name_py.includes(text) || group.matchInMember;
+        const result = this.groups.filter((group) => {
+            const { name = '', name_py = '', memberObjList } = group;
+            group.matchInMember = memberObjList.find((user) => {
+                const { name = '', name_py = '' } = user;
+                return name.includes(text) || name_py.includes(text);
             });
-        return result.length > 0 ? [{
-            title: this.multi ? '群聊' : undefined,
-            data: result,
-            renderItem: this._renderGroupItem
-        }] : [];
+            return name.includes(text) || name_py.includes(text) || group.matchInMember;
+        });
+        return result.length > 0
+            ? [
+                  {
+                      title: this.multi ? t('i18n_im_35b49ee58a4a0e82') : undefined,
+                      data: result,
+                      renderItem: this._renderGroupItem,
+                  },
+              ]
+            : [];
     };
 
     _searchFromContacts = (text) => {
-        const poolDic: { [key: string]: number } = {
-        }
+        const poolDic: { [key: string]: number } = {};
         const resoultDic: { [key: string]: Array<any> } = {
             _name_name_py_: [],
             _phone_: [],
             _dept_: [],
             _email_: [],
-        }
+        };
         for (let index = 0; index < this.employees.length; index++) {
             const user: any = this.employees[index];
             if (!!poolDic[user.code]) {
                 continue;
             }
-            if ((user.name && user.name.includes(text)) ||
-                user.name_py && user.name_py.toLowerCase().includes(text.toLowerCase())) {
+            if (
+                (user.name && user.name.includes(text)) ||
+                (user.name_py && user.name_py.toLowerCase().includes(text.toLowerCase()))
+            ) {
                 poolDic[user.code] = user;
                 resoultDic._name_name_py_.push(user);
-            } else if (user.phone && user.phone.includes(text)){
+            } else if (user.phone && user.phone.includes(text)) {
                 poolDic[user.code] = user;
                 resoultDic._phone_.push(user);
             } else if (user.dept && user.dept.name && user.dept.name.includes(text)) {
@@ -145,115 +152,109 @@ export default class extends React.PureComponent {
             }
         }
         const result = Object.values(resoultDic).reduce((prv, cur) => {
-            return prv.concat(cur.sort((a, b) => a.name_py ? a.name_py.localeCompare(b.name_py) : -1));
+            return prv.concat(
+                cur.sort((a, b) => (a.name_py ? a.name_py.localeCompare(b.name_py) : -1))
+            );
         }, []);
-        
-        return result.length > 0 ? [{
-            title: this.multi ? '通讯录' : undefined,
-            data: result,
-            renderItem: this._renderContactItem
-        }] : [];
+
+        return result.length > 0
+            ? [
+                  {
+                      title: this.multi ? t('i18n_im_06657c279571d394') : undefined,
+                      data: result,
+                      renderItem: this._renderContactItem,
+                  },
+              ]
+            : [];
     };
 
-    _renderGroupItem = ({item, searchText}) => {
+    _renderGroupItem = ({ item, searchText }) => {
         const length = searchText.length;
         let title = item.name;
-        let subTitle = '共' + item.memberObjList.length + '人';
+        let subTitle =
+            t('i18n_im_76e547a8fa546381') +
+            item.memberObjList.length +
+            t('i18n_im_50f5d65d57290f75');
         const index = title.indexOf(searchText);
         if (index > -1) {
             title = [
-                <Text key={1}>
-                    {title.substring(0, index)}
-                </Text>,
+                <Text key={1}>{title.substring(0, index)}</Text>,
                 <Text key={2} style={styles.text}>
                     {searchText}
                 </Text>,
-                <Text key={3}>
-                    {title.substring(index + length)}
-                </Text>
+                <Text key={3}>{title.substring(index + length)}</Text>,
             ];
         }
         if (item.matchInMember) {
             const matchUser = item.memberObjList
-                .map(user => {
+                .map((user) => {
                     const i = user.name.indexOf(searchText);
                     if (i > -1) {
                         return [
-                            <Text key={user.code + '1'}>
-                                {user.name.substring(0, i)}
-                            </Text>,
+                            <Text key={user.code + '1'}>{user.name.substring(0, i)}</Text>,
                             <Text key={user.code + '2'} style={styles.text}>
                                 {searchText}
                             </Text>,
-                            <Text key={user.code + '3'}>
-                                {user.name.substring(i + length)}
-                            </Text>
+                            <Text key={user.code + '3'}>{user.name.substring(i + length)}</Text>,
                         ];
                     } else {
                         return null;
                     }
                 })
-                .filter(i => !!i)
+                .filter((i) => !!i)
                 .reduce((pre, cur) => {
                     if (pre.length > 0) pre.push('，');
                     return [...pre, ...cur];
                 }, []);
             if (matchUser.length > 0) {
-                subTitle = ['群成员：'].concat(matchUser);
+                subTitle = [t('i18n_im_85ce71acbbc8057a')].concat(matchUser);
             }
         }
         return (
             <delegate.component.ListCell
-                avatar={{imId: item.groupId, chatType: Conversation.ChatType.Group}}
+                avatar={{ imId: item.groupId, chatType: Conversation.ChatType.Group }}
                 title={title}
                 subTitle={subTitle}
             />
         );
     };
 
-    _renderContactItem = ({item, searchText}) => {
+    _renderContactItem = ({ item, searchText }) => {
         const length = searchText.length;
         let titleIndex, subTitleIndex;
-        let title = item.name, subTitle = item.dept && item.dept.name;
+        let title = item.name,
+            subTitle = item.dept && item.dept.name;
         if (item.title) {
-            subTitle += (subTitle ? ' | ' : '') + item.title
+            subTitle += (subTitle ? ' | ' : '') + item.title;
         }
         if ((titleIndex = title.indexOf(searchText)) > -1) {
             title = [
-                <Text key={1}>
-                    {title.substring(0, titleIndex)}
-                </Text>,
+                <Text key={1}>{title.substring(0, titleIndex)}</Text>,
                 <Text key={2} style={styles.text}>
                     {searchText}
                 </Text>,
-                <Text key={3}>
-                    {title.substring(titleIndex + length)}
-                </Text>
+                <Text key={3}>{title.substring(titleIndex + length)}</Text>,
             ];
         }
         if (subTitle && (subTitleIndex = subTitle.indexOf(searchText)) > -1) {
             subTitle = [
-                <Text key={1}>
-                    {subTitle.substring(0, subTitleIndex)}
-                </Text>,
+                <Text key={1}>{subTitle.substring(0, subTitleIndex)}</Text>,
                 <Text key={2} style={styles.text}>
                     {searchText}
                 </Text>,
-                <Text key={3}>
-                    {subTitle.substring(subTitleIndex + length)}
-                </Text>
+                <Text key={3}>{subTitle.substring(subTitleIndex + length)}</Text>,
             ];
         }
         return (
             <delegate.component.ListCell
-                avatar={{imId: item.userId, chatType: Conversation.ChatType.Single}}
+                avatar={{ imId: item.userId, chatType: Conversation.ChatType.Single }}
                 title={title}
                 subTitle={subTitle}
             />
         );
     };
 
-    _renderSectionHeader = ({section: {title}}) => {
+    _renderSectionHeader = ({ section: { title } }) => {
         if (title) {
             return <delegate.component.SectionHeader title={title} />;
         } else {
@@ -261,12 +262,12 @@ export default class extends React.PureComponent {
         }
     };
 
-    _onItemClick = ({item}) => {
+    _onItemClick = ({ item }) => {
         const type = item.groupId ? Conversation.ChatType.Group : Conversation.ChatType.Single;
-        this.props.navigation.navigate(PageKeys.ChatDetail,{
-                imId: item.groupId || item.userId,
-                chatType: type,
-            });
+        this.props.navigation.navigate(PageKeys.ChatDetail, {
+            imId: item.groupId || item.userId,
+            chatType: type,
+        });
     };
 }
 

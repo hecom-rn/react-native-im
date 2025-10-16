@@ -1,18 +1,28 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import {Keyboard, Platform, Image ,StyleSheet, Text, TextInput, Dimensions, View} from 'react-native';
+import {
+    Keyboard,
+    Platform,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    Dimensions,
+    View,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import NaviBar, {getSafeAreaInset} from '@hecom/react-native-pure-navigation-bar';
-import {Delegate} from "react-native-im/standard/index";
-import Toast from "react-native-root-toast";
-import Navigation from "@hecom/navigation/src/index";
-import delegate from "react-native-im/standard/delegate";
+import NaviBar, { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import { Delegate } from 'react-native-im/standard/index';
+import Toast from 'react-native-root-toast';
+import Navigation from '@hecom/navigation/src/index';
+import delegate from 'react-native-im/standard/delegate';
 
 const { width, height } = Dimensions.get('window');
 
 export default class extends React.PureComponent {
     private keyboardDidShowListener: any;
     private keyboardDidHideListener: any;
-    private isDisable = true
+    private isDisable = true;
 
     static propTypes = {
         groupId: PropTypes.string.isRequired,
@@ -22,12 +32,18 @@ export default class extends React.PureComponent {
 
     state = {
         keyBoardHeight: 0,
-    }
+    };
 
     componentWillMount() {
         if (Platform.OS === 'ios') {
-            this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
-            this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+            this.keyboardDidShowListener = Keyboard.addListener(
+                'keyboardDidShow',
+                this._keyboardDidShow.bind(this)
+            );
+            this.keyboardDidHideListener = Keyboard.addListener(
+                'keyboardDidHide',
+                this._keyboardDidHide.bind(this)
+            );
         }
     }
     componentWillUnmount() {
@@ -39,14 +55,14 @@ export default class extends React.PureComponent {
     protected _keyboardDidShow(e) {
         if (Platform.OS === 'ios') {
             this.setState({
-                keyBoardHeight: e.endCoordinates.height
+                keyBoardHeight: e.endCoordinates.height,
             });
         }
     }
     protected _keyboardDidHide() {
         if (Platform.OS === 'ios') {
             this.setState({
-                keyBoardHeight: 0
+                keyBoardHeight: 0,
             });
         }
     }
@@ -61,11 +77,13 @@ export default class extends React.PureComponent {
         //         rights.onRight = this._onRight;
         //     }
         const safeArea = getSafeAreaInset();
-        const marginStyle = {marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeArea.bottom};
+        const marginStyle = {
+            marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeArea.bottom,
+        };
         return (
             <View style={styles.container}>
-                <NaviBar title={''} autoCloseKeyboard={true} hasSeperatorLine={false}/>
-                <Text style={styles.titleText}>{'修改群聊名称'}</Text>
+                <NaviBar title={''} autoCloseKeyboard={true} hasSeperatorLine={false} />
+                <Text style={styles.titleText}>{t('i18n_im_661a0f6971841411')}</Text>
                 <View style={styles.topLineView} />
                 <View style={styles.backView}>
                     {this._renderIcon()}
@@ -75,26 +93,29 @@ export default class extends React.PureComponent {
                         maxLength={2000}
                         multiline={false}
                         clearButtonMode={'while-editing'}
-                        placeholder='请输入群名'
+                        placeholder={t('i18n_im_81d967ce93415779')}
                         onChangeText={(text) => {
-                            this.isDisable = false
-                            this.setState({text})
+                            this.isDisable = false;
+                            this.setState({ text });
                         }}
                         autoFocus={true}
                     />
                 </View>
                 <View style={styles.bottomLineView} />
-                <View style={[styles.buttonView,marginStyle]}>
-                        <Text style={styles.button} onPress={() => {
+                <View style={[styles.buttonView, marginStyle]}>
+                    <Text
+                        style={styles.button}
+                        onPress={() => {
                             if (!this.isDisable) {
-                                this._onRight()
+                                this._onRight();
                             } else {
                                 Navigation.pop();
                             }
-                        }}>
-                            {'完成'}
-                        </Text>
-                    </View>
+                        }}
+                    >
+                        {t('i18n_im_c0b3fbff51ccc40b')}
+                    </Text>
+                </View>
             </View>
         );
     }
@@ -103,42 +124,38 @@ export default class extends React.PureComponent {
         // const {groupId, onDataChange} = this.props;
         let newName = this.state.text;
         if (!newName) {
-            newName = ''
+            newName = '';
         }
         this.props.apiRefresh(true);
-    
-            if (!newName || newName.length === 0) {
-                Toast.show('群聊名称不能为空');
-                return;
-            }
-            const {groupId, onDataChange} = this.props;
-            Delegate.model.Group.changeName(groupId, newName)
-                .then(() => {
-                    this.props.apiRefresh(false);
-                    onDataChange();
-                    Toast.show('保存成功');
-                    Navigation.pop();
-                })
-                .catch(() => {
-                    this.props.apiRefresh(false);
-                    Toast.show('保存失败');
-                });
+
+        if (!newName || newName.length === 0) {
+            Toast.show(t('i18n_im_80554a49f3f890eb'));
+            return;
+        }
+        const { groupId, onDataChange } = this.props;
+        Delegate.model.Group.changeName(groupId, newName)
+            .then(() => {
+                this.props.apiRefresh(false);
+                onDataChange();
+                Toast.show(t('i18n_im_e05ddf992cc50896'));
+                Navigation.pop();
+            })
+            .catch(() => {
+                this.props.apiRefresh(false);
+                Toast.show(t('i18n_im_6309a3bb5ba4c714'));
+            });
     };
 
     _renderIcon = () => {
-        const {groupAvatar} = this.props;
+        const { groupAvatar } = this.props;
         const isAvatar = Object.prototype.isPrototypeOf(groupAvatar) && groupAvatar.imId;
         if (isAvatar) {
-            return (
-                <Delegate.component.AvatarImage
-                    {...groupAvatar}
-                    style={styles.avatar}
-                />
-            );
+            return <Delegate.component.AvatarImage {...groupAvatar} style={styles.avatar} />;
         } else {
-            const src = typeof groupAvatar === 'string' ?
-                {uri: delegate.func.fitUrlForAvatarSize(groupAvatar, 48)} :
-                groupAvatar;
+            const src =
+                typeof groupAvatar === 'string'
+                    ? { uri: delegate.func.fitUrlForAvatarSize(groupAvatar, 48) }
+                    : groupAvatar;
             return <Image style={styles.icon} source={src} />;
         }
     };
@@ -183,9 +200,7 @@ const styles = StyleSheet.create({
         }),
         flex: 1,
     },
-    avatar: {
-        
-    },
+    avatar: {},
     icon: {
         height: 48,
         width: 48,
@@ -196,7 +211,7 @@ const styles = StyleSheet.create({
         height: 40,
         fontSize: 20,
         fontWeight: 'bold',
-        textAlign:'center',
+        textAlign: 'center',
         top: 60,
         left: 0,
         width: width,
@@ -215,6 +230,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         top: 150,
-        left: (width - 150)/2,
+        left: (width - 150) / 2,
     },
 });

@@ -1,7 +1,19 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import {ImageBackground, ImageSourcePropType, FlatList, Image, StyleProp, StyleSheet, Text, TouchableHighlight, View, ViewStyle} from 'react-native';
+import {
+    ImageBackground,
+    ImageSourcePropType,
+    FlatList,
+    Image,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View,
+    ViewStyle,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import {Delegate} from "react-native-im/standard/index";
+import { Delegate } from 'react-native-im/standard/index';
 
 export default class extends React.PureComponent {
     static propTypes = {
@@ -20,7 +32,7 @@ export default class extends React.PureComponent {
     ids: Set<string>;
     innerIds: Set<string>;
     listOffsetY = 0;
-    totalOldUnreadCount = 0;//记录当前未读的历史消息数量，当下拉获取全部未读消息后，此值减至0，右上角获取未读消息按钮隐藏。
+    totalOldUnreadCount = 0; //记录当前未读的历史消息数量，当下拉获取全部未读消息后，此值减至0，右上角获取未读消息按钮隐藏。
     firstLoadCount = 0;
     reservedData = [];
 
@@ -55,7 +67,7 @@ export default class extends React.PureComponent {
         return (
             <View style={styles.content}>
                 <FlatList
-                    ref={ref => this.innerList = ref}
+                    ref={(ref) => (this.innerList = ref)}
                     // fixme: https://github.com/facebook/react-native/issues/34583#issuecomment-1244858120
                     // inverted在Android 13上有bug，修改实现方式
                     // inverted={true}
@@ -68,76 +80,99 @@ export default class extends React.PureComponent {
                     onEndReachedThreshold={0.3}
                     onEndReached={this._loadPage}
                     onScroll={(event) => {
-                        this.listOffsetY = event.nativeEvent.contentOffset.y
+                        this.listOffsetY = event.nativeEvent.contentOffset.y;
 
                         if (this.listOffsetY <= 30) {
                             if (this.reservedData.length > 0) {
                                 const result = [...this.reservedData, ...this.state.data];
                                 this.reservedData = [];
-                                this.setState({data: result, newUnreadMessageCount: 0});
+                                this.setState({ data: result, newUnreadMessageCount: 0 });
                             } else if (this.state.newUnreadMessageCount > 0) {
-                                this.setState({newUnreadMessageCount: 0});
+                                this.setState({ newUnreadMessageCount: 0 });
                             }
                         }
                     }}
-                    keyExtractor={item => item.messageId || item.innerId}
+                    keyExtractor={(item) => item.messageId || item.innerId}
                     {...this.props}
                     style={[styles.list, this.props.style]}
                     renderItem={(arg) => this.props.renderItem(arg, this.state.data)}
                 />
-                {this.state.oldUnreadMessageCount > 12 && this._renderMoreMessageElement({top: 15}, this.state.oldUnreadMessageCount, require('./image/oldUnreadMessage.png'), this._scrollToShowOldUnreadMessage.bind(this))}
-                {this.state.newUnreadMessageCount > 0 && this._renderMoreMessageElement({bottom: 15}, this.state.newUnreadMessageCount, require('./image/newUnreadMessage.png'), this._scrollToShowNewUnreadMessage.bind(this))}
+
+                {this.state.oldUnreadMessageCount > 12 &&
+                    this._renderMoreMessageElement(
+                        { top: 15 },
+                        this.state.oldUnreadMessageCount,
+                        require('./image/oldUnreadMessage.png'),
+                        this._scrollToShowOldUnreadMessage.bind(this)
+                    )}
+                {this.state.newUnreadMessageCount > 0 &&
+                    this._renderMoreMessageElement(
+                        { bottom: 15 },
+                        this.state.newUnreadMessageCount,
+                        require('./image/newUnreadMessage.png'),
+                        this._scrollToShowNewUnreadMessage.bind(this)
+                    )}
             </View>
         );
     }
 
-    _renderMoreMessageElement(style: StyleProp<ViewStyle>, count: number, imageSource: ImageSourcePropType, callback: () => void) {
-        let desc = count > 99 ? '99+' : count.toString()
+    _renderMoreMessageElement(
+        style: StyleProp<ViewStyle>,
+        count: number,
+        imageSource: ImageSourcePropType,
+        callback: () => void
+    ) {
+        let desc = count > 99 ? '99+' : count.toString();
         return (
-            <ImageBackground style={[styles.moreMessageContainer, style]}
-                             source={require('./image/unreadMessageContainer.png')}>
+            <ImageBackground
+                style={[styles.moreMessageContainer, style]}
+                source={require('./image/unreadMessageContainer.png')}
+            >
                 <TouchableHighlight
                     style={styles.moreMessage}
                     underlayColor={'#d7d8d8'}
                     onPress={callback}
                 >
                     <View style={styles.moreMessageBorder}>
-                        <Image style={styles.moreMessageDirection}
-                               source={imageSource}
-                        />
+                        <Image style={styles.moreMessageDirection} source={imageSource} />
+
                         <Text style={styles.moreMessageText}>
-                            {desc}条新消息
+                            {desc}
+                            {t('i18n_im_7ec815f7658576e2')}
                         </Text>
                     </View>
                 </TouchableHighlight>
             </ImageBackground>
-        )
+        );
     }
 
     _scrollToShowNewUnreadMessage() {
-        this.setState({newUnreadMessageCount: 0}, this.scrollToTop);
+        this.setState({ newUnreadMessageCount: 0 }, this.scrollToTop);
     }
 
     _scrollToShowOldUnreadMessage() {
-        this.setState({oldUnreadMessageCount: 0});
-        this.scrollToBottom()
+        this.setState({ oldUnreadMessageCount: 0 });
+        this.scrollToBottom();
     }
 
     _loadPage = () => {
-        return this._loadCount(this.props.pageSize)
-    }
+        return this._loadCount(this.props.pageSize);
+    };
 
     _loadCount = (onePageSize: number = this.props.pageSize) => {
         if (this.state.isEnd || this.state.isLoading) {
             return;
         }
-        this.setState({isLoading: true});
-        return this.props.onLoadPage(this.state.data, onePageSize)
-            .then(({data, isEnd, isAllData}) => {
+        this.setState({ isLoading: true });
+        return this.props
+            .onLoadPage(this.state.data, onePageSize)
+            .then(({ data, isEnd, isAllData }) => {
                 data = data.reduce((prv, cur) => {
-                    const {messageId, innerId} = cur;
-                    if (messageId && this.ids.has(messageId) ||
-                        innerId && this.innerIds.has(innerId)) {
+                    const { messageId, innerId } = cur;
+                    if (
+                        (messageId && this.ids.has(messageId)) ||
+                        (innerId && this.innerIds.has(innerId))
+                    ) {
                         return prv;
                     } else {
                         messageId && this.ids.add(messageId);
@@ -153,29 +188,35 @@ export default class extends React.PureComponent {
                 }
 
                 if (this.totalOldUnreadCount <= 0 && this.state.oldUnreadMessageCount > 0) {
-                    this.setState({data: data, isEnd: isEnd, isLoading: false, oldUnreadMessageCount: 0});
+                    this.setState({
+                        data: data,
+                        isEnd: isEnd,
+                        isLoading: false,
+                        oldUnreadMessageCount: 0,
+                    });
                 } else {
-                    this.setState({data: data, isEnd: isEnd, isLoading: false});
+                    this.setState({ data: data, isEnd: isEnd, isLoading: false });
                 }
                 this.totalOldUnreadCount = 0;
-            }).catch(() => {
+            })
+            .catch(() => {
                 this.setState({
                     data: [],
                     isEnd: false,
                     isLoading: false,
                 });
-            })
+            });
     };
 
     scrollToTop = (animated = false) => {
         setTimeout(() => {
-            this.innerList && this.innerList.scrollToOffset({offset: 0, animated});
+            this.innerList && this.innerList.scrollToOffset({ offset: 0, animated });
         }, 200);
     };
 
     scrollToBottom = (animated = false) => {
         setTimeout(() => {
-            this.innerList && this.innerList.scrollToEnd({animated: animated});
+            this.innerList && this.innerList.scrollToEnd({ animated: animated });
         }, 200);
     };
 
@@ -187,23 +228,26 @@ export default class extends React.PureComponent {
         let systemMessageCount = 0;
         const me = Delegate.user.getMine().userId;
         const toInsert = newMessages.reduce((prv, cur) => {
-            if (!hasFromMe
-                && me
-                && cur.from
-                && me == cur.from
-                && cur.data
-                && (!(cur.data.isSystem && cur.data.isSystem == true))) {
+            if (
+                !hasFromMe &&
+                me &&
+                cur.from &&
+                me == cur.from &&
+                cur.data &&
+                !(cur.data.isSystem && cur.data.isSystem == true)
+            ) {
                 hasFromMe = true;
             }
             if (cur.data.isSystem && cur.data.isSystem == true) {
                 systemMessageCount += 1;
             }
-            const {messageId, innerId} = cur;
-            if (messageId && this.ids.has(messageId) ||
-                innerId && this.innerIds.has(innerId)) {
+            const { messageId, innerId } = cur;
+            if ((messageId && this.ids.has(messageId)) || (innerId && this.innerIds.has(innerId))) {
                 const index = data.findIndex((i) => {
-                    return messageId && i.messageId === messageId ||
-                        innerId && i.innerId === innerId;
+                    return (
+                        (messageId && i.messageId === messageId) ||
+                        (innerId && i.innerId === innerId)
+                    );
                 });
                 data[index] = cur;
                 return prv;
@@ -216,21 +260,23 @@ export default class extends React.PureComponent {
         }, []);
         if (!hasFromMe && this.listOffsetY > 30 && newMessages && newMessages.length > 0) {
             this.reservedData = [...toInsert.reverse(), ...this.reservedData];
-            this.setState({newUnreadMessageCount: newMessages.length + this.state.newUnreadMessageCount - systemMessageCount});
+            this.setState({
+                newUnreadMessageCount:
+                    newMessages.length + this.state.newUnreadMessageCount - systemMessageCount,
+            });
         } else {
             const result = [...toInsert.reverse(), ...this.reservedData, ...data];
             this.reservedData = [];
-            this.setState({data: result, newUnreadMessageCount: 0}, this.scrollToTop);
+            this.setState({ data: result, newUnreadMessageCount: 0 }, this.scrollToTop);
         }
     };
 }
 
 const styles = StyleSheet.create({
-    list:{
-        transform:[{ rotate:'180deg' }]
+    list: {
+        transform: [{ rotate: '180deg' }],
     },
-    content: {
-    },
+    content: {},
     moreMessageContainer: {
         position: 'absolute',
         right: 0,
@@ -240,7 +286,7 @@ const styles = StyleSheet.create({
     moreMessage: {
         flex: 1,
         borderTopLeftRadius: 23,
-        borderBottomLeftRadius:23,
+        borderBottomLeftRadius: 23,
         left: 5,
     },
     moreMessageBorder: {

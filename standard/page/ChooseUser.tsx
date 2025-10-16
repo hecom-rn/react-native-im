@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { InteractionManager, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import PropTypes from 'prop-types';
@@ -11,7 +12,6 @@ import * as PageKeys from '../pagekey';
 import { Message } from '../typings';
 
 export default class extends React.Component {
-
     // static propTypes = {
     //     ...ChooseUserFromOrgPage.propTypes,
     //     dataSource: PropTypes.arrayOf(PropTypes.shape(Types.ImUser)),
@@ -26,83 +26,103 @@ export default class extends React.Component {
         super(props);
         this.state = {
             users: props.dataSource,
- 	        selectedIds: props.selectedIds
+            selectedIds: props.selectedIds,
         };
-	   this.idKey = 'userId';
+        this.idKey = 'userId';
     }
 
     componentDidMount() {
         if (!this.state.users) {
-            delegate.contact.loadAllUser(true)
+            delegate.contact
+                .loadAllUser(true)
                 .then((users) => {
-                    const {excludedUserIds, hasSelf} = this.props;
+                    const { excludedUserIds, hasSelf } = this.props;
                     if (Array.isArray(excludedUserIds) && excludedUserIds.length > 0) {
-                        users = users.filter(item => excludedUserIds.indexOf(item.userId) < 0);
+                        users = users.filter((item) => excludedUserIds.indexOf(item.userId) < 0);
                     }
                     if (!hasSelf) {
                         const meUserId = delegate.user.getMine().userId;
-                        users = users.filter(item => item.userId !== meUserId);
+                        users = users.filter((item) => item.userId !== meUserId);
                     }
-                    this.setState({users});
+                    this.setState({ users });
                 })
                 .catch(() => {
-                    Toast.show('加载组织架构失败');
+                    Toast.show(t('i18n_im_d03a6083afafdc72'));
                 });
         }
     }
 
     render() {
-        const {navigation, title = '加载中', selectedIds, multiple, dataSource, showBottomView} = this.props;
-        return this.state.users !== undefined && (
-            <PickList
-		ref={(ref) => (this.pickList = ref)}
-                navigation={navigation}
-                title={title}
-                multilevel={false}
-                multiselect={multiple}
-                showBottomView={showBottomView}
-                data={this.state.users}
-                onFinish={this._onFinish.bind(this)}
-                renderHeader={this._renderHeader.bind(this)}
-                rightTitle={multiple ? delegate.config.buttonOK : undefined}
-                searchKeys={[delegate.config.pinyinField]}
-                labelKey={'name'}
-                idKey={'userId'}
-                selectedIds={selectedIds}
-                split={this._splitSections.bind(this)}
-                sectionListProps={{
-                    initialNumToRender: 20,
-                    renderSectionHeader: this._renderSectionHeader.bind(this),
-                }}
-		        customView={this._getCustomView}
-                refreshSingleCell= {false}
-                renderRow={this._renderRow}
-            />
+        const {
+            navigation,
+            title = t('i18n_im_d04fcbda737fc0c6'),
+            selectedIds,
+            multiple,
+            dataSource,
+            showBottomView,
+        } = this.props;
+        return (
+            this.state.users !== undefined && (
+                <PickList
+                    ref={(ref) => (this.pickList = ref)}
+                    navigation={navigation}
+                    title={title}
+                    multilevel={false}
+                    multiselect={multiple}
+                    showBottomView={showBottomView}
+                    data={this.state.users}
+                    onFinish={this._onFinish.bind(this)}
+                    renderHeader={this._renderHeader.bind(this)}
+                    rightTitle={multiple ? delegate.config.buttonOK : undefined}
+                    searchKeys={[delegate.config.pinyinField]}
+                    labelKey={'name'}
+                    idKey={'userId'}
+                    selectedIds={selectedIds}
+                    split={this._splitSections.bind(this)}
+                    sectionListProps={{
+                        initialNumToRender: 20,
+                        renderSectionHeader: this._renderSectionHeader.bind(this),
+                    }}
+                    customView={this._getCustomView}
+                    refreshSingleCell={false}
+                    renderRow={this._renderRow}
+                />
+            )
         );
     }
 
-    _renderSectionHeader({section}) {
+    _renderSectionHeader({ section }) {
         const style = {
             backgroundColor: delegate.style.viewBackgroundColor,
         };
         return (
             <View style={[styles.section, style]}>
-                <Text style={styles.sectionHeader}>
-                    {section.title}
-                </Text>
+                <Text style={styles.sectionHeader}>{section.title}</Text>
             </View>
         );
     }
 
     _renderHeader() {
-        const {dataSource, showAtAll} = this.props;
+        const { dataSource, showAtAll } = this.props;
         const atAllView = showAtAll ? (
             <TouchableOpacity onPress={this._onAtAll.bind(this)}>
-                <View style={{ backgroundColor: 'white', height: 40, flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 15, color: '#222', flex: 1, marginLeft: 12 }}>{'所有人'}</Text>
-                    <Image style={{ marginRight: 25, marginLeft: 10 }} source={require('./image/checkbox.png')} />
+                <View
+                    style={{
+                        backgroundColor: 'white',
+                        height: 40,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Text style={{ fontSize: 15, color: '#222', flex: 1, marginLeft: 12 }}>
+                        {t('i18n_im_06d9ae036b346af3')}
+                    </Text>
+                    <Image
+                        style={{ marginRight: 25, marginLeft: 10 }}
+                        source={require('./image/checkbox.png')}
+                    />
                 </View>
-            </TouchableOpacity >
+            </TouchableOpacity>
         ) : undefined;
         const separatorStyle = {
             borderBottomWidth: StyleSheet.hairlineWidth,
@@ -112,12 +132,13 @@ export default class extends React.Component {
             <View style={styles.row}>
                 <TouchableOpacity onPress={this._clickHeader.bind(this)}>
                     <View style={[styles.container, separatorStyle]}>
-                        <Text style={styles.text}>按部门选同事</Text>
+                        <Text style={styles.text}>{t('i18n_im_d001e16fe50dff46')}</Text>
                         <ArrowImage style={styles.icon} />
                     </View>
                 </TouchableOpacity>
             </View>
         );
+
         return (
             <View>
                 {atAllView}
@@ -127,20 +148,19 @@ export default class extends React.Component {
     }
 
     _splitSections(users) {
-        const flusers = users
-            .reduce((prv, cur) => {
-                const value = cur.getInfo()[delegate.config.pinyinField];
-                let fl = value && value.length > 0 ? value[0].toUpperCase() : '#';
-                if (!/^[A-Z]$/.test(fl)) {
-                    fl = '#';
-                }
-                if (prv[fl]) {
-                    prv[fl].push(cur);
-                } else {
-                    prv[fl] = [cur];
-                }
-                return prv;
-            }, {});
+        const flusers = users.reduce((prv, cur) => {
+            const value = cur.getInfo()[delegate.config.pinyinField];
+            let fl = value && value.length > 0 ? value[0].toUpperCase() : '#';
+            if (!/^[A-Z]$/.test(fl)) {
+                fl = '#';
+            }
+            if (prv[fl]) {
+                prv[fl].push(cur);
+            } else {
+                prv[fl] = [cur];
+            }
+            return prv;
+        }, {});
         users = Object.keys(flusers)
             .sort((a, b) => {
                 if (a === '#') {
@@ -151,13 +171,12 @@ export default class extends React.Component {
                     return a < b ? -1 : 1;
                 }
             })
-            .map(fl => {
-                const v = flusers[fl]
-                    .sort((a, b) => {
-                        const va = a.getInfo()[delegate.config.pinyinField];
-                        const vb = b.getInfo()[delegate.config.pinyinField];
-                        return va === vb ? 0 : va < vb ? -1 : 1;
-                    });
+            .map((fl) => {
+                const v = flusers[fl].sort((a, b) => {
+                    const va = a.getInfo()[delegate.config.pinyinField];
+                    const vb = b.getInfo()[delegate.config.pinyinField];
+                    return va === vb ? 0 : va < vb ? -1 : 1;
+                });
                 return {
                     title: fl,
                     data: v,
@@ -171,17 +190,18 @@ export default class extends React.Component {
         let label = '';
         nodes = nodes
             .reduce((prv, cur) => [...prv, ...cur.getLeafChildren()], [])
-            .map(node => {
+            .map((node) => {
                 const nodeInfo = node.getInfo();
                 label = label.length > 0 ? label + '、' : label;
-                label =  label + nodeInfo.name;
+                label = label + nodeInfo.name;
                 return nodeInfo.userId;
             });
         this.props.onSelectData && this.props.onSelectData(nodes, label);
     }
 
     _onAtAll() {
-        this.props.onSelectData && this.props.onSelectData([Message.AtAll], '所有人');
+        this.props.onSelectData &&
+            this.props.onSelectData([Message.AtAll], t('i18n_im_06d9ae036b346af3'));
         this.props.navigation && this.props.navigation.goBack();
     }
 
@@ -197,7 +217,14 @@ export default class extends React.Component {
                 this.props.navigation.goBack();
             });
         };
-        const { title = '加载中', multiple, hasSelf, parentOrgId, excludedUserIds, spaceHeight } = this.props;
+        const {
+            title = t('i18n_im_d04fcbda737fc0c6'),
+            multiple,
+            hasSelf,
+            parentOrgId,
+            excludedUserIds,
+            spaceHeight,
+        } = this.props;
         this.props.navigation.navigate(PageKeys.ChooseUserFromOrg, {
             title,
             multiple,
@@ -210,15 +237,15 @@ export default class extends React.Component {
             onSelectData: onSelectDataFunc,
         });
     }
-    _getCustomView  = (data, renderRow) => null;
+    _getCustomView = (data, renderRow) => null;
 
-    _renderRow  = (treeNode, props) => null;
+    _renderRow = (treeNode, props) => null;
 
     _selectedOnFinish = (nodes) => null;
 
     _getCurrentSelectedIdKeys = (idKey) => [];
 
-    _refreshBackData = (nodes) => []
+    _refreshBackData = (nodes) => [];
 }
 
 const styles = StyleSheet.create({

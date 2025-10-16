@@ -1,6 +1,7 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import {Text, View} from 'react-native';
-import {Component, Delegate} from './typings';
+import { Text, View } from 'react-native';
+import { Component, Delegate } from './typings';
 
 function noPromiseDelegate(name: string) {
     return function () {
@@ -19,9 +20,7 @@ function noComponentDelegate<P>(name: string) {
         render() {
             return (
                 <View>
-                    <Text>
-                        {name + ' not exists'}
-                    </Text>
+                    <Text>{name + ' not exists'}</Text>
                 </View>
             );
         }
@@ -111,7 +110,9 @@ const im: Delegate.ApiPart = {
         loadMessage: noPromiseDelegate('im.conversation.loadMessage'),
         deleteMessage: noPromiseDelegate('im.conversation.deleteMessage'),
         recallMessage: noPromiseDelegate('im.conversation.recallMessage'),
-        fetchHistoryMessagesFromServer: noPromiseDelegate('im.conversation.fetchHistoryMessagesFromServer'),
+        fetchHistoryMessagesFromServer: noPromiseDelegate(
+            'im.conversation.fetchHistoryMessagesFromServer'
+        ),
     },
     group: {
         loadList: noPromiseDelegate('im.group.loadList'),
@@ -141,10 +142,10 @@ const style: Delegate.StylePart = {
 const config: Delegate.ConfigPart = {
     pinyinField: 'pinyin',
     get titleLoading() {
-        return '加载中';
+        return t('i18n_im_d04fcbda737fc0c6');
     },
     get buttonOK() {
-        return '确定';
+        return t('i18n_im_fac2a67ad87807c4');
     },
     messageType: {
         text: -1,

@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import * as ImagePicker from '@hecom-rn/react-native-full-image-picker';
 import { Typings } from '../../../standard';
 
@@ -9,11 +10,11 @@ export type VideoResult = Typings.Action.MoreBoard.GeneralResult<Typings.Message
 
 export type VideoParams = Typings.Action.MoreBoard.PressParams<Typings.Message.VideoBody>;
 
-export type callbackParams = Array<{uri: string}>;
+export type callbackParams = Array<{ uri: string }>;
 
 export const takePhoto: ImageResult = {
     get text() {
-        return '照片';
+        return t('i18n_im_7b50017ae47eca32');
     },
     icon: require('./image/more_photo.png'),
     onPress: (params: ImageParams) => {
@@ -21,39 +22,42 @@ export const takePhoto: ImageResult = {
             autoConvertPath: true,
             maxSize: 9,
             canEdit: true,
-            callback: (items: callbackParams) => onPhotoViewFinish<Typings.Message.ImageBody>(false, params.onDataChange, items),
+            callback: (items: callbackParams) =>
+                onPhotoViewFinish<Typings.Message.ImageBody>(false, params.onDataChange, items),
         });
     },
 };
 
 export const takeVideo: VideoResult = {
     get text() {
-        return '视频';
+        return t('i18n_im_c20f7618d330a854');
     },
     icon: require('./image/more_video.png'),
     onPress: (params: VideoParams) => {
         ImagePicker.getVideo({
             canEdit: true,
-            callback: (items: callbackParams) => onPhotoViewFinish<Typings.Message.VideoBody>(true, params.onDataChange, items),
+            callback: (items: callbackParams) =>
+                onPhotoViewFinish<Typings.Message.VideoBody>(true, params.onDataChange, items),
         });
     },
 };
 
 export const takeCamera: ImageResult = {
     get text() {
-        return '拍摄';
+        return t('i18n_im_b5110dcd9936597f');
     },
     icon: require('./image/more_camera.png'),
     onPress: (params: ImageParams) => {
         ImagePicker.getCamera({
             maxSize: 1,
             canEdit: true,
-            callback: (items: callbackParams) => onPhotoViewFinish<Typings.Message.ImageBody>(false, params.onDataChange, items),
+            callback: (items: callbackParams) =>
+                onPhotoViewFinish<Typings.Message.ImageBody>(false, params.onDataChange, items),
         });
     },
 };
 
-function onPhotoViewFinish<T extends {localPath?: string}>(
+function onPhotoViewFinish<T extends { localPath?: string }>(
     isVideo: boolean,
     onDataChange: (data: T) => void,
     items: callbackParams
@@ -61,7 +65,7 @@ function onPhotoViewFinish<T extends {localPath?: string}>(
     if (items.length === 0) {
         return;
     }
-    items.forEach(({uri}) => {
-        onDataChange({localPath: uri} as T);
+    items.forEach(({ uri }) => {
+        onDataChange({ localPath: uri } as T);
     });
 }

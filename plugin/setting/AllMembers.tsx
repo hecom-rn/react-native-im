@@ -1,13 +1,14 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { Typings, Delegate, PageKeys } from '../../standard';
 import { onAddMembers, onRemoveMembers } from './GeneralUpdate';
-import { Dimensions, TouchableHighlight, StyleSheet, View, Text} from 'react-native';
+import { Dimensions, TouchableHighlight, StyleSheet, View, Text } from 'react-native';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
 
 export const name = 'IMSettingAllMembers';
 
 export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Setting.Result {
-    const {key, imId, chatType} = props;
+    const { key, imId, chatType } = props;
     const isGroup = chatType === Typings.Conversation.ChatType.Group;
     if (!isGroup) {
         return null;
@@ -20,15 +21,15 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
     return (
         <AllMembersCell
             key={key}
-            title={`查看全体群成员(${groupMembers.length})`}
+            title={t('i18n_im_0008801ffbb89e4f', { MemberExpression1: groupMembers.length })}
             onPressLine={() => _clickAllMembers(props)}
         />
     );
 }
 
 function showMaxColumn(props: Typings.Action.Setting.Params): number {
-    const {imId} = props;
-    const {width, height} = Dimensions.get('window');
+    const { imId } = props;
+    const { width, height } = Dimensions.get('window');
     const safeInset = getSafeAreaInset();
     const innerWidth = width - safeInset.left - safeInset.right;
     const groupOwner = Delegate.model.Group.getOwner(imId);
@@ -36,7 +37,7 @@ function showMaxColumn(props: Typings.Action.Setting.Params): number {
     let column = 0;
     if (width > height) {
         const preInternal = 30;
-        column = Math.floor((innerWidth + preInternal) * 1.0 / (itemEdge + preInternal));
+        column = Math.floor(((innerWidth + preInternal) * 1.0) / (itemEdge + preInternal));
     } else {
         column = 5;
     }
@@ -48,18 +49,18 @@ function showMaxColumn(props: Typings.Action.Setting.Params): number {
 }
 
 function _clickAllMembers(props: Typings.Action.Setting.Params): void {
-    const {imId, navigation} = props;
+    const { imId, navigation } = props;
     const groupMembers = Delegate.model.Group.getMembers(imId);
     const groupOwner = Delegate.model.Group.getOwner(imId);
-    navigation.navigate( PageKeys.GroupMembers, {
-            groupId: imId,
-            members: groupMembers,
-            admins: [groupOwner],
-            canAdd: true,
-            canRemove: groupOwner === Delegate.user.getMine().userId,
-            onAddMembers: (memberUserIds: string[]) => onAddMembers(props, memberUserIds),
-            onRemoveMembers: (memberUserIds: string[]) => onRemoveMembers(props, memberUserIds),
-        });
+    navigation.navigate(PageKeys.GroupMembers, {
+        groupId: imId,
+        members: groupMembers,
+        admins: [groupOwner],
+        canAdd: true,
+        canRemove: groupOwner === Delegate.user.getMine().userId,
+        onAddMembers: (memberUserIds: string[]) => onAddMembers(props, memberUserIds),
+        onRemoveMembers: (memberUserIds: string[]) => onRemoveMembers(props, memberUserIds),
+    });
 }
 
 export interface Props {
@@ -77,7 +78,7 @@ export class AllMembersCell extends React.PureComponent<Props> {
     }
 
     render() {
-        const {onPressLine} = this.props;
+        const { onPressLine } = this.props;
         return onPressLine ? (
             <TouchableHighlight
                 underlayColor={Delegate.style.separatorLineColor}
@@ -85,16 +86,18 @@ export class AllMembersCell extends React.PureComponent<Props> {
             >
                 {this._renderLine()}
             </TouchableHighlight>
-        ) : this._renderLine();
+        ) : (
+            this._renderLine()
+        );
     }
 
     protected _renderLine() {
-        const {title} = this.props;
+        const { title } = this.props;
         return (
             <View style={styles.container}>
                 {/* <View style={styles.line}>
-                    
-                </View> */}
+             
+          </View> */}
                 {this._renderLabel(title)}
             </View>
         );
@@ -116,7 +119,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         backgroundColor: 'white',
-
     },
     line: {
         height: 48,
@@ -137,6 +139,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         color: '#333333',
-        textAlign:'center',
+        textAlign: 'center',
     },
 });

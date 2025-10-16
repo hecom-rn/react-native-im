@@ -1,11 +1,12 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import {Dimensions, Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import { Dimensions, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Listener from '@hecom/listener';
-import {forceInset} from '@hecom/react-native-pure-navigation-bar';
+import { forceInset } from '@hecom/react-native-pure-navigation-bar';
 import * as PageKeys from '../pagekey';
 import * as Model from '../model';
-import {DateUtil} from '../util';
-import {Component, Conversation, Event, Message} from '../typings';
+import { DateUtil } from '../util';
+import { Component, Conversation, Event, Message } from '../typings';
 import delegate from '../delegate';
 
 export type Props = Component.ConversationCellProps;
@@ -17,13 +18,14 @@ export default class extends React.PureComponent<Props> {
 
     constructor(props: Props) {
         super(props);
-        const {imId, chatType} = props;
+        const { imId, chatType } = props;
         this.events = [
             [Event.ReceiveMessage, this._onMessageReceive],
             [Event.SendMessage, this._onMessageSend],
             [Event.Conversation, this._refresh],
             [Event.UnreadCount, this._onUnreadCountChange],
         ];
+
         if (chatType === Conversation.ChatType.Group) {
             this.events.push([Event.Group, this._refresh]);
         }
@@ -33,20 +35,19 @@ export default class extends React.PureComponent<Props> {
     }
 
     componentDidMount() {
-        this.listenEvents = this.events
-            .map(([eventType, func]) => Listener.register(
-                [Event.Base, eventType, this.props.imId], func
-            ));
+        this.listenEvents = this.events.map(([eventType, func]) =>
+            Listener.register([Event.Base, eventType, this.props.imId], func)
+        );
     }
 
     componentWillUnmount() {
-        this.events.forEach(([eventType], index) => Listener.unregister(
-            [Event.Base, eventType, this.props.imId], this.listenEvents[index]
-        ));
+        this.events.forEach(([eventType], index) =>
+            Listener.unregister([Event.Base, eventType, this.props.imId], this.listenEvents[index])
+        );
     }
 
     render() {
-        const {imId, chatType, separatorLeft} = this.props;
+        const { imId, chatType, separatorLeft } = this.props;
         const name = delegate.model.Conversation.getName(imId);
         const content = [];
         this.state.atMe && content.push(this._renderAtMeText());
@@ -57,12 +58,13 @@ export default class extends React.PureComponent<Props> {
             <SafeAreaView style={styles.view} forceInset={forceInset(0, 1, 0, 1)}>
                 <delegate.component.ListCell
                     style={this.state.top && styles.top}
-                    avatar={{imId, chatType}}
+                    avatar={{ imId, chatType }}
                     title={name}
                     subTitle={content}
                     right={this._renderRightColumn()}
                     onClick={this._clickRow.bind(this)}
                 />
+
                 {separatorLeft >= 0 && this._renderSeparatorLine()}
                 {!!this.state.unreadMessagesCount && this._renderBadge()}
             </SafeAreaView>
@@ -70,12 +72,12 @@ export default class extends React.PureComponent<Props> {
     }
 
     _renderBadge = () => {
-        const {unreadMessagesCount, avoid} = this.state;
+        const { unreadMessagesCount, avoid } = this.state;
         return delegate.render.renderBadge(avoid, unreadMessagesCount);
     };
 
     _renderRightColumn = () => {
-        const {avoid, latestMessage} = this.state;
+        const { avoid, latestMessage } = this.state;
         return (
             <View style={styles.right}>
                 <Text style={styles.time}>
@@ -96,7 +98,7 @@ export default class extends React.PureComponent<Props> {
     _renderAtMeText = () => {
         return (
             <Text key={'at'} style={styles.atMeText}>
-                {'[有人@我]'}
+                {t('i18n_im_cf26755fe80e90bf')}
             </Text>
         );
     };
@@ -118,21 +120,17 @@ export default class extends React.PureComponent<Props> {
     };
 
     _renderLatestMessageText = () => {
-        const {latestMessage} = this.state;
+        const { latestMessage } = this.state;
         const params = {
             imId: this.props.imId,
             chatType: this.props.chatType,
-            message: latestMessage
+            message: latestMessage,
         };
-        return Model.Action.Abstract.get(
-            latestMessage.type,
-            params,
-            params
-        );
+        return Model.Action.Abstract.get(latestMessage.type, params, params);
     };
 
     _renderSeparatorLine = () => {
-        const {separatorLeft} = this.props;
+        const { separatorLeft } = this.props;
         const style = {
             backgroundColor: delegate.style.separatorLineColor,
             marginLeft: separatorLeft,
@@ -141,10 +139,10 @@ export default class extends React.PureComponent<Props> {
     };
 
     _clickRow = () => {
-        this.props.navigation.navigate( PageKeys.ChatDetail, {
-                imId: this.props.imId,
-                chatType: this.props.chatType,
-            });
+        this.props.navigation.navigate(PageKeys.ChatDetail, {
+            imId: this.props.imId,
+            chatType: this.props.chatType,
+        });
     };
 
     _refresh = () => {
@@ -165,15 +163,16 @@ export default class extends React.PureComponent<Props> {
     };
 
     _isSendingMessage = () => {
-        const {latestMessage} = this.state;
-        return latestMessage && (
-            latestMessage.status === Message.Status.Pending ||
-            latestMessage.status === Message.Status.Delivering
+        const { latestMessage } = this.state;
+        return (
+            latestMessage &&
+            (latestMessage.status === Message.Status.Pending ||
+                latestMessage.status === Message.Status.Delivering)
         );
     };
 
     _isErrorMessage = () => {
-        const {latestMessage} = this.state;
+        const { latestMessage } = this.state;
         return latestMessage && latestMessage.status === Message.Status.Failed;
     };
 
@@ -186,7 +185,7 @@ export default class extends React.PureComponent<Props> {
     };
 
     _onMessageReceive = (message) => {
-        const {latestMessage} = this.state;
+        const { latestMessage } = this.state;
         if (!latestMessage || message.timestamp >= latestMessage.timestamp) {
             const conversation = delegate.model.Conversation.getOne(this.props.imId, false);
             this.setState({
@@ -197,7 +196,7 @@ export default class extends React.PureComponent<Props> {
     };
 
     _onMessageSend = (message) => {
-        const {latestMessage} = this.state;
+        const { latestMessage } = this.state;
         if (!latestMessage || message.timestamp >= latestMessage.timestamp) {
             this.setState({
                 latestMessage: message,
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 11,
-        color: "#aaaaaa",
+        color: '#aaaaaa',
     },
     silent: {
         marginTop: 14,

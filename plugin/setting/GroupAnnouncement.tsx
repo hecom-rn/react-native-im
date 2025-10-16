@@ -1,19 +1,14 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import {
-    Alert,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    View
-} from 'react-native';
+import { Alert, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { Typings, Delegate, PageKeys } from '../../standard';
-import delegate from "react-native-im/standard/delegate";
+import delegate from 'react-native-im/standard/delegate';
 import ArrowImage from '@hecom/image-arrow';
 
 export const name = 'IMSettingGroupAnnouncement';
 
 export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Setting.Result {
-    const {key, imId, chatType, onDataChange, navigation, onSendMessage} = props;
+    const { key, imId, chatType, onDataChange, navigation, onSendMessage } = props;
     const isGroup = chatType === Typings.Conversation.ChatType.Group;
     if (!isGroup) {
         return null;
@@ -41,18 +36,17 @@ export interface Props {
     onDataChange: () => void;
 }
 
-export interface State {
-}
+export interface State {}
 
 export class GroupAnnouncementCell extends React.PureComponent<Props, State> {
-    state: State = {
-    };
+    state: State = {};
 
     render() {
-        const {isOwner, groupAnnouncement} = this.props;
-    let title = '群公告'
+        const { isOwner, groupAnnouncement } = this.props;
+        let title = t('i18n_im_99728d0e0224c355');
         const hasContent = groupAnnouncement != null && groupAnnouncement.length > 0;
-        let onPressFunc = (isOwner || hasContent) ? this._clickAnnouncement.bind(this) : this._noSetting.bind(this)
+        let onPressFunc =
+            isOwner || hasContent ? this._clickAnnouncement.bind(this) : this._noSetting.bind(this);
         return (
             <TouchableHighlight
                 underlayColor={delegate.style.separatorLineColor}
@@ -64,7 +58,7 @@ export class GroupAnnouncementCell extends React.PureComponent<Props, State> {
                         {hasContent == false && (
                             <View style={styles.subTitleContainer}>
                                 <Text numberOfLines={1} style={styles.subtitle}>
-                                    {'未设置'}
+                                    {t('i18n_im_2f5f1d6fbfb061ed')}
                                 </Text>
                             </View>
                         )}
@@ -97,30 +91,35 @@ export class GroupAnnouncementCell extends React.PureComponent<Props, State> {
     }
 
     protected _clickAnnouncement() {
-        const {imId, onDataChange, isOwner, groupAnnouncement, navigation, onSendMessage} = this.props;
-        const curAnnouncement = (groupAnnouncement != null) ? groupAnnouncement : ''
+        const { imId, onDataChange, isOwner, groupAnnouncement, navigation, onSendMessage } =
+            this.props;
+        const curAnnouncement = groupAnnouncement != null ? groupAnnouncement : '';
 
-        navigation.navigate( PageKeys.GroupAnnouncementEdit, {
+        navigation.navigate(PageKeys.GroupAnnouncementEdit, {
             groupId: imId,
             groupAnnouncement: curAnnouncement,
             canEdit: isOwner,
             onDataChange: onDataChange,
             onSendMessage: onSendMessage,
-        })
+        });
     }
 
     protected _noSetting() {
-        const {imId} = this.props;
+        const { imId } = this.props;
         const groupOwner = Delegate.model.Group.getOwner(imId);
         if (groupOwner) {
             const name = Delegate.user.getUser(groupOwner).name;
             if (name && name.length > 0) {
-                Alert.alert('', '只有群主' + name +'才能修改群公告', [
-                    {
-                        text: '我知道了',
-                        onPress: () => {},
-                    },
-                ]);
+                Alert.alert(
+                    '',
+                    t('i18n_im_d32d848c4c3ee449') + name + t('i18n_im_4cf1cd56f94d3653'),
+                    [
+                        {
+                            text: t('i18n_im_348f1cf1243e74bc'),
+                            onPress: () => {},
+                        },
+                    ]
+                );
             }
         }
     }

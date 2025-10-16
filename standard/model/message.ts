@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import Listener from '@hecom/listener';
 import * as Action from './action';
 import { Message, Conversation, Event } from '../typings';
@@ -8,12 +9,12 @@ export const name = 'im-message';
 
 export async function sendMultiMessage(
     imId: string,
-    chatType:Conversation.ChatType,
+    chatType: Conversation.ChatType,
     messages: Array<Message.General> = []
-):Promise<void> {
-    messages.forEach((message)=>{
+): Promise<void> {
+    messages.forEach((message) => {
         sendMessage(imId, chatType, message, {}, false);
-    })
+    });
 }
 
 export async function sendMessage(
@@ -21,9 +22,9 @@ export async function sendMessage(
     chatType: Conversation.ChatType,
     message: Message.General,
     ext: object = {},
-    isSystem: boolean = false,
+    isSystem: boolean = false
 ): Promise<void> {
-    ext = {...ext, innerId: message.innerId};
+    ext = { ...ext, innerId: message.innerId };
     const sendEventName = [Event.Base, Event.SendMessage, imId];
     if (!delegate.model.Conversation.getOne(imId, false)) {
         await delegate.model.Conversation.loadItem(imId, chatType);
@@ -33,14 +34,16 @@ export async function sendMessage(
     !isSystem && Listener.trigger(sendEventName, message);
     const promise = Action.Send.get(
         message.type,
-        {imId, chatType, message, ext},
-        {imId, chatType, message, ext}
+        { imId, chatType, message, ext },
+        { imId, chatType, message, ext }
     );
     if (!promise) {
-        throw new Error('暂不支持发送该消息类型');
+        throw new Error(t('i18n_im_ae2493cbdfcdc366'));
     }
     const newOriginMessage = await promise;
-    const newMessage = newOriginMessage ? Action.Parse.get([], newOriginMessage, newOriginMessage) : message;
+    const newMessage = newOriginMessage
+        ? Action.Parse.get([], newOriginMessage, newOriginMessage)
+        : message;
     Listener.trigger(sendEventName, newMessage);
     await delegate.model.Conversation.updateMessage(imId, newMessage);
 }
@@ -51,7 +54,7 @@ export async function insertSystemMessage(
     text: string,
     localTime: number,
     timestamp: number,
-    innerId?: string,
+    innerId?: string
 ): Promise<void> {
     const systemMessage: Message.General = {
         conversationId: imId,

@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Typings } from '../../../standard';
@@ -8,13 +9,11 @@ export default class extends React.PureComponent<Props> {
     componentDidMount() {
         this.props.enableBubble(true);
     }
-    
+
     render() {
         return (
             <View style={styles.view}>
-                <Text style={styles.text}>
-                    {'当前版本暂不支持该消息'}
-                </Text>
+                <Text style={styles.text}>{t('i18n_im_e27a38d64646b5fa')}</Text>
             </View>
         );
     }

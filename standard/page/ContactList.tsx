@@ -1,3 +1,4 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
 import {
     Alert,
@@ -10,16 +11,16 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
-    Dimensions
+    Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Toast from 'react-native-root-toast';
-import NaviBar, {forceInset} from '@hecom/react-native-pure-navigation-bar';
+import NaviBar, { forceInset } from '@hecom/react-native-pure-navigation-bar';
 import ArrowImage from '@hecom/image-arrow';
 import Listener from '@hecom/listener';
 import * as PageKeys from '../pagekey';
-import {mapListToSection} from '../util';
-import {Conversation, Event} from '../typings';
+import { mapListToSection } from '../util';
+import { Conversation, Event } from '../typings';
 import delegate from '../delegate';
 
 export default class extends React.PureComponent {
@@ -42,12 +43,18 @@ export default class extends React.PureComponent {
 
     componentDidMount() {
         if (delegate.config.useStarUser) {
-            this.listener = Listener.register([Event.Base, Event.StarUserChange], this._onStarUserChange);
+            this.listener = Listener.register(
+                [Event.Base, Event.StarUserChange],
+                this._onStarUserChange
+            );
         }
         InteractionManager.runAfterInteractions(() => {
             this._loadData();
         });
-        this.changEmitter = Dimensions.addEventListener('change', this._onOrientationChange.bind(this));
+        this.changEmitter = Dimensions.addEventListener(
+            'change',
+            this._onOrientationChange.bind(this)
+        );
     }
 
     componentWillUnmount() {
@@ -65,15 +72,13 @@ export default class extends React.PureComponent {
         };
         return (
             <View style={[styles.view, style]}>
-                <NaviBar title={'通讯录'} />
+                <NaviBar title={t('i18n_im_06657c279571d394')} />
                 <delegate.component.FakeSearchBar
                     onFocus={this._clickSearchBar}
-                    placeholder={'搜索'}
+                    placeholder={t('i18n_im_44ce7ae909bbb28b')}
                 />
-                <SafeAreaView
-                    style={styles.safeview}
-                    forceInset={forceInset(0, 1, 1, 1)}
-                >
+
+                <SafeAreaView style={styles.safeview} forceInset={forceInset(0, 1, 1, 1)}>
                     {Array.isArray(this.state.data) ? this._renderList() : null}
                 </SafeAreaView>
             </View>
@@ -83,7 +88,7 @@ export default class extends React.PureComponent {
     _rowRenderer = (data) => {
         let subTitle = data.dept && data.dept.name;
         if (data.title) {
-            subTitle += (subTitle ? ' | ' : '') + data.title
+            subTitle += (subTitle ? ' | ' : '') + data.title;
         }
         return (
             <>
@@ -94,15 +99,16 @@ export default class extends React.PureComponent {
                     right={this._renderRight(data)}
                     onClick={this._clickItem.bind(this, data)}
                 />
+
                 {this.renderSeparator()}
             </>
         );
-    }
+    };
 
     _renderList = () => {
-        const {itemHeight} = this.props;
-        const {items = []} = this.state;
-        let { width } = Dimensions.get("window");
+        const { itemHeight } = this.props;
+        const { items = [] } = this.state;
+        let { width } = Dimensions.get('window');
         return (
             <delegate.component.FixedSectionList
                 style={styles.list}
@@ -114,44 +120,46 @@ export default class extends React.PureComponent {
                 itemHeight={itemHeight + StyleSheet.hairlineWidth}
                 sectionHeight={delegate.component.SectionHeader.defaultProps.height}
                 renderSectionHeader={this._renderSectionHeader}
-                itemWidth= {width}
-                renderAheadOffset= {itemHeight * 20}
+                itemWidth={width}
+                renderAheadOffset={itemHeight * 20}
             />
         );
     };
 
     renderSeparator = () => {
-        return <View style={styles.separator} />
-    }
+        return <View style={styles.separator} />;
+    };
 
     _renderSectionHeader = (title) => {
         return <delegate.component.SectionHeader title={title} />;
     };
 
     _renderHeader = () => {
-        return this.state.items.map(({title, subTitle, onClick, icon, showBranchTop, showBranchBottom}, index) => (
-            <delegate.component.HeaderCell
-                key={index}
-                title={title}
-                subTitle={subTitle}
-                onClick={onClick}
-                avatar={icon}
-                showBranchTop={showBranchTop}
-                showBranchBottom={showBranchBottom}
-                right={<ArrowImage style={styles.arrow} />}
-            />
-        ));
+        return this.state.items.map(
+            ({ title, subTitle, onClick, icon, showBranchTop, showBranchBottom }, index) => (
+                <delegate.component.HeaderCell
+                    key={index}
+                    title={title}
+                    subTitle={subTitle}
+                    onClick={onClick}
+                    avatar={icon}
+                    showBranchTop={showBranchTop}
+                    showBranchBottom={showBranchBottom}
+                    right={<ArrowImage style={styles.arrow} />}
+                />
+            )
+        );
     };
 
     _renderItem = (row) => {
         const item = row.item;
         let subTitle = item.dept && item.dept.name;
         if (item.title) {
-            subTitle += (subTitle ? ' | ' : '') + item.title
+            subTitle += (subTitle ? ' | ' : '') + item.title;
         }
         return (
             <delegate.component.ListCell
-                avatar={{imId: item.userId, chatType: Conversation.ChatType.Single}}
+                avatar={{ imId: item.userId, chatType: Conversation.ChatType.Single }}
                 title={item.name}
                 subTitle={subTitle}
                 right={this._renderRight(item)}
@@ -161,16 +169,10 @@ export default class extends React.PureComponent {
     };
 
     _renderRight = (item) => {
-        const {phone} = item;
+        const { phone } = item;
         return phone && phone.length > 0 ? (
-            <TouchableOpacity
-                style={styles.phoneBtn}
-                onPress={this._clickPhone.bind(this, phone)}
-            >
-                <Image
-                    source={require('./image/phone.png')}
-                    style={styles.phone}
-                />
+            <TouchableOpacity style={styles.phoneBtn} onPress={this._clickPhone.bind(this, phone)}>
+                <Image source={require('./image/phone.png')} style={styles.phone} />
             </TouchableOpacity>
         ) : undefined;
     };
@@ -178,23 +180,28 @@ export default class extends React.PureComponent {
     _loadData = () => {
         const loadUser = delegate.contact.loadAllUser(true);
         const loadOrg = delegate.contact.loadAllOrg(false);
-        const loadStarUser = delegate.config.useStarUser ? delegate.contact.loadStarUser() : Promise.resolve();
-        return Promise.all([loadUser, loadOrg, loadStarUser])
-            .then(([users, , starUsers = []]) => {
-                let data: Array<{}>;
-                if (users.length < 100000) {
-                    data = mapListToSection(users, delegate.config.pinyinField);
-                    if (starUsers.length > 0) {
-                        data.unshift({key: '☆', title: '星标好友', data: starUsers});
-                    }
-                } else {
-                    data = []
+        const loadStarUser = delegate.config.useStarUser
+            ? delegate.contact.loadStarUser()
+            : Promise.resolve();
+        return Promise.all([loadUser, loadOrg, loadStarUser]).then(([users, , starUsers = []]) => {
+            let data: Array<{}>;
+            if (users.length < 100000) {
+                data = mapListToSection(users, delegate.config.pinyinField);
+                if (starUsers.length > 0) {
+                    data.unshift({
+                        key: '☆',
+                        title: t('i18n_im_99655873f83444df'),
+                        data: starUsers,
+                    });
                 }
-                const {getHeaderConfig} = this.props;
-                const items = getHeaderConfig ? getHeaderConfig({users, sections: data}) : [];
-                LayoutAnimation.easeInEaseOut();
-                this.setState({data, items});
-            });
+            } else {
+                data = [];
+            }
+            const { getHeaderConfig } = this.props;
+            const items = getHeaderConfig ? getHeaderConfig({ users, sections: data }) : [];
+            LayoutAnimation.easeInEaseOut();
+            this.setState({ data, items });
+        });
     };
 
     _clickItem = (item) => {
@@ -202,42 +209,47 @@ export default class extends React.PureComponent {
     };
 
     _onStarUserChange = () => {
-        delegate.contact.loadStarUser()
-            .then(starUsers => {
-                const {data} = this.state;
-                if (Array.isArray(data) && data.length > 0) {
-                    const first = data[0];
-                    if (first.key === '☆') {
-                        if (starUsers.length === 0) {
-                            data.shift();
-                        } else {
-                            first.data = starUsers;
-                        }
+        delegate.contact.loadStarUser().then((starUsers) => {
+            const { data } = this.state;
+            if (Array.isArray(data) && data.length > 0) {
+                const first = data[0];
+                if (first.key === '☆') {
+                    if (starUsers.length === 0) {
+                        data.shift();
                     } else {
-                        data.unshift({key: '☆', title: '星标好友', data: starUsers});
+                        first.data = starUsers;
                     }
-                    this.setState({data: [...data]});
+                } else {
+                    data.unshift({
+                        key: '☆',
+                        title: t('i18n_im_99655873f83444df'),
+                        data: starUsers,
+                    });
                 }
-            });
+                this.setState({ data: [...data] });
+            }
+        });
     };
 
     _clickSearchBar = () => {
-        this.props.navigation.navigate( PageKeys.Search, {});
+        this.props.navigation.navigate(PageKeys.Search, {});
     };
 
     _clickPhone = (phone) => {
-        const url = "tel:" + phone;
+        const url = 'tel:' + phone;
         Linking.canOpenURL(url)
-            .then(supported => {
+            .then((supported) => {
                 if (!supported) {
-                    Alert.alert('', '当前设备无法拨打电话', [{
-                        text: '确定'
-                    }]);
+                    Alert.alert('', t('i18n_im_1f9926fa5582f5a1'), [
+                        {
+                            text: t('i18n_im_fac2a67ad87807c4'),
+                        },
+                    ]);
                 } else {
                     Linking.openURL(url);
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 Toast.show(err.message);
             });
     };

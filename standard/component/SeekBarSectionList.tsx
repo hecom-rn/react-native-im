@@ -1,5 +1,14 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import { Platform, LayoutAnimation, StyleSheet, Text, TouchableHighlight, View, SectionList } from 'react-native';
+import {
+    Platform,
+    LayoutAnimation,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View,
+    SectionList,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import getItemLayout from 'react-native-section-list-get-item-layout';
 import delegate from '../delegate';
@@ -20,15 +29,15 @@ export default class extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.state = {isShowBackTop: false};
+        this.state = { isShowBackTop: false };
     }
 
     render() {
-        const {sections = []} = this.props;
+        const { sections = [] } = this.props;
         return (
             <View style={styles.container}>
                 <SectionList
-                    ref={ref => this.list = ref}
+                    ref={(ref) => (this.list = ref)}
                     {...this.props}
                     onScroll={this._onScroll}
                     getItemLayout={getItemLayout({
@@ -38,10 +47,13 @@ export default class extends React.PureComponent {
                         listHeaderHeight: () => this.props.headerHeight,
                     })}
                 />
-                {sections && sections.length > 0 && <delegate.component.SelectList
-                    sections={['↑'].concat(sections.map(i => i.key))}
-                    onItemChange={this._scrollToLocation}
-                />}
+
+                {sections && sections.length > 0 && (
+                    <delegate.component.SelectList
+                        sections={['↑'].concat(sections.map((i) => i.key))}
+                        onItemChange={this._scrollToLocation}
+                    />
+                )}
                 {this.state.isShowBackTop && this._renderBackTop()}
             </View>
         );
@@ -51,17 +63,17 @@ export default class extends React.PureComponent {
         return (
             <TouchableHighlight
                 style={styles.backTop}
-                onPress={() => this.list.scrollToLocation({
-                    sectionIndex: 0,
-                    itemIndex: 0,
-                    animated: true,
-                    viewOffset: this.props.sectionHeight
-                })}
+                onPress={() =>
+                    this.list.scrollToLocation({
+                        sectionIndex: 0,
+                        itemIndex: 0,
+                        animated: true,
+                        viewOffset: this.props.sectionHeight,
+                    })
+                }
             >
                 <View>
-                    <Text style={styles.backTopText}>
-                        {'返回顶部'}
-                    </Text>
+                    <Text style={styles.backTopText}>{t('i18n_im_071b374af1b861ac')}</Text>
                 </View>
             </TouchableHighlight>
         );
@@ -73,12 +85,18 @@ export default class extends React.PureComponent {
             itemIndex: 0,
             sectionIndex: index > 0 ? index - 1 : 0,
             viewPosition: 0,
-            viewOffset: index !== 0 ? this.props.sectionHeight : this.props.sectionHeight + this.props.headerHeight
+            viewOffset:
+                index !== 0
+                    ? this.props.sectionHeight
+                    : this.props.sectionHeight + this.props.headerHeight,
         });
     };
 
     _onScroll = (event) => {
-        const {contentOffset: {y}, layoutMeasurement: {height}} = event.nativeEvent;
+        const {
+            contentOffset: { y },
+            layoutMeasurement: { height },
+        } = event.nativeEvent;
         const needShowBtn = y > height;
         if (needShowBtn && !this.state.isShowBackTop) {
             this._showBackTopBtn(true);

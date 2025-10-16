@@ -1,5 +1,14 @@
+import { t } from '@hecom/basecore/util/i18';
 import React from 'react';
-import { View, EmitterSubscription, StyleSheet, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import {
+    View,
+    EmitterSubscription,
+    StyleSheet,
+    Text,
+    Image,
+    TouchableOpacity,
+    Dimensions,
+} from 'react-native';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
 import { Component } from '../typings';
 import * as PageKeys from '../pagekey';
@@ -31,7 +40,7 @@ export default class extends React.PureComponent<Props> {
 
     render() {
         const dataSource = this._getDataSource();
-        const {tempProps} = this.props;
+        const { tempProps } = this.props;
         return (
             <View>
                 {dataSource.map(this._renderRow.bind(this))}
@@ -42,10 +51,7 @@ export default class extends React.PureComponent<Props> {
 
     protected _renderRow(rowData: string[], rowIndex: number) {
         return (
-            <View
-                key={rowIndex}
-                style={[styles.row, {paddingHorizontal: this.padding}]}
-            >
+            <View key={rowIndex} style={[styles.row, { paddingHorizontal: this.padding }]}>
                 {rowData.map(this._renderItem.bind(this))}
             </View>
         );
@@ -53,7 +59,7 @@ export default class extends React.PureComponent<Props> {
 
     protected _renderItem(item: string, index: number) {
         const ownerImage = require('./image/group_owner.png');
-        const {title, image, isOwner} = this._getItemStatus(item);
+        const { title, image, isOwner } = this._getItemStatus(item);
         const imageStyle = {
             width: this.itemEdge,
             height: this.itemEdge,
@@ -65,19 +71,12 @@ export default class extends React.PureComponent<Props> {
                 onPress={this._onItemPress.bind(this, item)}
                 activeOpacity={0.8}
             >
-                <View style={[styles.item, {marginHorizontal: this.itemMargin}]}>
-                    <Image
-                        style={imageStyle}
-                        source={image}
-                    />
-                    {isOwner && (
-                        <Image
-                            source={ownerImage}
-                            style={[styles.owner, imageStyle]}
-                        />
-                    )}
+                <View style={[styles.item, { marginHorizontal: this.itemMargin }]}>
+                    <Image style={imageStyle} source={image} />
+
+                    {isOwner && <Image source={ownerImage} style={[styles.owner, imageStyle]} />}
                     {title && (
-                        <Text style={[styles.text, {width: this.itemEdge}]} numberOfLines={1}>
+                        <Text style={[styles.text, { width: this.itemEdge }]} numberOfLines={1}>
                             {title}
                         </Text>
                     )}
@@ -91,24 +90,25 @@ export default class extends React.PureComponent<Props> {
     }
 
     protected _calculateColumn(): number {
-        const {width, height} = Dimensions.get('window');
+        const { width, height } = Dimensions.get('window');
         const safeInset = getSafeAreaInset();
         const innerWidth = width - safeInset.left - safeInset.right;
         let column = 0;
         if (width > height) {
             const preInternal = 30;
-            column = Math.floor((innerWidth + preInternal) * 1.0 / (this.itemEdge + preInternal));
+            column = Math.floor(((innerWidth + preInternal) * 1.0) / (this.itemEdge + preInternal));
         } else {
             column = 5;
         }
-        this.itemMargin = (innerWidth - column * this.itemEdge - this.padding * 2) * 1.0 / (column * 2);
+        this.itemMargin =
+            ((innerWidth - column * this.itemEdge - this.padding * 2) * 1.0) / (column * 2);
         return column;
     }
 
     protected _getDataSource(): string[][] {
         const column = this._calculateColumn();
         const maxRow = 6;
-        const {canAdd, canRemove, data} = this.props;
+        const { canAdd, canRemove, data } = this.props;
         const showCount = column * maxRow - (canAdd ? 1 : 0) - (canRemove ? 1 : 0);
         const newData = [...data.slice(0, showCount)];
         if (canAdd) {
@@ -120,53 +120,56 @@ export default class extends React.PureComponent<Props> {
         let index = 0;
         const result = [];
         while (index < newData.length) {
-            result.push(newData.slice(index, index += column));
+            result.push(newData.slice(index, (index += column)));
         }
         return result;
     }
 
     protected _getItemStatus(rowItem: string) {
-        let title = '', isOwner = false, image = null;
+        let title = '',
+            isOwner = false,
+            image = null;
         if (rowItem === this.add || rowItem === this.remove) {
             title = null;
             isOwner = false;
-            image = rowItem === this.add ?
-                require('./image/groupset_add.png') :
-                require('./image/groupset_lost.png');
+            image =
+                rowItem === this.add
+                    ? require('./image/groupset_add.png')
+                    : require('./image/groupset_lost.png');
         } else {
             const item = delegate.user.getUser(rowItem);
             title = item.name;
             isOwner = this.props.owner === item.userId;
             if (item.avatar && item.avatar.length > 0) {
-                image = {uri: delegate.func.fitUrlForAvatarSize(item.avatar, this.itemEdge)};
+                image = { uri: delegate.func.fitUrlForAvatarSize(item.avatar, this.itemEdge) };
             } else {
                 image = delegate.func.getDefaultUserHeadImage(item.userId);
             }
         }
-        return {title, image, isOwner};
+        return { title, image, isOwner };
     }
 
     protected _onItemPress(rowItem: string) {
         if (rowItem === this.add) {
-        this.props.navigation.navigate(PageKeys.ChooseUser,{
-                    title: '选择群成员',
-                    multiple: true,
-                    onSelectData: this.props.onAddMembers,
-                    selectedIds: [],
-                    excludedUserIds: this.props.data,
-                });
+            this.props.navigation.navigate(PageKeys.ChooseUser, {
+                title: t('i18n_im_9e910da621148e4c'),
+                multiple: true,
+                onSelectData: this.props.onAddMembers,
+                selectedIds: [],
+                excludedUserIds: this.props.data,
+            });
         } else if (rowItem === this.remove) {
             const dataSource = this.props.data
-                .filter(item => item !== this.props.owner)
-                .map(item => delegate.user.getUser(item));
-            this.props.navigation.navigate(PageKeys.ChooseUser,{
-                    title: '选择群成员',
-                    multiple: true,
-                    onSelectData: this.props.onRemoveMembers,
-                    selectedIds: [],
-                    dataSource: dataSource,
-		            hideRecentlyPerson: true
-                });
+                .filter((item) => item !== this.props.owner)
+                .map((item) => delegate.user.getUser(item));
+            this.props.navigation.navigate(PageKeys.ChooseUser, {
+                title: t('i18n_im_9e910da621148e4c'),
+                multiple: true,
+                onSelectData: this.props.onRemoveMembers,
+                selectedIds: [],
+                dataSource: dataSource,
+                hideRecentlyPerson: true,
+            });
         } else {
             delegate.func.pushToUserDetailPage(rowItem);
         }
