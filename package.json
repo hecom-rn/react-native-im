@@ -34,6 +34,7 @@
     "@hecom/react-native-picklist": "*",
     "@hecom/react-native-pure-navigation-bar": "*",
     "@hecom/storage": ">=1.1",
+    "@react-native-clipboard/clipboard": "*",
     "@react-navigation/native": "*",
     "react": "*",
     "react-native": "*",
