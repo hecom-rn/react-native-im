@@ -1,4 +1,5 @@
 {
+  "i18n_im_9e910da621148e4c": "Select group members",
   "i18n_im_34c680feb9c93f0c": "Send success !",
   "i18n_im_02107ba378e21710": "Share",
   "i18n_im_9be40c5aa39e8740": "Release to stop",
@@ -129,7 +130,6 @@
   "i18n_im_053461ce86d26572": "Berhasil",
   "i18n_im_856e892a3eaf7485": "Pinned Chat",
   "i18n_im_01ba77ab84b2adbb": "Transfer to group master",
-  "i18n_im_9e910da621148e4c": "Select group members",
   "i18n_im_881bc916a59ad75f": "Transfer the group owner to:",
   "i18n_im_5e6d872cabdc583f": "Transfer successful",
   "i18n_im_c5324c9ffe6b54b6": "Transfer failed"
