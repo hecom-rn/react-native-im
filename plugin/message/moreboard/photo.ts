@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import * as ImagePicker from '@hecom-rn/react-native-full-image-picker';
 import { Typings } from '../../../standard';
 

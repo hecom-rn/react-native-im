@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';

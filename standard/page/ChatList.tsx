@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';

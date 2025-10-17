@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { Typings, Delegate, PageKeys } from '../../standard';
 import { onAddMembers, onRemoveMembers } from './GeneralUpdate';

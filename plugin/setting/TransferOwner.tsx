@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import { Alert } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { Typings, Delegate, PageKeys } from '../../standard';

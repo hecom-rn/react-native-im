@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
 import React from 'react';
 import {

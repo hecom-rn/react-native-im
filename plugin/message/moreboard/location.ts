@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import { Typings, Delegate } from '../../../standard';
 
 export type Result = Typings.Action.MoreBoard.GeneralResult<Typings.Message.LocationBody>;

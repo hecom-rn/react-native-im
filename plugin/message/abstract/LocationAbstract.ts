@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import { Typings, Delegate } from '../../../standard';
 
 export type Params = Typings.Action.Abstract.Params<Typings.Message.LocationBody>;

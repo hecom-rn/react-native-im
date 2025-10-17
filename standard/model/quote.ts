@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import { Message } from 'react-native-im/standard/typings';
 import delegate from '../../standard/delegate';
 import Navigation from '@hecom/navigation';

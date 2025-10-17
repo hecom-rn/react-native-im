@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import NaviBar, { forceInset } from '@hecom/react-native-pure-navigation-bar';

@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { LayoutAnimation, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';

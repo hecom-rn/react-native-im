@@ -1,4 +1,4 @@
-import { t } from '@hecom/basecore/util/i18';
+import { t } from '@hecom/basecore/util/i18n';
 import Listener from '@hecom/listener';
 import { Message, Conversation, Event } from '../typings';
 import * as Action from './action';
