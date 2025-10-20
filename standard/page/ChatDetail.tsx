@@ -338,9 +338,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                     console.warn(`Meta/Detail load failed for message ${i}:`, error);
                     // 加载失败时只保留metaName和name字段
                     if (message?.data?.object) {
-                        console.log('message====', message);
-                        const { metaName, name } = message.data.object;
-                        (result[i] as any).data.object = { metaName, name };
+                        const { metaName, name, objectid } = message.data.object;
+                        (result[i] as any).data.object = { metaName, name, objectid };
                     }
                 }
             }
