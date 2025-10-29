@@ -132,5 +132,6 @@
   "zh-CN|en|选择群成员": "Select group members",
   "zh-CN|en|转交群主给:": "Transfer the group owner to:",
   "zh-CN|en|转交成功": "Transfer successful",
-  "zh-CN|en|转交失败": "Transfer failed"
+  "zh-CN|en|转交失败": "Transfer failed",
+  "zh-CN|en|{{MemberExpression1}}的位置": "Location of {{MemberExpression1}}"
 }
