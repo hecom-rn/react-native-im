@@ -13,6 +13,6 @@ export default function (params: Params): Result {
         return t('i18n_im_19f3c787e8e28c53');
     } else {
         const user = Delegate.user.getUser(message.from);
-        return '[' + user.name + t('i18n_im_fee7e8072ac6fff3');
+        return '[' + `${user.name}的位置` + ']';
     }
 }
