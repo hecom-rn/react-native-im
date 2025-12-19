@@ -1,4 +1,7 @@
+import { TimeUtils } from '@hecom/aDate';
 import { t } from '@hecom/basecore/util/i18n';
+import Listener from '@hecom/listener';
+import { StackActions } from '@react-navigation/native';
 import React from 'react';
 import {
     Alert,
@@ -12,18 +15,13 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import Toast from 'react-native-root-toast';
-import Listener from '@hecom/listener';
-import * as PageKeys from '../pagekey';
-import * as Model from '../model';
-import { DateUtil, guid } from '../util';
-import { Conversation, Event, Message } from '../typings';
-import delegate from '../delegate';
-import { StackActions } from '@react-navigation/native';
 import { IMConstant } from 'react-native-im-easemob';
-import Meta from '@hecom/meta';
-import Detail from '@hecom/detail';
-import { TimeUtils } from '@hecom/aDate';
+import Toast from 'react-native-root-toast';
+import delegate from '../delegate';
+import * as Model from '../model';
+import * as PageKeys from '../pagekey';
+import { Conversation, Event, Message } from '../typings';
+import { DateUtil, guid } from '../util';
 
 interface ChatDetailProps {
     imId: string;
@@ -52,6 +50,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     listeners = new Array(5);
     isGroup: boolean;
     pageCount: number;
+    backHandlerSubscription: any;
 
     constructor(props: ChatDetailProps) {
         super(props);
@@ -89,7 +88,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _registerListener = () => {
-        BackHandler.addEventListener('hardwareBackPress', this._onBackPress);
+        this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this._onBackPress);
         [
             [Event.SendMessage, this._onReceiveMessage.bind(this)],
             [Event.ReceiveMessage, this._onReceiveMessage.bind(this)],
@@ -115,7 +114,9 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     };
 
     _unRegisterListener = () => {
-        BackHandler.removeEventListener('hardwareBackPress', this._onBackPress);
+        if (this.backHandlerSubscription && this.backHandlerSubscription.remove) {
+            this.backHandlerSubscription.remove();
+        }
         this.listeners.forEach((listener) => listener && listener.remove());
     };
 
