@@ -28,6 +28,7 @@ import { Component, Contact, Conversation, Message } from '../typings';
 import { IMConstant } from 'react-native-im-easemob';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import AudioRecorderPlayer, {
+    AudioSet,
     AVEncoderAudioQualityIOSType,
     AVEncodingOption,
     AudioEncoderAndroidType,
@@ -35,10 +36,8 @@ import AudioRecorderPlayer, {
     OutputFormatAndroidType,
 } from 'react-native-audio-recorder-player';
 import type {
-    PlayBackType,
     RecordBackType,
 } from 'react-native-audio-recorder-player';
-import { AudioMimeHarmonyType, AudioFormatHarmonyType, AudioSourceHarmonyType, AudioSet } from "@react-native-oh-tpl/react-native-audio-recorder-player";
 
 export type Props = Component.BottomBarProps;
 
@@ -350,9 +349,9 @@ export default class extends React.PureComponent<Props, State> {
             AVNumberOfChannelsKeyIOS: 2,
             AVFormatIDKeyIOS: AVEncodingOption.aac,
             OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
-            AudioSourceHarmony: AudioSourceHarmonyType.MIC,
-            AudioMimeHarmony: AudioMimeHarmonyType.AUDIO_AAC,
-            AudioFileFormatHarmony: AudioFormatHarmonyType.MPEG_4A,
+            AudioSourceHarmony: 1,
+            AudioMimeHarmony: 'audio/mp4a-latm',
+            AudioFileFormatHarmony: 'm4a',
             AudioEncodingBitRateHarmony: 3200,
             AudioSamplingRateHarmony: 44100,
             AudioChannelsHarmony: 2,
