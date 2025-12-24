@@ -27,10 +27,6 @@ import * as PageKeys from '../pagekey';
 import { Component, Contact, Conversation, Message } from '../typings';
 import { IMConstant } from 'react-native-im-easemob';
 import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
-import { TimeUtils } from '@hecom/aDate';
-import {Component, Contact, Conversation, Message} from '../typings';
-import {IMConstant} from 'react-native-im-easemob';
-import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import AudioRecorderPlayer, {
     AVEncoderAudioQualityIOSType,
     AVEncodingOption,

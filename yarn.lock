@@ -143,6 +143,14 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/cameraroll/download/@react-native-community/cameraroll-1.4.1.tgz#e2891306243cf6a93556d4876ab99c38d497ab68"
   integrity sha1-4okTBiQ89qk1VtSHarmcONSXq2g=
 
+"@react-native-oh-tpl/react-native-audio-recorder-player@^3.6.10-0.0.2":
+  version "3.6.10-0.0.2"
+  resolved "https://registry.npmjs.org/@react-native-oh-tpl/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.6.10-0.0.2.tgz#413c9fe0ccb0237db5a10c498b18e520ab014378"
+  integrity sha512-ZbA0M58hVM3Gva/AfU0v4/dOvleVj4dKdreZmMsbNR1y3bPpUn4sDulZueO/Ue/KD82s0S0weXOBoNWND4+qmw==
+  dependencies:
+    dooboolab-welcome "^1.3.2"
+    react-native-audio-recorder-player "^3.6.10"
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -1042,6 +1050,11 @@ dom-walk@^0.1.0:
   resolved "https://registry.npmjs.org/dom-walk/-/dom-walk-0.1.1.tgz#672226dc74c8f799ad35307df936aba11acd6018"
   integrity sha1-ZyIm3HTI95mtNTB9+TaroRrNYBg=
 
+dooboolab-welcome@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.npmjs.org/dooboolab-welcome/-/dooboolab-welcome-1.3.2.tgz#4928595312f0429b4ea1b485ba8767bae6acdab7"
+  integrity sha512-2NbMaIIURElxEf/UAoVUFlXrO+7n/FRhLCiQlk4fkbGRh9cJ3/f8VEMPveR9m4Ug2l2Zey+UCXjd6EcBqHJ5bw==
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.npmjs.org/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
@@ -1465,6 +1478,11 @@ hosted-git-info@^2.1.4:
   version "2.8.5"
   resolved "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.8.5.tgz#759cfcf2c4d156ade59b0b2dfabddc42a6b9c70c"
   integrity sha512-kssjab8CvdXfcXMXVcvsXum4Hwdq9XGtRD3TteMEvEbq0LXyiNQr6AprqKqfeaDXze7SxWvRxdpwE6ku7ikLkg==
+
+hyochan-welcome@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/hyochan-welcome/-/hyochan-welcome-1.0.1.tgz#a949de8bc3c1e18fe096016bc273aa191c844971"
+  integrity sha512-WRZNH5grESkOXP/r7xc7TMhO9cUqxaJIuZcQDAjzHWs6viGP+sWtVbiBigxc9YVRrw3hnkESQWwzqg+oOga65A==
 
 iconv-lite@^0.4.24, iconv-lite@~0.4.13:
   version "0.4.24"
@@ -2043,6 +2061,13 @@ react-is@^16.8.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
+react-native-audio-recorder-player@^3.6.10, react-native-audio-recorder-player@^3.6.12:
+  version "3.6.14"
+  resolved "https://registry.npmjs.org/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.6.14.tgz#1f45fed2f6f516372d0268a72e04e7e129699f79"
+  integrity sha512-F6SvHbuLvsbhBytR4+vaGIL6LFqC1cnB+SX3v191aHNvGDt63BX56w/Y19nIzxaLnG0b0vbxx/UZ1nzIvDyqWA==
+  dependencies:
+    hyochan-welcome "^1.0.0"
+
 react-native-fs@^2.13.3:
   version "2.16.4"
   resolved "https://registry.npmjs.org/react-native-fs/-/react-native-fs-2.16.4.tgz#34c477399af9ed33fd64e869b33a587c3ad029e9"
@@ -2196,16 +2221,6 @@ react-native-section-list-get-item-layout@^2.2.3:
   version "2.2.3"
   resolved "https://registry.npmjs.org/react-native-section-list-get-item-layout/-/react-native-section-list-get-item-layout-2.2.3.tgz#152a8efdcb3847dbcbeb04cd2d0de4312d3d2fcb"
   integrity sha512-fzCW5SiYP6qCZyDHebaElHonIFr8NFrZK9JDkxFLnpxMJih4d+HQ4rHyOs0Z4Gb/FjyCVbRH7RtEnjeQ0XffMg==
-
-react-native-sound-recorder@^1.3.2:
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/react-native-sound-recorder/-/react-native-sound-recorder-1.5.0.tgz#a130db4d5e026cf2487afabaced6f7eb197b13a3"
-  integrity sha512-u7b9WQgsIqbOAwnu/tkWIcef++VLEkkCoax2iZ3ooE6ga7OcavlPG+mX2N0KCre8uH+FnsgGrIWZO7RY402uvA==
-
-react-native-sound@^0.10.9:
-  version "0.10.12"
-  resolved "https://registry.npmjs.org/react-native-sound/-/react-native-sound-0.10.12.tgz#f912d6f9d6e9e2b42b391e0226787628d940f01a"
-  integrity sha512-lhvzZ+ekNSHW9s4FjmxxGAQmd7yDT9FnHgJNP824cMyHRrTES/LgHnSOxES/1FWVoaQ8FdfbEHkWd2rN0G/L9A==
 
 react-native-swipe-list-view@^1.5.0:
   version "1.5.8"

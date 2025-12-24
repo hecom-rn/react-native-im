@@ -1,11 +1,8 @@
 import { TimeUtils } from '@hecom/aDate';
 import { t } from '@hecom/basecore/util/i18n';
 import Listener from '@hecom/listener';
-import { StackActions } from '@react-navigation/native';
-import Listener from '@hecom/listener';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { StackActions } from '@react-navigation/native';
-import i18n from 'i18n-js';
 import React from 'react';
 import {
     Alert,
