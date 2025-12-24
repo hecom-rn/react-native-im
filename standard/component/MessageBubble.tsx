@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
 import {Dimensions, ImageSourcePropType, PixelRatio, TouchableWithoutFeedback, View} from 'react-native';
-import ImageCapInset from '@hecom/react-native-image-capinsets';
+import ImageCapInset from 'react-native-image-capinsets-next';
 import * as Model from '../model';
 import {Action, Component} from '../typings';
 import delegate from '../delegate';
