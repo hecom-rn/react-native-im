@@ -44,7 +44,7 @@
     "react-native-fs": ">=2",
     "react-native-general-searchbar": ">=1",
     "react-native-gesture-handler": ">=1",
-    "react-native-image-capinsets-next": "*",
+    "@hecom/react-native-image-capinsets": "*",
     "react-native-keyboard-aware-scroll-view": "*",
     "react-native-localize": "*",
     "react-native-modals": "*",
