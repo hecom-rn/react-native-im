@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import {Dimensions, ImageSourcePropType, PixelRatio, TouchableWithoutFeedback, View} from 'react-native';
+import {Dimensions, ImageSourcePropType, PixelRatio, TouchableWithoutFeedback, View, Platform} from 'react-native';
 import ImageCapInset from '@hecom/react-native-image-capinsets';
 import * as Model from '../model';
 import {Action, Component} from '../typings';
@@ -49,7 +49,10 @@ export default class extends React.PureComponent<Props, State> {
                         {this.state.enableBubble ? (
                             <View>
                                 <ImageCapInset
-                                    capInsets={{ top: 84 / ratio, left: 39 / ratio, bottom: 30 / ratio, right: 39 / ratio }}
+                                    capInsets={Platform.select({
+                                        ios: { top: 28, left: 13, bottom: 10, right: 13 },
+                                        default: { top: 84 / ratio, left: 39 / ratio, bottom: 30 / ratio, right: 39 / ratio }
+                                    })}
                                     resizeMode='stretch'
                                     source={bubbleImage}
                                     style={{ maxWidth, paddingLeft, paddingRight }}
