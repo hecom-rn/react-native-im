@@ -38,6 +38,7 @@ import AudioRecorderPlayer, {
 import type {
     RecordBackType,
 } from 'react-native-audio-recorder-player';
+import RNFS from 'react-native-fs';
 
 export type Props = Component.BottomBarProps;
 
@@ -356,13 +357,18 @@ export default class extends React.PureComponent<Props, State> {
             AudioSamplingRateHarmony: 44100,
             AudioChannelsHarmony: 2,
         };
-        this.audioPath = await this.audioRecorderPlayer.startRecorder(
-            'imTempAudio.m4a',
+        const uri = Platform.select({
+            android: `${RNFS.CachesDirectoryPath}/imTempAudio.m4a`,
+            default: 'imTempAudio.m4a',
+        });
+        this.audioRecorderPlayer.startRecorder(
+            uri,
             audioSet,
-        );
-
-        this.audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
-            this.duration = e.currentPosition;
+        ).then((path) => {
+            this.audioPath = path;
+            this.audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+                this.duration = e.currentPosition;
+            });
         });
     }
 
