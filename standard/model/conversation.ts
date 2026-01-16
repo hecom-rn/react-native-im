@@ -56,7 +56,9 @@ export async function load(): Promise<void> {
     const result = await delegate.im.conversation.loadList();
     await Promise.all(result.map(async (item) => {
         const conversation = await loadItem(item.imId, item.chatType, false);
-        Object.assign(conversation.config, item.config)
+        if (conversation?.config && item.config) {
+            Object.assign(conversation.config, item.config);
+        }
     }));
 }
 
