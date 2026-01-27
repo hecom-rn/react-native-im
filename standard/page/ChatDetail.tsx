@@ -1,17 +1,15 @@
 import { TimeUtils } from '@hecom/aDate';
 import { t } from '@hecom/basecore/util/i18n';
 import Listener from '@hecom/listener';
-import Clipboard from '@react-native-clipboard/clipboard';
 import { StackActions } from '@react-navigation/native';
 import React from 'react';
 import {
     Alert,
     BackHandler,
+    Clipboard,
     Image,
     Keyboard,
-    KeyboardAvoidingView,
     SafeAreaView,
-    StatusBar,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -191,11 +189,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     render() {
         const { imId, chatType } = this.props;
         return (
-            <KeyboardAvoidingView
-                behavior={'padding'}
-                keyboardVerticalOffset={StatusBar.currentHeight * 2}
-                style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}
-            >
+            <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
                 <SafeAreaView style={styles.innerview}>
                     <TouchableWithoutFeedback
                         disabled={!this.state.keyboardShow}
@@ -215,13 +209,14 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                     batchOptionMode={this.state.hasCheckBox}
                     onBatchForward={this._onBatchForward}
                 />
+
                 <delegate.component.MessageMenu
                     menuShow={this.state.menuShow}
                     menuRef={this.state.menuRef}
                     onClose={this._onCloseMenu.bind(this)}
                     actionList={this.state.actionList}
                 />
-            </KeyboardAvoidingView>
+            </View>
         );
     }
 
@@ -262,6 +257,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                         !conversation ? 0 : conversation.unreadMessagesCount
                     )}
                 />
+
                 <View style={styles.flexList} />
             </View>
         );
