@@ -86,7 +86,7 @@ export default class extends React.Component {
                             SectionSeparatorComponent={SectionSeparatorComponent}
                         />
 
-                        <SafeAreaView />
+                        <SafeAreaView edges={['bottom']} />
                     </>
                 )}
             </View>

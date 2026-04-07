@@ -96,7 +96,7 @@ export default class extends React.PureComponent<Props, State> {
     render() {
         const { batchOptionMode, onBatchForward } = this.props;
         return batchOptionMode ? (
-            <SafeAreaView style={styles.safeview}>
+            <SafeAreaView edges={['bottom']}  style={styles.safeview}>
                 <TouchableWithoutFeedback onPress={() => onBatchForward()}>
                     <View style={styles.container}>
                         <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
@@ -104,7 +104,7 @@ export default class extends React.PureComponent<Props, State> {
                 </TouchableWithoutFeedback>
             </SafeAreaView>
         ) : (
-            <SafeAreaView style={styles.safeview}>
+            <SafeAreaView edges={['bottom']}  style={styles.safeview}>
                 <View style={styles.container}>
                     {this._renderLeftBtn()}
                     <View style={styles.msgContainer}>
