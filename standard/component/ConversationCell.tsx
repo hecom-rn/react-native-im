@@ -1,8 +1,8 @@
 import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
-import { Dimensions, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Listener from '@hecom/listener';
-import { forceInset } from '@hecom/react-native-pure-navigation-bar';
 import * as PageKeys from '../pagekey';
 import * as Model from '../model';
 import { DateUtil } from '../util';
@@ -55,7 +55,7 @@ export default class extends React.PureComponent<Props> {
         this._isErrorMessage() && content.push(this._renderErrorMessageText());
         this.state.latestMessage && content.push(this._renderLatestMessageText());
         return (
-            <SafeAreaView style={styles.view} forceInset={forceInset(0, 1, 0, 1)}>
+            <SafeAreaView style={styles.view} edges={['right', 'left']}>
                 <delegate.component.ListCell
                     style={this.state.top && styles.top}
                     avatar={{ imId, chatType }}

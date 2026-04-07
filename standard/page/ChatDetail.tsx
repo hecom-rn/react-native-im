@@ -9,12 +9,12 @@ import {
     Clipboard,
     Image,
     Keyboard,
-    SafeAreaView,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { IMConstant } from 'react-native-im-easemob';
 import Toast from 'react-native-root-toast';
 import delegate from '../delegate';

@@ -9,7 +9,6 @@ import {
     NativeSyntheticEvent,
     PermissionsAndroid,
     Platform,
-    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
@@ -21,6 +20,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-root-toast';
 import delegate from '../delegate';
 import * as PageKeys from '../pagekey';

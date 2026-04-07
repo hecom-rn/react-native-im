@@ -1,6 +1,5 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native';
-import { forceInset } from '@hecom/react-native-pure-navigation-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FakeSearchBar } from 'react-native-general-searchbar';
 
 export default class extends React.PureComponent {
@@ -8,7 +7,7 @@ export default class extends React.PureComponent {
         return (
             <SafeAreaView
                 style={styles.safeview}
-                forceInset={forceInset(0, 1, 0, 1)}
+                edges={['right', 'left']}
             >
                 <FakeSearchBar
                     style={styles}

@@ -7,15 +7,15 @@ import {
     InteractionManager,
     LayoutAnimation,
     Linking,
-    SafeAreaView,
     StyleSheet,
     TouchableOpacity,
     View,
     Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import Toast from 'react-native-root-toast';
-import NaviBar, { forceInset } from '@hecom/react-native-pure-navigation-bar';
+import NaviBar from '@hecom/react-native-pure-navigation-bar';
 import ArrowImage from '@hecom/image-arrow';
 import Listener from '@hecom/listener';
 import * as PageKeys from '../pagekey';
@@ -78,7 +78,7 @@ export default class extends React.PureComponent {
                     placeholder={t('i18n_im_44ce7ae909bbb28b')}
                 />
 
-                <SafeAreaView style={styles.safeview} forceInset={forceInset(0, 1, 1, 1)}>
+                <SafeAreaView style={styles.safeview} edges={['right', 'bottom', 'left']}>
                     {Array.isArray(this.state.data) ? this._renderList() : null}
                 </SafeAreaView>
             </View>
