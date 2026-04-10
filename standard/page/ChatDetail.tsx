@@ -22,6 +22,7 @@ import * as Model from '../model';
 import * as PageKeys from '../pagekey';
 import { Conversation, Event, Message } from '../typings';
 import { DateUtil, guid } from '../util';
+import NaviBar from '@hecom/react-native-pure-navigation-bar';
 
 interface ChatDetailProps {
     imId: string;
@@ -35,6 +36,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             ? { marginHorizontal: _marginHorizontal_ }
             : {};
         return {
+            headerShown: false,
+            header: () => null,
             headerLeft: _left_,
             title: _title_,
             headerRight: _right_,
@@ -69,7 +72,6 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     componentDidMount() {
-        this._setNaviBar();
         this._registerListener();
     }
 
@@ -80,7 +82,6 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     componentDidUpdate(prevProps) {
         if (prevProps.imId !== this.props.imId) {
             this.isGroup = this.props.chatType === Conversation.ChatType.Group;
-            this._setNaviBar();
             this._unRegisterListener();
             this._registerListener();
             this.setState({ listKey: guid() });
@@ -92,7 +93,6 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         [
             [Event.SendMessage, this._onReceiveMessage.bind(this)],
             [Event.ReceiveMessage, this._onReceiveMessage.bind(this)],
-            this.isGroup && [Event.Group, this._setNaviBar.bind(this)],
             [Event.GroupLeave, this._userLeave.bind(this)],
         ]
             .filter((i) => !!i)
@@ -190,6 +190,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         const { imId, chatType } = this.props;
         return (
             <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
+                {this._setNaviBar()}
                 <SafeAreaView style={styles.innerview}>
                     <TouchableWithoutFeedback
                         disabled={!this.state.keyboardShow}
@@ -221,24 +222,39 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _setNaviBar() {
-        const { imId } = this.props;
+        const { imId, chatType } = this.props;
         let title;
-        let marginHorizontal;
         if (this.isGroup) {
             const groupName =
                 delegate.model.Group.getName(imId, false) || t('i18n_im_35b49ee58a4a0e82');
             title = groupName + ' (' + delegate.model.Group.getMembers(imId).length + ')';
-            marginHorizontal = 97;
         } else {
             title = delegate.user.getUser(imId).name;
-            marginHorizontal = 50;
         }
-        this.props.navigation.setParams({
-            _left_: this._renderLeftElement.bind(this),
-            _title_: title,
-            _right_: this._renderRightElement.bind(this),
-            _marginHorizontal_: marginHorizontal,
-        });
+        const moreImage = require('./image/showMore.png');
+        return (
+            <NaviBar title={title}
+                     onLeft={() => {
+                         const { navigation } = this.props;
+                         const { hasCheckBox } = this.state;
+                         if (hasCheckBox) {
+                             this.selectMessages.length = 0;
+                             this.setState({ hasCheckBox: false });
+                         } else {
+                             navigation.goBack();
+                         }
+                     }}
+                     rightElement={<Image source={moreImage} style={styles.rightImage} />}
+                     onRight={() => {
+                         const onSendMsg = this._onSendMessage.bind(this, imId, chatType);
+                         this.props.navigation.navigate(PageKeys.ChatSetting, {
+                             imId: imId,
+                             chatType: chatType,
+                             onSendMessage: onSendMsg,
+                         });
+                     }}
+            />
+        );
     }
 
     _renderContent() {
@@ -260,47 +276,6 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
                 <View style={styles.flexList} />
             </View>
-        );
-    }
-
-    _renderLeftElement() {
-        const { navigation } = this.props;
-        const backImage = require('./image/nav_back.png');
-        return (
-            <TouchableOpacity
-                onPress={() => {
-                    const { hasCheckBox } = this.state;
-                    if (hasCheckBox) {
-                        this.selectMessages.length = 0;
-                        this.setState({ hasCheckBox: false });
-                    } else {
-                        navigation.goBack();
-                    }
-                }}
-                activeOpacity={0.8}
-            >
-                <Image source={backImage} style={styles.leftImage} />
-            </TouchableOpacity>
-        );
-    }
-
-    _renderRightElement() {
-        const { imId, chatType } = this.props;
-        const onSendMsg = this._onSendMessage.bind(this, imId, chatType);
-        const moreImage = require('./image/showMore.png');
-        return (
-            <TouchableOpacity
-                onPress={() => {
-                    this.props.navigation.navigate(PageKeys.ChatSetting, {
-                        imId: imId,
-                        chatType: chatType,
-                        onSendMessage: onSendMsg,
-                    });
-                }}
-                activeOpacity={0.8}
-            >
-                <Image source={moreImage} style={styles.rightImage} />
-            </TouchableOpacity>
         );
     }
 
