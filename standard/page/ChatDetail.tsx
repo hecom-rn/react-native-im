@@ -14,7 +14,6 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { IMConstant } from 'react-native-im-easemob';
 import Toast from 'react-native-root-toast';
 import delegate from '../delegate';
@@ -191,15 +190,13 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         return (
             <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
                 {this._setNaviBar()}
-                <SafeAreaView edges={['bottom']} style={styles.innerview}>
-                    <TouchableWithoutFeedback
-                        disabled={!this.state.keyboardShow}
-                        style={styles.touch}
-                        onPress={() => this.bottomBar.dismiss()}
-                    >
-                        {this._renderContent()}
-                    </TouchableWithoutFeedback>
-                </SafeAreaView>
+                <TouchableWithoutFeedback
+                    disabled={!this.state.keyboardShow}
+                    style={styles.touch}
+                    onPress={() => this.bottomBar.dismiss()}
+                >
+                    {this._renderContent()}
+                </TouchableWithoutFeedback>
                 <delegate.component.BottomBar
                     ref={(ref) => (this.bottomBar = ref)}
                     imId={imId}
