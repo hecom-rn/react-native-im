@@ -191,7 +191,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
         return (
             <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
                 {this._setNaviBar()}
-                <SafeAreaView style={styles.innerview}>
+                <SafeAreaView edges={['bottom']} style={styles.innerview}>
                     <TouchableWithoutFeedback
                         disabled={!this.state.keyboardShow}
                         style={styles.touch}

@@ -1,5 +1,5 @@
 import { t } from '@hecom/basecore/util/i18n';
-import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
 import {
     EmitterSubscription,
@@ -53,7 +53,7 @@ export interface State {
     quoteMsg: Message.General | undefined;
 }
 
-export default class extends React.PureComponent<Props, State> {
+class _ClassComponent extends React.PureComponent<Props, State> {
     static defaultProps = {};
 
     protected selectedEmojiArr: string[] = [];
@@ -596,7 +596,7 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     protected _keyboardShow(event: KeyboardEvent) {
-        const offset = getSafeAreaInset().bottom;
+        const offset = this.props.safeAreaInsets.bottom;
         this.setState({
             keyboardHeight: event.endCoordinates.height - offset,
         });
@@ -741,3 +741,21 @@ const styles = StyleSheet.create({
         height: 40, // TODO
     },
 });
+
+
+const Wrapper = (props: any) => {
+    const safeAreaInsets = useSafeAreaInsets();
+    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
+};
+
+if ((_ClassComponent as any).propTypes) {
+    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
+}
+if ((_ClassComponent as any).defaultProps) {
+    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
+}
+if ((_ClassComponent as any).navigationOptions) {
+    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
+}
+
+export default Wrapper;

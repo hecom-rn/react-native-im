@@ -3,18 +3,23 @@ import React from 'react';
 import { Typings, Delegate, PageKeys } from '../../standard';
 import { onAddMembers, onRemoveMembers } from './GeneralUpdate';
 import { Dimensions, TouchableHighlight, StyleSheet, View, Text } from 'react-native';
-import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const name = 'IMSettingAllMembers';
 
 export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Setting.Result {
+    return <AllMembersUi {...props} />;
+}
+
+function AllMembersUi(props: Typings.Action.Setting.Params) {
+    const safeInset = useSafeAreaInsets();
     const { key, imId, chatType } = props;
     const isGroup = chatType === Typings.Conversation.ChatType.Group;
     if (!isGroup) {
         return null;
     }
     const groupMembers = Delegate.model.Group.getMembers(imId);
-    if (groupMembers.length <= showMaxColumn(props)) {
+    if (groupMembers.length <= showMaxColumn(props, safeInset)) {
         return null;
     }
 
@@ -27,11 +32,10 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
     );
 }
 
-function showMaxColumn(props: Typings.Action.Setting.Params): number {
+function showMaxColumn(props: Typings.Action.Setting.Params, safeInset: any): number {
     const { imId } = props;
     const { width, height } = Dimensions.get('window');
-    const safeInset = getSafeAreaInset();
-    const innerWidth = width - safeInset.left - safeInset.right;
+        const innerWidth = width - safeInset.left - safeInset.right;
     const groupOwner = Delegate.model.Group.getOwner(imId);
     let itemEdge = 50;
     let column = 0;

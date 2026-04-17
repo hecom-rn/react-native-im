@@ -2,14 +2,15 @@ import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { Keyboard, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import PropTypes from 'prop-types';
-import NaviBar, { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import NaviBar from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Delegate } from 'react-native-im/standard/index';
 import Toast from 'react-native-root-toast';
 import Navigation from '@hecom/navigation/src/index';
 import { Message } from 'react-native-im/standard/typings/index';
 import delegate from 'react-native-im/standard/delegate';
 
-export default class extends React.PureComponent {
+class _ClassComponent extends React.PureComponent {
     private keyboardDidShowListener: any;
     private keyboardDidHideListener: any;
     private isDisable = true;
@@ -69,7 +70,7 @@ export default class extends React.PureComponent {
                 rights.onRight = this._onRight;
             }
         }
-        const safeArea = getSafeAreaInset();
+        const safeArea = this.props.safeAreaInsets;
         const marginStyle = {
             marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeArea.bottom,
         };
@@ -165,3 +166,21 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
 });
+
+
+const Wrapper = (props: any) => {
+    const safeAreaInsets = useSafeAreaInsets();
+    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
+};
+
+if ((_ClassComponent as any).propTypes) {
+    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
+}
+if ((_ClassComponent as any).defaultProps) {
+    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
+}
+if ((_ClassComponent as any).navigationOptions) {
+    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
+}
+
+export default Wrapper;
