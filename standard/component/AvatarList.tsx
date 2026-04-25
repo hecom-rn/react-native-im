@@ -211,4 +211,5 @@ if ((_ClassComponent as any).navigationOptions) {
     (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
 }
 
+Wrapper.ClassComponent = _ClassComponent;
 export default Wrapper;
