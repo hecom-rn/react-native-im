@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     Dimensions,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { Component } from '../typings';
 import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
@@ -17,7 +17,7 @@ import { AllMembers } from 'react-native-im/plugin/setting';
 
 export type Props = Component.AvatarListProps;
 
-class _ClassComponent extends React.PureComponent<Props> {
+export default class extends React.PureComponent<Props> {
     protected readonly add = '__add__';
     protected readonly remove = '__remove__';
     protected readonly padding = 16;
@@ -39,13 +39,19 @@ class _ClassComponent extends React.PureComponent<Props> {
     }
 
     render() {
-        const dataSource = this._getDataSource();
         const { tempProps } = this.props;
         return (
-            <View>
-                {dataSource.map(this._renderRow.bind(this))}
-                {AllMembers.getUi(tempProps)}
-            </View>
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => {
+                    const dataSource = this._getDataSource(insets);
+                    return (
+                        <View>
+                            {dataSource.map(this._renderRow.bind(this))}
+                            {AllMembers.getUi(tempProps)}
+                        </View>
+                    );
+                }}
+            </SafeAreaInsetsContext.Consumer>
         );
     }
 
@@ -89,10 +95,11 @@ class _ClassComponent extends React.PureComponent<Props> {
         this.forceUpdate();
     }
 
-    protected _calculateColumn(): number {
+    protected _calculateColumn(insets: any): number {
         const { width, height } = Dimensions.get('window');
-        const safeInset = this.props.safeAreaInsets;
-        const innerWidth = width - safeInset.left - safeInset.right;
+        const safeLeft = insets?.left || 0;
+        const safeRight = insets?.right || 0;
+        const innerWidth = width - safeLeft - safeRight;
         let column = 0;
         if (width > height) {
             const preInternal = 30;
@@ -105,8 +112,8 @@ class _ClassComponent extends React.PureComponent<Props> {
         return column;
     }
 
-    protected _getDataSource(): string[][] {
-        const column = this._calculateColumn();
+    protected _getDataSource(insets: any): string[][] {
+        const column = this._calculateColumn(insets);
         const maxRow = 6;
         const { canAdd, canRemove, data } = this.props;
         const showCount = column * maxRow - (canAdd ? 1 : 0) - (canRemove ? 1 : 0);
@@ -194,22 +201,3 @@ const styles = StyleSheet.create({
         left: 0,
     },
 });
-
-
-const Wrapper = (props: any) => {
-    const safeAreaInsets = useSafeAreaInsets();
-    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
-};
-
-if ((_ClassComponent as any).propTypes) {
-    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
-}
-if ((_ClassComponent as any).defaultProps) {
-    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
-}
-if ((_ClassComponent as any).navigationOptions) {
-    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
-}
-
-Wrapper.ClassComponent = _ClassComponent;
-export default Wrapper;

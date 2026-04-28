@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import NaviBar from '@hecom/react-native-pure-navigation-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { Delegate } from 'react-native-im/standard/index';
 import Toast from 'react-native-root-toast';
 import Navigation from '@hecom/navigation/src/index';
@@ -20,7 +20,7 @@ import delegate from 'react-native-im/standard/delegate';
 
 const { width, height } = Dimensions.get('window');
 
-class _ClassComponent extends React.PureComponent {
+export default class GroupNameEdit extends React.PureComponent {
     private keyboardDidShowListener: any;
     private keyboardDidHideListener: any;
     private isDisable = true;
@@ -77,47 +77,53 @@ class _ClassComponent extends React.PureComponent {
         //     } else {
         //         rights.onRight = this._onRight;
         //     }
-        const safeArea = this.props.safeAreaInsets;
-        const marginStyle = {
-            marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeArea.bottom,
-        };
         return (
-            <View style={styles.container}>
-                <NaviBar title={''} autoCloseKeyboard={true} hasSeperatorLine={false} />
-                <Text style={styles.titleText}>{t('i18n_im_661a0f6971841411')}</Text>
-                <View style={styles.topLineView} />
-                <View style={styles.backView}>
-                    {this._renderIcon()}
-                    <TextInput
-                        style={styles.input}
-                        defaultValue={groupName}
-                        maxLength={2000}
-                        multiline={false}
-                        clearButtonMode={'while-editing'}
-                        placeholder={t('i18n_im_81d967ce93415779')}
-                        onChangeText={(text) => {
-                            this.isDisable = false;
-                            this.setState({ text });
-                        }}
-                        autoFocus={true}
-                    />
-                </View>
-                <View style={styles.bottomLineView} />
-                <View style={[styles.buttonView, marginStyle]}>
-                    <Text
-                        style={styles.button}
-                        onPress={() => {
-                            if (!this.isDisable) {
-                                this._onRight();
-                            } else {
-                                Navigation.pop();
-                            }
-                        }}
-                    >
-                        {t('i18n_im_c0b3fbff51ccc40b')}
-                    </Text>
-                </View>
-            </View>
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => {
+                    const safeBottom = insets?.bottom || 0;
+                    const marginStyle = {
+                        marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeBottom,
+                    };
+                    return (
+                        <View style={styles.container}>
+                            <NaviBar title={''} autoCloseKeyboard={true} hasSeperatorLine={false} />
+                            <Text style={styles.titleText}>{t('i18n_im_661a0f6971841411')}</Text>
+                            <View style={styles.topLineView} />
+                            <View style={styles.backView}>
+                                {this._renderIcon()}
+                                <TextInput
+                                    style={styles.input}
+                                    defaultValue={groupName}
+                                    maxLength={2000}
+                                    multiline={false}
+                                    clearButtonMode={'while-editing'}
+                                    placeholder={t('i18n_im_81d967ce93415779')}
+                                    onChangeText={(text) => {
+                                        this.isDisable = false;
+                                        this.setState({ text });
+                                    }}
+                                    autoFocus={true}
+                                />
+                            </View>
+                            <View style={styles.bottomLineView} />
+                            <View style={[styles.buttonView, marginStyle]}>
+                                <Text
+                                    style={styles.button}
+                                    onPress={() => {
+                                        if (!this.isDisable) {
+                                            this._onRight();
+                                        } else {
+                                            Navigation.pop();
+                                        }
+                                    }}
+                                >
+                                    {t('i18n_im_c0b3fbff51ccc40b')}
+                                </Text>
+                            </View>
+                        </View>
+                    );
+                }}
+            </SafeAreaInsetsContext.Consumer>
         );
     }
 
@@ -236,19 +242,4 @@ const styles = StyleSheet.create({
 });
 
 
-const Wrapper = (props: any) => {
-    const safeAreaInsets = useSafeAreaInsets();
-    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
-};
 
-if ((_ClassComponent as any).propTypes) {
-    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
-}
-if ((_ClassComponent as any).defaultProps) {
-    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
-}
-if ((_ClassComponent as any).navigationOptions) {
-    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
-}
-
-export default Wrapper;

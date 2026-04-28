@@ -1,5 +1,5 @@
 import { t } from '@hecom/basecore/util/i18n';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import React from 'react';
 import {
     EmitterSubscription,
@@ -20,7 +20,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import Toast from 'react-native-root-toast';
 import delegate from '../delegate';
 import * as PageKeys from '../pagekey';
@@ -53,7 +53,7 @@ export interface State {
     quoteMsg: Message.General | undefined;
 }
 
-class _ClassComponent extends React.PureComponent<Props, State> {
+export default class extends React.PureComponent<Props, State> {
     static defaultProps = {};
 
     protected selectedEmojiArr: string[] = [];
@@ -65,6 +65,7 @@ class _ClassComponent extends React.PureComponent<Props, State> {
     protected audioRecorderPlayer?: AudioRecorderPlayer;
     protected audioPath = '';
     protected duration = 0;
+    protected safeAreaBottom = 0;
 
     state = {
         message: '',
@@ -95,26 +96,33 @@ class _ClassComponent extends React.PureComponent<Props, State> {
 
     render() {
         const { batchOptionMode, onBatchForward } = this.props;
-        return batchOptionMode ? (
-            <SafeAreaView edges={['bottom']}  style={styles.safeview}>
-                <TouchableWithoutFeedback onPress={() => onBatchForward()}>
-                    <View style={styles.container}>
-                        <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
-        ) : (
-            <SafeAreaView edges={['bottom']}  style={styles.safeview}>
-                <View style={styles.container}>
-                    {this._renderLeftBtn()}
-                    <View style={styles.msgContainer}>
-                        {this._renderInputView()}
-                        {this._renderQuoteView()}
-                    </View>
-                    {this._renderRightBtn()}
-                </View>
-                {this._renderBottomView()}
-            </SafeAreaView>
+        return (
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => {
+                    this.safeAreaBottom = insets?.bottom || 0;
+                    return batchOptionMode ? (
+                        <SafeAreaView edges={['bottom']} style={styles.safeview}>
+                            <TouchableWithoutFeedback onPress={() => onBatchForward()}>
+                                <View style={styles.container}>
+                                    <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </SafeAreaView>
+                    ) : (
+                        <SafeAreaView edges={['bottom']} style={styles.safeview}>
+                            <View style={styles.container}>
+                                {this._renderLeftBtn()}
+                                <View style={styles.msgContainer}>
+                                    {this._renderInputView()}
+                                    {this._renderQuoteView()}
+                                </View>
+                                {this._renderRightBtn()}
+                            </View>
+                            {this._renderBottomView()}
+                        </SafeAreaView>
+                    );
+                }}
+            </SafeAreaInsetsContext.Consumer>
         );
     }
 
@@ -596,7 +604,7 @@ class _ClassComponent extends React.PureComponent<Props, State> {
     }
 
     protected _keyboardShow(event: KeyboardEvent) {
-        const offset = this.props.safeAreaInsets.bottom;
+        const offset = this.safeAreaBottom;
         this.setState({
             keyboardHeight: event.endCoordinates.height - offset,
         });
@@ -741,21 +749,3 @@ const styles = StyleSheet.create({
         height: 40, // TODO
     },
 });
-
-
-const Wrapper = (props: any) => {
-    const safeAreaInsets = useSafeAreaInsets();
-    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
-};
-
-if ((_ClassComponent as any).propTypes) {
-    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
-}
-if ((_ClassComponent as any).defaultProps) {
-    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
-}
-if ((_ClassComponent as any).navigationOptions) {
-    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
-}
-
-export default Wrapper;
