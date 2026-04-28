@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     Dimensions,
 } from 'react-native';
-import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Component } from '../typings';
 import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
@@ -17,7 +17,7 @@ import { AllMembers } from 'react-native-im/plugin/setting';
 
 export type Props = Component.AvatarListProps;
 
-export default class extends React.PureComponent<Props> {
+class _ClassComponent extends React.PureComponent<Props> {
     protected readonly add = '__add__';
     protected readonly remove = '__remove__';
     protected readonly padding = 16;
@@ -91,7 +91,7 @@ export default class extends React.PureComponent<Props> {
 
     protected _calculateColumn(): number {
         const { width, height } = Dimensions.get('window');
-        const safeInset = getSafeAreaInset();
+        const safeInset = this.props.safeAreaInsets;
         const innerWidth = width - safeInset.left - safeInset.right;
         let column = 0;
         if (width > height) {
@@ -194,3 +194,22 @@ const styles = StyleSheet.create({
         left: 0,
     },
 });
+
+
+const Wrapper = (props: any) => {
+    const safeAreaInsets = useSafeAreaInsets();
+    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
+};
+
+if ((_ClassComponent as any).propTypes) {
+    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
+}
+if ((_ClassComponent as any).defaultProps) {
+    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
+}
+if ((_ClassComponent as any).navigationOptions) {
+    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
+}
+
+Wrapper.ClassComponent = _ClassComponent;
+export default Wrapper;

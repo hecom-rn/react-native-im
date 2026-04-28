@@ -1,10 +1,10 @@
 import React from 'react';
 import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {getSafeAreaInset} from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Model from '../model';
 import BottomBar from './BottomBar';
 
-export default class extends React.PureComponent {
+class _ClassComponent extends React.PureComponent {
     static propTypes = {
         ...BottomBar.propTypes,
     };
@@ -25,7 +25,7 @@ export default class extends React.PureComponent {
         if (width < height) {
             pageSize = 8;
         } else {
-            const safeInset = getSafeAreaInset();
+            const safeInset = this.props.safeAreaInsets;
             pageSize = Math.floor((width - safeInset.left - safeInset.right - this.innerHorizontal * 2) / this.itemWidth) * 2;
         }
         const count = Math.floor((allItems.length - 1) / pageSize) + 1;
@@ -169,3 +169,20 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
 });
+
+const Wrapper = (props: any) => {
+    const safeAreaInsets = useSafeAreaInsets();
+    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
+};
+
+if ((_ClassComponent as any).propTypes) {
+    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
+}
+if ((_ClassComponent as any).defaultProps) {
+    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
+}
+if ((_ClassComponent as any).navigationOptions) {
+    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
+}
+
+export default Wrapper;

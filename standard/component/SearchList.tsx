@@ -8,8 +8,8 @@ import {
     TouchableHighlight,
     TouchableOpacity,
     View,
-    SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import NaviBar from '@hecom/react-native-pure-navigation-bar';
 import SearchBar from 'react-native-general-searchbar';
@@ -86,7 +86,7 @@ export default class extends React.Component {
                             SectionSeparatorComponent={SectionSeparatorComponent}
                         />
 
-                        <SafeAreaView />
+                        <SafeAreaView edges={['bottom']} />
                     </>
                 )}
             </View>

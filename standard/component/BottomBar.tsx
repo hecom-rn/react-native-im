@@ -1,5 +1,5 @@
 import { t } from '@hecom/basecore/util/i18n';
-import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
 import {
     EmitterSubscription,
@@ -9,7 +9,6 @@ import {
     NativeSyntheticEvent,
     PermissionsAndroid,
     Platform,
-    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
@@ -21,6 +20,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-root-toast';
 import delegate from '../delegate';
 import * as PageKeys from '../pagekey';
@@ -53,7 +53,7 @@ export interface State {
     quoteMsg: Message.General | undefined;
 }
 
-export default class extends React.PureComponent<Props, State> {
+class _ClassComponent extends React.PureComponent<Props, State> {
     static defaultProps = {};
 
     protected selectedEmojiArr: string[] = [];
@@ -96,7 +96,7 @@ export default class extends React.PureComponent<Props, State> {
     render() {
         const { batchOptionMode, onBatchForward } = this.props;
         return batchOptionMode ? (
-            <SafeAreaView style={styles.safeview}>
+            <SafeAreaView edges={['bottom']}  style={styles.safeview}>
                 <TouchableWithoutFeedback onPress={() => onBatchForward()}>
                     <View style={styles.container}>
                         <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
@@ -104,7 +104,7 @@ export default class extends React.PureComponent<Props, State> {
                 </TouchableWithoutFeedback>
             </SafeAreaView>
         ) : (
-            <SafeAreaView style={styles.safeview}>
+            <SafeAreaView edges={['bottom']}  style={styles.safeview}>
                 <View style={styles.container}>
                     {this._renderLeftBtn()}
                     <View style={styles.msgContainer}>
@@ -346,10 +346,13 @@ export default class extends React.PureComponent<Props, State> {
         const audioSet: AudioSet = {
             AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
             AudioSourceAndroid: AudioSourceAndroidType.MIC,
+            AudioSamplingRateAndroid: 44100,
+            AudioEncodingBitRateAndroid: 128000,
+            OutputFormatAndroid: OutputFormatAndroidType.MPEG_4,
             AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
             AVNumberOfChannelsKeyIOS: 2,
             AVFormatIDKeyIOS: AVEncodingOption.aac,
-            OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
+            AVSampleRateKeyIOS: 44100,
             AudioSourceHarmony: 1,
             AudioMimeHarmony: 'audio/mp4a-latm',
             AudioFileFormatHarmony: 'm4a',
@@ -593,7 +596,7 @@ export default class extends React.PureComponent<Props, State> {
     }
 
     protected _keyboardShow(event: KeyboardEvent) {
-        const offset = getSafeAreaInset().bottom;
+        const offset = this.props.safeAreaInsets.bottom;
         this.setState({
             keyboardHeight: event.endCoordinates.height - offset,
         });
@@ -738,3 +741,21 @@ const styles = StyleSheet.create({
         height: 40, // TODO
     },
 });
+
+
+const Wrapper = (props: any) => {
+    const safeAreaInsets = useSafeAreaInsets();
+    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
+};
+
+if ((_ClassComponent as any).propTypes) {
+    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
+}
+if ((_ClassComponent as any).defaultProps) {
+    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
+}
+if ((_ClassComponent as any).navigationOptions) {
+    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
+}
+
+export default Wrapper;

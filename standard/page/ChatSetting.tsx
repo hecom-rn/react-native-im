@@ -1,12 +1,12 @@
 import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { getSafeAreaInset } from '@hecom/react-native-pure-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Model from '../model';
 import { Conversation } from '../typings';
 import delegate from '../delegate';
 
-export default class extends React.PureComponent {
+class _ClassComponent extends React.PureComponent {
     static navigationOptions = function ({ route }) {
         const { chatType } = route.params;
         const isGroup = chatType === Conversation.ChatType.Group;
@@ -28,7 +28,7 @@ export default class extends React.PureComponent {
             this._renderVerticalLine.bind(this)
         );
         const hasBottom = bottomItems.length > 0;
-        const marginBottom = hasBottom ? getSafeAreaInset().bottom + 50 : 0;
+        const marginBottom = hasBottom ? this.props.safeAreaInsets.bottom + 50 : 0;
         return (
             <View style={[styles.view, style]}>
                 <ScrollView style={[styles.scrollView, { marginBottom }]}>
@@ -55,7 +55,7 @@ export default class extends React.PureComponent {
     }
 
     _renderBottom(bottomItems) {
-        const { bottom } = getSafeAreaInset();
+        const { bottom } = this.props.safeAreaInsets;
         return <View style={[styles.bottom, { bottom }]}>{bottomItems}</View>;
     }
 
@@ -132,3 +132,21 @@ const styles = StyleSheet.create({
         height: StyleSheet.hairlineWidth,
     },
 });
+
+
+const Wrapper = (props: any) => {
+    const safeAreaInsets = useSafeAreaInsets();
+    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
+};
+
+if ((_ClassComponent as any).propTypes) {
+    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
+}
+if ((_ClassComponent as any).defaultProps) {
+    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
+}
+if ((_ClassComponent as any).navigationOptions) {
+    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
+}
+
+export default Wrapper;

@@ -1,7 +1,8 @@
 import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import NaviBar, { forceInset } from '@hecom/react-native-pure-navigation-bar';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import NaviBar from '@hecom/react-native-pure-navigation-bar';
 import Listener from '@hecom/listener';
 import Toast from 'react-native-root-toast';
 import * as PageKeys from '../pagekey';
@@ -46,7 +47,7 @@ export default class extends React.PureComponent {
                     placeholder={t('i18n_im_44ce7ae909bbb28b')}
                 />
 
-                <SafeAreaView style={styles.safeview} forceInset={forceInset(0, 1, 1, 1)}>
+                <SafeAreaView style={styles.safeview} edges={['right', 'bottom', 'left']}>
                     <FlatList
                         style={styles.list}
                         data={this.state.groups}

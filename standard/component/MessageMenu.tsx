@@ -56,7 +56,7 @@ export default class extends React.PureComponent<Props> {
     }
 
     // protected _getOffset() {
-    //     const offset = getSafeAreaInset(undefined, true).top;
+    //     const offset = useSafeAreaInsets().top;
     //     const {width, height} = Dimensions.get('window');
     //     const isLandscape = width > height;
     //     const isIos = Platform.OS === 'ios';
