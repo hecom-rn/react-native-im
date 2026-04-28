@@ -14,7 +14,6 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { IMConstant } from 'react-native-im-easemob';
 import Toast from 'react-native-root-toast';
 import delegate from '../delegate';
@@ -89,7 +88,10 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _registerListener = () => {
-        this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this._onBackPress);
+        this.backHandlerSubscription = BackHandler.addEventListener(
+            'hardwareBackPress',
+            this._onBackPress
+        );
         [
             [Event.SendMessage, this._onReceiveMessage.bind(this)],
             [Event.ReceiveMessage, this._onReceiveMessage.bind(this)],
@@ -588,9 +590,6 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
 const styles = StyleSheet.create({
     view: {
-        flex: 1,
-    },
-    innerview: {
         flex: 1,
     },
     fixedList: {
