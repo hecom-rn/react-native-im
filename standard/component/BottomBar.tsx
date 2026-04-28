@@ -9,7 +9,6 @@ import {
     NativeSyntheticEvent,
     PermissionsAndroid,
     Platform,
-    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
@@ -21,24 +20,23 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+import type { RecordBackType } from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer, {
+    AudioEncoderAndroidType,
+    AudioSet,
+    AudioSourceAndroidType,
+    AVEncoderAudioQualityIOSType,
+    AVEncodingOption,
+    OutputFormatAndroidType,
+} from 'react-native-audio-recorder-player';
+import RNFS from 'react-native-fs';
+import { IMConstant } from 'react-native-im-easemob';
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import Toast from 'react-native-root-toast';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import delegate from '../delegate';
 import * as PageKeys from '../pagekey';
 import { Component, Contact, Conversation, Message } from '../typings';
-import { IMConstant } from 'react-native-im-easemob';
-import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
-import AudioRecorderPlayer, {
-    AudioSet,
-    AVEncoderAudioQualityIOSType,
-    AVEncodingOption,
-    AudioEncoderAndroidType,
-    AudioSourceAndroidType,
-    OutputFormatAndroidType,
-} from 'react-native-audio-recorder-player';
-import type {
-    RecordBackType,
-} from 'react-native-audio-recorder-player';
-import RNFS from 'react-native-fs';
 
 export type Props = Component.BottomBarProps;
 
@@ -96,25 +94,33 @@ export default class extends React.PureComponent<Props, State> {
     render() {
         const { batchOptionMode, onBatchForward } = this.props;
         return batchOptionMode ? (
-            <SafeAreaView style={styles.safeview}>
-                <TouchableWithoutFeedback onPress={() => onBatchForward()}>
-                    <View style={styles.container}>
-                        <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => (
+                    <View style={[styles.safeview, { paddingBottom: insets?.bottom || 0 }]}>
+                        <TouchableWithoutFeedback onPress={() => onBatchForward()}>
+                            <View style={styles.container}>
+                                <Text style={styles.btnText}>{t('i18n_im_02107ba378e21710')}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
+                )}
+            </SafeAreaInsetsContext.Consumer>
         ) : (
-            <SafeAreaView style={styles.safeview}>
-                <View style={styles.container}>
-                    {this._renderLeftBtn()}
-                    <View style={styles.msgContainer}>
-                        {this._renderInputView()}
-                        {this._renderQuoteView()}
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => (
+                    <View style={[styles.safeview, { paddingBottom: insets?.bottom || 0 }]}>
+                        <View style={styles.container}>
+                            {this._renderLeftBtn()}
+                            <View style={styles.msgContainer}>
+                                {this._renderInputView()}
+                                {this._renderQuoteView()}
+                            </View>
+                            {this._renderRightBtn()}
+                        </View>
+                        {this._renderBottomView()}
                     </View>
-                    {this._renderRightBtn()}
-                </View>
-                {this._renderBottomView()}
-            </SafeAreaView>
+                )}
+            </SafeAreaInsetsContext.Consumer>
         );
     }
 
@@ -361,10 +367,7 @@ export default class extends React.PureComponent<Props, State> {
             android: `${RNFS.CachesDirectoryPath}/imTempAudio.m4a`,
             default: 'imTempAudio.m4a',
         });
-        this.audioRecorderPlayer.startRecorder(
-            uri,
-            audioSet,
-        ).then((path) => {
+        this.audioRecorderPlayer.startRecorder(uri, audioSet).then((path) => {
             this.audioPath = path;
             this.audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
                 this.duration = e.currentPosition;
@@ -537,9 +540,10 @@ export default class extends React.PureComponent<Props, State> {
 
     protected checkMicroPhonePermission = (permissionName: string) => {
         return check(permissionName)
-            .then(result => result === RESULTS.GRANTED ? RESULTS.GRANTED :
-                request(permissionName))
-            .then(result => {
+            .then((result) =>
+                result === RESULTS.GRANTED ? RESULTS.GRANTED : request(permissionName)
+            )
+            .then((result) => {
                 if (result === RESULTS.GRANTED) {
                     this.setState({
                         showSpeech: !this.state.showSpeech,
@@ -552,17 +556,20 @@ export default class extends React.PureComponent<Props, State> {
                     Toast.show(t('i18n_im_0089f124e7fec588'));
                 }
             });
-    }
+    };
 
     protected checkIosMicroPhonePermission = () => {
         return this.checkMicroPhonePermission(PERMISSIONS.IOS.MICROPHONE);
-    }
+    };
 
     protected checkAndroidMicroPhonePermission = () => {
         return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
-            .then(granted => granted ? PermissionsAndroid.RESULTS.GRANTED :
-                PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO))
-            .then(granted => {
+            .then((granted) =>
+                granted
+                    ? PermissionsAndroid.RESULTS.GRANTED
+                    : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
+            )
+            .then((granted) => {
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     this.setState({
                         showSpeech: !this.state.showSpeech,
@@ -575,11 +582,11 @@ export default class extends React.PureComponent<Props, State> {
                     Toast.show(t('i18n_im_0089f124e7fec588'));
                 }
             });
-    }
+    };
 
     protected checkHarmonyMicroPhonePermission = () => {
         return this.checkMicroPhonePermission('ohos.permission.MICROPHONE');
-    }
+    };
 
     protected _onSwitchSpeechKeyboard() {
         if (!this.state.showSpeech) {
