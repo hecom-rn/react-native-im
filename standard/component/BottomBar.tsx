@@ -376,7 +376,7 @@ export default class extends React.PureComponent<Props, State> {
             uri,
             audioSet,
         ).then((path) => {
-            this.audioPath = path;
+            this.audioPath = (Platform.OS === 'ios' && path?.length > 7) ? path.substring(7) : path;
             this.audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
                 this.duration = e.currentPosition;
             });
