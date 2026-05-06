@@ -1,14 +1,16 @@
 import { TimeUtils } from '@hecom/aDate';
 import { t } from '@hecom/basecore/util/i18n';
 import Listener from '@hecom/listener';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { StackActions } from '@react-navigation/native';
 import React from 'react';
 import {
     Alert,
     BackHandler,
-    Clipboard,
     Image,
     Keyboard,
+    KeyboardAvoidingView,
+    StatusBar,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -191,7 +193,11 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     render() {
         const { imId, chatType } = this.props;
         return (
-            <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
+            <KeyboardAvoidingView
+                behavior={'padding'}
+                keyboardVerticalOffset={StatusBar.currentHeight * 2}
+                style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}
+            >
                 {this._setNaviBar()}
                 <TouchableWithoutFeedback
                     disabled={!this.state.keyboardShow}
@@ -217,7 +223,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                     onClose={this._onCloseMenu.bind(this)}
                     actionList={this.state.actionList}
                 />
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 
