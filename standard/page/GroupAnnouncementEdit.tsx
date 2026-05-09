@@ -3,14 +3,14 @@ import React from 'react';
 import { Keyboard, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import PropTypes from 'prop-types';
 import NaviBar from '@hecom/react-native-pure-navigation-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { Delegate } from 'react-native-im/standard/index';
 import Toast from 'react-native-root-toast';
 import Navigation from '@hecom/navigation/src/index';
 import { Message } from 'react-native-im/standard/typings/index';
 import delegate from 'react-native-im/standard/delegate';
 
-class _ClassComponent extends React.PureComponent {
+export default class GroupAnnouncementEdit extends React.PureComponent {
     private keyboardDidShowListener: any;
     private keyboardDidHideListener: any;
     private isDisable = true;
@@ -70,39 +70,45 @@ class _ClassComponent extends React.PureComponent {
                 rights.onRight = this._onRight;
             }
         }
-        const safeArea = this.props.safeAreaInsets;
-        const marginStyle = {
-            marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeArea.bottom,
-        };
         return (
-            <View style={styles.container}>
-                <NaviBar
-                    title={t('i18n_im_99728d0e0224c355')}
-                    {...rights}
-                    autoCloseKeyboard={true}
-                />
-                {canEdit ? (
-                    <TextInput
-                        style={[styles.input, marginStyle]}
-                        defaultValue={groupAnnouncement}
-                        maxLength={2000}
-                        multiline={true}
-                        placeholder={t('i18n_im_0a59be271a44ca8b')}
-                        onChangeText={(text) => {
-                            this.isDisable = false;
-                            this.setState({ text });
-                        }}
-                        autoFocus={canEdit}
-                    />
-                ) : (
-                    <ScrollView
-                        style={[styles.content, { marginBottom: safeArea.bottom }]}
-                        showsVerticalScrollIndicator={true}
-                    >
-                        <Text style={[styles.contentText]}>{groupAnnouncement}</Text>
-                    </ScrollView>
-                )}
-            </View>
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => {
+                    const safeBottom = insets?.bottom || 0;
+                    const marginStyle = {
+                        marginBottom: Math.max(this.state.keyBoardHeight, 10) + safeBottom,
+                    };
+                    return (
+                        <View style={styles.container}>
+                            <NaviBar
+                                title={t('i18n_im_99728d0e0224c355')}
+                                {...rights}
+                                autoCloseKeyboard={true}
+                            />
+                            {canEdit ? (
+                                <TextInput
+                                    style={[styles.input, marginStyle]}
+                                    defaultValue={groupAnnouncement}
+                                    maxLength={2000}
+                                    multiline={true}
+                                    placeholder={t('i18n_im_0a59be271a44ca8b')}
+                                    onChangeText={(text) => {
+                                        this.isDisable = false;
+                                        this.setState({ text });
+                                    }}
+                                    autoFocus={canEdit}
+                                />
+                            ) : (
+                                <ScrollView
+                                    style={[styles.content, { marginBottom: safeBottom }]}
+                                    showsVerticalScrollIndicator={true}
+                                >
+                                    <Text style={[styles.contentText]}>{groupAnnouncement}</Text>
+                                </ScrollView>
+                            )}
+                        </View>
+                    );
+                }}
+            </SafeAreaInsetsContext.Consumer>
         );
     }
 
@@ -168,19 +174,4 @@ const styles = StyleSheet.create({
 });
 
 
-const Wrapper = (props: any) => {
-    const safeAreaInsets = useSafeAreaInsets();
-    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
-};
 
-if ((_ClassComponent as any).propTypes) {
-    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
-}
-if ((_ClassComponent as any).defaultProps) {
-    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
-}
-if ((_ClassComponent as any).navigationOptions) {
-    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
-}
-
-export default Wrapper;

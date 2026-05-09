@@ -1,12 +1,12 @@
 import { t } from '@hecom/basecore/util/i18n';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import * as Model from '../model';
 import { Conversation } from '../typings';
 import delegate from '../delegate';
 
-class _ClassComponent extends React.PureComponent {
+export default class ChatSetting extends React.PureComponent {
     static navigationOptions = function ({ route }) {
         const { chatType } = route.params;
         const isGroup = chatType === Conversation.ChatType.Group;
@@ -28,14 +28,21 @@ class _ClassComponent extends React.PureComponent {
             this._renderVerticalLine.bind(this)
         );
         const hasBottom = bottomItems.length > 0;
-        const marginBottom = hasBottom ? this.props.safeAreaInsets.bottom + 50 : 0;
         return (
-            <View style={[styles.view, style]}>
-                <ScrollView style={[styles.scrollView, { marginBottom }]}>
-                    {this._renderSections()}
-                </ScrollView>
-                {hasBottom && this._renderBottom(bottomItems)}
-            </View>
+            <SafeAreaInsetsContext.Consumer>
+                {(insets) => {
+                    const safeBottom = insets?.bottom || 0;
+                    const marginBottom = hasBottom ? safeBottom + 50 : 0;
+                    return (
+                        <View style={[styles.view, style]}>
+                            <ScrollView style={[styles.scrollView, { marginBottom }]}>
+                                {this._renderSections()}
+                            </ScrollView>
+                            {hasBottom && this._renderBottom(bottomItems, safeBottom)}
+                        </View>
+                    );
+                }}
+            </SafeAreaInsetsContext.Consumer>
         );
     }
 
@@ -54,9 +61,8 @@ class _ClassComponent extends React.PureComponent {
         return views;
     }
 
-    _renderBottom(bottomItems) {
-        const { bottom } = this.props.safeAreaInsets;
-        return <View style={[styles.bottom, { bottom }]}>{bottomItems}</View>;
+    _renderBottom(bottomItems, safeBottom) {
+        return <View style={[styles.bottom, { bottom: safeBottom }]}>{bottomItems}</View>;
     }
 
     _renderItems(items, renderSeperator) {
@@ -134,19 +140,4 @@ const styles = StyleSheet.create({
 });
 
 
-const Wrapper = (props: any) => {
-    const safeAreaInsets = useSafeAreaInsets();
-    return <_ClassComponent {...props} safeAreaInsets={safeAreaInsets} />;
-};
 
-if ((_ClassComponent as any).propTypes) {
-    (Wrapper as any).propTypes = (_ClassComponent as any).propTypes;
-}
-if ((_ClassComponent as any).defaultProps) {
-    (Wrapper as any).defaultProps = (_ClassComponent as any).defaultProps;
-}
-if ((_ClassComponent as any).navigationOptions) {
-    (Wrapper as any).navigationOptions = (_ClassComponent as any).navigationOptions;
-}
-
-export default Wrapper;
