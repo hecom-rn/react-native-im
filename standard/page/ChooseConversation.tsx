@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import PickList, { PickListRowUtil } from '@hecom/react-native-picklist';
 import * as PageKeys from '../pagekey';
 import delegate from '../delegate';
+import Toast from 'react-native-root-toast';
 
 export default class extends React.PureComponent {
     static propTypes = {
@@ -109,6 +110,10 @@ export default class extends React.PureComponent {
 
     _onFinish(selectedTreeNodes) {
         const selectedInfos = selectedTreeNodes.map((treeNode) => treeNode.getInfo());
+        if (selectedInfos.length === 0) {
+            Toast.show('请至少选择一个会话');
+            return false;
+        }
         this.props.onSelectData && this.props.onSelectData(selectedInfos);
     }
 
