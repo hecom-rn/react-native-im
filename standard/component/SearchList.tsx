@@ -380,9 +380,6 @@ const styles = StyleSheet.create({
         margin: 8,
         paddingVertical: 3,
         paddingHorizontal: 4,
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: '#666666',
     },
     historyItemText: {
         fontSize: 14,
