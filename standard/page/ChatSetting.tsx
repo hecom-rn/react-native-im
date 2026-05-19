@@ -5,13 +5,14 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import * as Model from '../model';
 import { Conversation } from '../typings';
 import delegate from '../delegate';
+import NaviBar from '@hecom/react-native-pure-navigation-bar-fontScale';
 
 export default class ChatSetting extends React.PureComponent {
     static navigationOptions = function ({ route }) {
-        const { chatType } = route.params;
-        const isGroup = chatType === Conversation.ChatType.Group;
-        const title = isGroup ? t('i18n_im_4868fad3fb03957d') : t('i18n_im_1e06eb86f671e4f5');
-        return { title };
+        return {
+            headerShown: false,
+            header: () => null,
+        };
     };
 
     static defaultProps = {
@@ -28,6 +29,10 @@ export default class ChatSetting extends React.PureComponent {
             this._renderVerticalLine.bind(this)
         );
         const hasBottom = bottomItems.length > 0;
+        const { chatType } = this.props;
+        const isGroup = chatType === Conversation.ChatType.Group;
+        const title = isGroup ? t('i18n_im_4868fad3fb03957d') : t('i18n_im_1e06eb86f671e4f5');
+
         return (
             <SafeAreaInsetsContext.Consumer>
                 {(insets) => {
@@ -35,6 +40,7 @@ export default class ChatSetting extends React.PureComponent {
                     const marginBottom = hasBottom ? safeBottom + 50 : 0;
                     return (
                         <View style={[styles.view, style]}>
+                            <NaviBar title={title}/>
                             <ScrollView style={[styles.scrollView, { marginBottom }]}>
                                 {this._renderSections()}
                             </ScrollView>
