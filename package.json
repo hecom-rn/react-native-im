@@ -9,7 +9,8 @@
     "i18n:replace": "npx hecom-i18n-tools replace --excel=i18n/temp_im_i18n.xlsx --importPath='@hecom/basecore/util/i18n' --fixLint=true --prettier-config=.prettierrc.js",
     "i18n:scan": "npx hecom-i18n-tools scan --src=standard,plugin --out=i18n/temp_im_i18n.xlsx --gitlab=https://github.com/hecom-rn/react-native-im/blob/master --config=i18nScannerOptions.js",
     "i18n:static-consts": "npx hecom-i18n-tools static-consts --src=standard,plugin",
-    "i18n:gen": "npx hecom-i18n-tools gen --excel=i18n/temp_im_i18n.xlsx --out=i18n/locales --master=i18n/im_i18n.xlsx"
+    "i18n:gen": "npx hecom-i18n-tools gen --excel=i18n/temp_im_i18n.xlsx --out=i18n/locales --master=i18n/im_i18n.xlsx",
+    "i18n:flow": "npx hecom-i18n-tools flow --src=standard,plugin --excel=i18n/temp_im_i18n.xlsx --out=i18n/locales --importPath='@hecom/basecore/util/i18n' --gitlab=https://github.com/hecom-rn/react-native-im/blob/master --config=i18nScannerOptions.js --master=i18n/im_i18n.xlsx --conflict-report=i18n/locales/conflicts.json --prettier-config=.prettierrc.js --fixLint=true --api-key=sk-ee7a5d7770404554b72d0f89c394ec13"
   },
   "repository": {
     "type": "git",
