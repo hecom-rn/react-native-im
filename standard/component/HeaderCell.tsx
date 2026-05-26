@@ -8,11 +8,11 @@ export default class extends React.PureComponent {
     };
 
     render() {
-        const {onClick, onLongPress} = this.props;
+        const {onClick, onLongPress, testID} = this.props;
         const content = this._renderContent();
         const separatorLine = this._renderSeparatorLine();
         return onClick || onLongPress ? (
-            <TouchableHighlight onPress={onClick} onLongPress={onLongPress}>
+            <TouchableHighlight onPress={onClick} onLongPress={onLongPress} testID={testID}>
                 <>
                     {content}
                     {separatorLine}

@@ -8,11 +8,12 @@ export type Props = Component.SettingItemProps;
 
 export default class extends React.PureComponent<Props> {
     render() {
-        const {onPressLine} = this.props;
+        const {onPressLine, testID} = this.props;
         return onPressLine ? (
             <TouchableHighlight
                 underlayColor={delegate.style.separatorLineColor}
                 onPress={onPressLine}
+                testID={testID}
             >
                 {this._renderLine()}
             </TouchableHighlight>
@@ -63,11 +64,12 @@ export default class extends React.PureComponent<Props> {
                 />
             ) : null;
         } else if (type === Component.SettingItemType.Switch) {
-            const {data = false} = this.props;
+            const {data = false, testID} = this.props;
             return (
                 <Switch
                     onValueChange={onPressSwitch}
                     value={data as boolean}
+                    testID={testID}
                 />
             );
         } else {

@@ -16,7 +16,7 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
     const groupOwner = Delegate.model.Group.getOwner(imId);
     const isOwner = groupOwner === Delegate.user.getMine().userId;
     const text = isOwner ? t('i18n_im_cb2756b09c5ab768') : t('i18n_im_6742dce649e2faff');
-    return getGeneralButton(key, text, () => _clickLeave(props, text, isOwner));
+    return getGeneralButton(key, text, () => _clickLeave(props, text, isOwner), 'groupDisbandBtn');
 }
 
 async function _clickLeave(

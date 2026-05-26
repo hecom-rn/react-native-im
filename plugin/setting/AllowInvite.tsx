@@ -40,6 +40,7 @@ export class AllowInviteCell extends React.PureComponent<Props, State> {
                 title={t('i18n_im_9d2bfa502dca48bd')}
                 data={this.state.allowInvites}
                 onPressSwitch={this._clickConfig.bind(this)}
+                testID='groupAllowAddSwitch'
             />
         );
     }

@@ -57,6 +57,7 @@ export class GroupNameCell extends React.PureComponent<Props, State> {
                     title={t('i18n_im_12633e741c9ab2ed')}
                     data={groupName}
                     onPressLine={showNameLineFunc}
+                    testID='groupNameEntry'
                 />
 
                 {/* 原弹窗 (包含群名称修改提示) 已移除 */}

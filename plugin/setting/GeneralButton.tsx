@@ -2,13 +2,14 @@ import React from 'react';
 import { TouchableHighlight, View, Text, StyleSheet } from 'react-native';
 import { Typings } from '../../standard';
 
-export default function (key: number | string, text: string, onPress?: () => void): Typings.Action.Setting.Result {
+export default function (key: number | string, text: string, onPress?: () => void, testID?: string): Typings.Action.Setting.Result {
     return (
         <TouchableHighlight
             key={key}
             style={styles.touch}
             activeOpacity={0.9}
             onPress={onPress}
+            testID={testID}
         >
             <View>
                 <Text style={styles.text}>

@@ -32,6 +32,7 @@ export class TopCell extends React.PureComponent<Props, State> {
                 title={t('i18n_im_856e892a3eaf7485')}
                 data={this.state.top}
                 onPressSwitch={this._clickConfig.bind(this)}
+                testID='chatPinSwitch'
             />
         );
     }

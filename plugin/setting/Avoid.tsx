@@ -33,6 +33,7 @@ export class AvoidCell extends React.PureComponent<Props, State> {
                 title={t('i18n_im_5c3604c325ee4b6e')}
                 data={this.state.avoid}
                 onPressSwitch={this._clickConfig.bind(this)}
+                testID='chatMuteSwitch'
             />
         );
     }

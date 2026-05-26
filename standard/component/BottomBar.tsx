@@ -172,6 +172,7 @@ export default class extends React.PureComponent<Props, State> {
                 activeOpacity={0.5}
                 onPress={this._onSwitchSpeechKeyboard.bind(this)}
                 style={[styles.leftIconTouch, touchStyle]}
+                testID='chatVoiceBtn'
             >
                 <Image style={styles.icon} source={icon} />
             </TouchableOpacity>
@@ -193,6 +194,7 @@ export default class extends React.PureComponent<Props, State> {
                         onKeyPress={this._onKeyPress.bind(this)}
                         underlineColorAndroid={'transparent'}
                         autoCorrect={false}
+                        testID='chatInputBox'
                     />
                 ) : (
                     <TouchableHighlight
@@ -275,6 +277,7 @@ export default class extends React.PureComponent<Props, State> {
                     activeOpacity={0.5}
                     onPress={this._onSwitchEmojiKeyboard.bind(this)}
                     style={[styles.iconTouch, touchStyle]}
+                    testID='chatEmojiBtn'
                 >
                     <Image style={styles.icon} source={firstIcon} />
                 </TouchableOpacity>
@@ -283,6 +286,7 @@ export default class extends React.PureComponent<Props, State> {
                         activeOpacity={0.5}
                         onPress={this._onSwitchMoreKeyboard.bind(this)}
                         style={[styles.iconTouch, touchStyle]}
+                        testID='chatMoreFuncBtn'
                     >
                         <Image style={styles.icon} source={secondIcon} />
                     </TouchableOpacity>
@@ -291,6 +295,7 @@ export default class extends React.PureComponent<Props, State> {
                         activeOpacity={0.5}
                         onPress={this._onSendMessageText.bind(this)}
                         style={styles.sendTouch}
+                        testID='chatSendBtn'
                     >
                         <View style={styles.sendView}>
                             <Text style={styles.sendText}>{t('i18n_im_edecf0ae6e5144f9')}</Text>
