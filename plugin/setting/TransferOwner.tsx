@@ -17,7 +17,7 @@ export function getUi(props: Typings.Action.Setting.Params): Typings.Action.Sett
     if (!isOwner) {
         return null;
     }
-    return getGeneralButton(key, t('i18n_im_01ba77ab84b2adbb'), () => _clickTransferOwner(props));
+    return getGeneralButton(key, t('i18n_im_01ba77ab84b2adbb'), () => _clickTransferOwner(props), 'groupTransferOwnerBtn');
 }
 
 function _clickTransferOwner(props: Typings.Action.Setting.Params) {

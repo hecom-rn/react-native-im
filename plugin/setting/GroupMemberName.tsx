@@ -37,6 +37,7 @@ export class GroupMemberNameCell extends React.PureComponent<Props, State> {
                 title={t('i18n_im_c3a53d7746dea3e6')}
                 data={this.state.showMembersName}
                 onPressSwitch={this._clickConfig.bind(this)}
+                testID='groupShowNicknameSwitch'
             />
         );
     }

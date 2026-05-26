@@ -130,7 +130,7 @@ export default class extends React.Component {
         };
         const fromOrgView = dataSource ? undefined : (
             <View style={styles.row}>
-                <TouchableOpacity onPress={this._clickHeader.bind(this)}>
+                <TouchableOpacity onPress={this._clickHeader.bind(this)} testID='selectByDeptBtn'>
                     <View style={[styles.container, separatorStyle]}>
                         <Text style={styles.text}>{t('i18n_im_d001e16fe50dff46')}</Text>
                         <ArrowImage style={styles.icon} />

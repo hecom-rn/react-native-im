@@ -87,4 +87,5 @@ export interface SettingItemProps {
     data?: string | ImageURISource | ImageRequireSource | boolean | void;
     onPressLine?: () => void;
     onPressSwitch?: (status: boolean) => void;
+    testID?: string;
 }

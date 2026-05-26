@@ -136,7 +136,7 @@ export default class extends React.PureComponent {
 
     _renderHeader = () => {
         return this.state.items.map(
-            ({ title, subTitle, onClick, icon, showBranchTop, showBranchBottom }, index) => (
+            ({ title, subTitle, onClick, icon, showBranchTop, showBranchBottom, testID }, index) => (
                 <delegate.component.HeaderCell
                     key={index}
                     title={title}
@@ -146,6 +146,7 @@ export default class extends React.PureComponent {
                     showBranchTop={showBranchTop}
                     showBranchBottom={showBranchBottom}
                     right={<ArrowImage style={styles.arrow} />}
+                    testID={testID}
                 />
             )
         );
@@ -171,7 +172,7 @@ export default class extends React.PureComponent {
     _renderRight = (item) => {
         const { phone } = item;
         return phone && phone.length > 0 ? (
-            <TouchableOpacity style={styles.phoneBtn} onPress={this._clickPhone.bind(this, phone)}>
+            <TouchableOpacity style={styles.phoneBtn} onPress={this._clickPhone.bind(this, phone)} testID='contactCallBtn'>
                 <Image source={require('./image/phone.png')} style={styles.phone} />
             </TouchableOpacity>
         ) : undefined;

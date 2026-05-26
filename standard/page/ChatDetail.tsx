@@ -241,7 +241,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                              navigation.goBack();
                          }
                      }}
-                     rightElement={<Image source={moreImage} style={styles.rightImage} />}
+                     rightElement={<Image source={moreImage} style={styles.rightImage} testID='chatMoreBtn' />}
                      onRight={() => {
                          const onSendMsg = this._onSendMessage.bind(this, imId, chatType);
                          this.props.navigation.navigate(PageKeys.ChatSetting, {

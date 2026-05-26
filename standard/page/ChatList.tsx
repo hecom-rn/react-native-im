@@ -89,7 +89,8 @@ export default class extends React.PureComponent {
                         backgroundColor: '#d9d8de',
                         width: 69,
                     },
-                    this._clickTop.bind(this, item, config)
+                    this._clickTop.bind(this, item, config),
+                    'chatSwipePin'
                 )}
                 {this._renderButton(
                     rowMap,
@@ -99,7 +100,8 @@ export default class extends React.PureComponent {
                         backgroundColor: '#c7cccc',
                         width: 106,
                     },
-                    this._clickMarkReadStatus.bind(this, item, !isRead)
+                    this._clickMarkReadStatus.bind(this, item, !isRead),
+                    'chatSwipeMarkUnread'
                 )}
                 {this._renderButton(
                     rowMap,
@@ -109,13 +111,14 @@ export default class extends React.PureComponent {
                         backgroundColor: '#fc3b39',
                         width: 106,
                     },
-                    this._clickDelete.bind(this, item)
+                    this._clickDelete.bind(this, item),
+                    'chatSwipeDelete'
                 )}
             </View>
         );
     }
 
-    _renderButton(rowMap, item, text, style, onPress) {
+    _renderButton(rowMap, item, text, style, onPress, testID?) {
         return (
             <TouchableOpacity
                 onPress={function () {
@@ -123,6 +126,7 @@ export default class extends React.PureComponent {
                     onPress && onPress();
                 }}
                 style={[styles.btn, style]}
+                testID={testID}
             >
                 <Text style={styles.btnText}>{text}</Text>
             </TouchableOpacity>

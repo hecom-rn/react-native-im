@@ -76,6 +76,7 @@ export default class extends React.PureComponent<Props> {
                 key={index}
                 onPress={this._onItemPress.bind(this, item)}
                 activeOpacity={0.8}
+                testID={item === this.add ? 'groupAddMemberBtn' : item === this.remove ? 'groupRemoveMemberBtn' : undefined}
             >
                 <View style={[styles.item, { marginHorizontal: this.itemMargin }]}>
                     <Image style={imageStyle} source={image} />

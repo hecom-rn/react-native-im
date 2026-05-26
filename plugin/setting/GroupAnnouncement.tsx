@@ -51,6 +51,7 @@ export class GroupAnnouncementCell extends React.PureComponent<Props, State> {
             <TouchableHighlight
                 underlayColor={delegate.style.separatorLineColor}
                 onPress={onPressFunc}
+                testID='groupAnnouncementEntry'
             >
                 <View style={styles.container}>
                     <View style={styles.line}>
