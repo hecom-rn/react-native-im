@@ -133,5 +133,6 @@
   "i18n_im_5e6d872cabdc583f": "转交成功",
   "i18n_im_c5324c9ffe6b54b6": "转交失败",
   "i18n_im_fee630ed574669c1": "[语音]",
-  "i18n_im_8ae8823ca6d19596": "{{MemberExpression1}}的位置"
+  "i18n_im_8ae8823ca6d19596": "{{MemberExpression1}}的位置",
+  "i18n_im_6e9bb1382117b1fc": "请至少选择一个会话"
 }

@@ -111,7 +111,7 @@ export default class extends React.PureComponent {
     _onFinish(selectedTreeNodes) {
         const selectedInfos = selectedTreeNodes.map((treeNode) => treeNode.getInfo());
         if (selectedInfos.length === 0) {
-            Toast.show('请至少选择一个会话');
+            Toast.show(t('i18n_im_6e9bb1382117b1fc'));
             return false;
         }
         this.props.onSelectData && this.props.onSelectData(selectedInfos);
