@@ -56,7 +56,7 @@ export default class extends React.PureComponent<Props, State> {
             msgContent = this._renderCenter();
         }
         return (
-            <View style={styles.message}>
+            <View style={styles.message} testID={`message_${this.props.message.messageId || this.props.message.innerId}`}>
                 {!!showTime && position !== 0 && this._renderTime()}
                 {msgContent}
             </View>

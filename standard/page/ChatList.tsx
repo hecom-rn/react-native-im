@@ -90,7 +90,7 @@ export default class extends React.PureComponent {
                         width: 69,
                     },
                     this._clickTop.bind(this, item, config),
-                    'chatSwipePin'
+                    `chatSwipePin_${item.imId}`
                 )}
                 {this._renderButton(
                     rowMap,
@@ -101,7 +101,7 @@ export default class extends React.PureComponent {
                         width: 106,
                     },
                     this._clickMarkReadStatus.bind(this, item, !isRead),
-                    'chatSwipeMarkUnread'
+                    `chatSwipeMarkUnread_${item.imId}`
                 )}
                 {this._renderButton(
                     rowMap,
@@ -112,7 +112,7 @@ export default class extends React.PureComponent {
                         width: 106,
                     },
                     this._clickDelete.bind(this, item),
-                    'chatSwipeDelete'
+                    `chatSwipeDelete_${item.imId}`
                 )}
             </View>
         );
