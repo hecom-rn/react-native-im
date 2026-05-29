@@ -55,7 +55,7 @@ export default class extends React.PureComponent<Props> {
         this._isErrorMessage() && content.push(this._renderErrorMessageText());
         this.state.latestMessage && content.push(this._renderLatestMessageText());
         return (
-            <SafeAreaView style={styles.view} edges={['right', 'left']}>
+            <SafeAreaView style={styles.view} edges={['right', 'left']} testID={`conversationCell_${imId}`}>
                 <delegate.component.ListCell
                     style={this.state.top && styles.top}
                     avatar={{ imId, chatType }}
@@ -84,7 +84,7 @@ export default class extends React.PureComponent<Props> {
                     {latestMessage && DateUtil.showDateTime(latestMessage.timestamp, false)}
                 </Text>
                 {avoid && (
-                    <View style={styles.silent}>
+                    <View style={styles.silent} testID={`conversationMute_${this.props.imId}`}>
                         <Image
                             source={require('./image/no_disturb.png')}
                             style={styles.silentIcon}
