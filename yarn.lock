@@ -143,13 +143,13 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/cameraroll/download/@react-native-community/cameraroll-1.4.1.tgz#e2891306243cf6a93556d4876ab99c38d497ab68"
   integrity sha1-4okTBiQ89qk1VtSHarmcONSXq2g=
 
-"@react-native-oh-tpl/react-native-audio-recorder-player@^3.6.10-0.0.2":
-  version "3.6.10-0.0.2"
-  resolved "https://registry.npmjs.org/@react-native-oh-tpl/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.6.10-0.0.2.tgz#413c9fe0ccb0237db5a10c498b18e520ab014378"
-  integrity sha512-ZbA0M58hVM3Gva/AfU0v4/dOvleVj4dKdreZmMsbNR1y3bPpUn4sDulZueO/Ue/KD82s0S0weXOBoNWND4+qmw==
+"@react-native-ohos/react-native-audio-recorder-player@3.7.0":
+  version "3.7.0"
+  resolved "https://registry.npmjs.org/@react-native-ohos/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.7.0.tgz#da77e5fd5a19e04845e41ce7dd6e32d9c6acbec2"
+  integrity sha512-/2ORICz6BTsxVM+onwNIXFqJCkvZxyPM+J7dTXbBfP5WnSwzzl+WNsunqdt5pMNohEbAIGCuzqCsbIA4bO6Shg==
   dependencies:
     dooboolab-welcome "^1.3.2"
-    react-native-audio-recorder-player "^3.6.10"
+    react-native-audio-recorder-player "^3.6.13"
 
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
@@ -2061,7 +2061,7 @@ react-is@^16.8.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-audio-recorder-player@^3.6.10, react-native-audio-recorder-player@^3.6.12:
+react-native-audio-recorder-player@^3.6.12, react-native-audio-recorder-player@^3.6.13:
   version "3.6.14"
   resolved "https://registry.npmjs.org/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.6.14.tgz#1f45fed2f6f516372d0268a72e04e7e129699f79"
   integrity sha512-F6SvHbuLvsbhBytR4+vaGIL6LFqC1cnB+SX3v191aHNvGDt63BX56w/Y19nIzxaLnG0b0vbxx/UZ1nzIvDyqWA==
@@ -2204,6 +2204,11 @@ react-native-root-toast@^3.0.1, react-native-root-toast@^3.2.1:
   dependencies:
     prop-types "^15.5.10"
     react-native-root-siblings "^4.0.0"
+
+react-native-safe-area-context@^4.10.5:
+  version "4.14.1"
+  resolved "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-4.14.1.tgz#980c3c9db02a2314fa8ceb07f614728802320367"
+  integrity sha512-+tUhT5WBl8nh5+P+chYhAjR470iCByf9z5EYdCEbPaAK3Yfzw+o8VRPnUgmPAKlSccOgQBxx3NOl/Wzckn9ujg==
 
 react-native-safe-area-utility@^1.0.0:
   version "1.0.0"
