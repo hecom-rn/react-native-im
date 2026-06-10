@@ -53,7 +53,7 @@
     "react-native-root-toast": "*",
     "react-native-safe-area-context": "*",
     "react-native-audio-recorder-player": "*",
-    "@react-native-oh-tpl/react-native-audio-recorder-player": "*",
+    "@react-native-ohos/react-native-audio-recorder-player": "*",
     "react-native-swipe-list-view": "*",
     "react-native-video": "*",
     "specials": "^2.0.4",
