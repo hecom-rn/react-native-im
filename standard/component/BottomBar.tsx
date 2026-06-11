@@ -400,7 +400,13 @@ export default class extends React.PureComponent<Props, State> {
                 localPath: this.audioPath,
             },
         };
-        onSendMessage(message);
+        onSendMessage(message).finally(async () => {
+            const exists = await RNFS.exists(this.audioPath);
+            if (exists) {
+                // 在鸿蒙上不会删除上一次文件，而是追加，所以这里需要主动删除
+                await RNFS.unlink(this.audioPath);
+            }
+        });
     }
 
     protected _onPickEmoji(text: string, isDelete: boolean) {

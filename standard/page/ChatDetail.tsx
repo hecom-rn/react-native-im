@@ -363,7 +363,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     _onSendMessage(imId, chatType, { type, body, ...other }, sendCallBackFunc?) {
         const message = this._generateMessage(type, body, other);
-        this._sendMessage(
+        return this._sendMessage(
             imId,
             chatType,
             message,
@@ -374,7 +374,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     _sendMessage(imId, chatType, message, sendFunc, sendCallBackFunc?) {
         const isCurrent = this.props.imId === imId;
-        sendFunc(imId, chatType, message)
+        return sendFunc(imId, chatType, message)
             .then(() => {
                 if (isCurrent) {
                     this._markAllRead();
