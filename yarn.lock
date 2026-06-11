@@ -2061,7 +2061,14 @@ react-is@^16.8.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-audio-recorder-player@^3.6.12, react-native-audio-recorder-player@^3.6.13:
+react-native-audio-recorder-player@3.6.13:
+  version "3.6.13"
+  resolved "https://registry.npmjs.org/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.6.13.tgz#cfb98ef2582a02e1de4a539ccf93981805b39211"
+  integrity sha512-8IaNxets8as8qfITPh4GgXdW2PhrlGNqYD/41rMeEWRxGGv5KQEttC2uQWkDc7yA7/0GeBN6AFgatK2S7cLZQw==
+  dependencies:
+    hyochan-welcome "^1.0.0"
+
+react-native-audio-recorder-player@^3.6.13:
   version "3.6.14"
   resolved "https://registry.npmjs.org/react-native-audio-recorder-player/-/react-native-audio-recorder-player-3.6.14.tgz#1f45fed2f6f516372d0268a72e04e7e129699f79"
   integrity sha512-F6SvHbuLvsbhBytR4+vaGIL6LFqC1cnB+SX3v191aHNvGDt63BX56w/Y19nIzxaLnG0b0vbxx/UZ1nzIvDyqWA==
