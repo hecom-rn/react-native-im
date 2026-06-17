@@ -221,54 +221,65 @@ export default class extends React.PureComponent {
     };
 
     insert = (newMessages) => {
-        const data = [...this.state.data];
-        //是否有我自己发送的，如果有，直接自动scroll到底
-        let hasFromMe = false;
-        //记录系统消息的条数，不应该计算进入未读消息。
-        let systemMessageCount = 0;
-        const me = Delegate.user.getMine().userId;
-        const toInsert = newMessages.reduce((prv, cur) => {
-            if (
-                !hasFromMe &&
-                me &&
-                cur.from &&
-                me == cur.from &&
-                cur.data &&
-                !(cur.data.isSystem && cur.data.isSystem == true)
-            ) {
-                hasFromMe = true;
-            }
-            if (cur.data.isSystem && cur.data.isSystem == true) {
-                systemMessageCount += 1;
-            }
-            const { messageId, innerId } = cur;
-            if ((messageId && this.ids.has(messageId)) || (innerId && this.innerIds.has(innerId))) {
-                const index = data.findIndex((i) => {
-                    return (
-                        (messageId && i.messageId === messageId) ||
-                        (innerId && i.innerId === innerId)
-                    );
-                });
-                data[index] = cur;
-                return prv;
-            } else {
-                this.ids.add(messageId);
-                this.innerIds.add(innerId);
-                prv.push(cur);
-                return prv;
-            }
-        }, []);
-        if (!hasFromMe && this.listOffsetY > 30 && newMessages && newMessages.length > 0) {
-            this.reservedData = [...toInsert.reverse(), ...this.reservedData];
-            this.setState({
-                newUnreadMessageCount:
-                    newMessages.length + this.state.newUnreadMessageCount - systemMessageCount,
-            });
-        } else {
-            const result = [...toInsert.reverse(), ...this.reservedData, ...data];
-            this.reservedData = [];
-            this.setState({ data: result, newUnreadMessageCount: 0 }, this.scrollToTop);
+        if (!newMessages || newMessages.length === 0) {
+            return;
         }
+        // fix: 多图/多条消息并发触发时，sendMultiMessage 会同步发起 N 个 sendMessage，
+        // 每个 sendMessage 完成 updateMessage 后都会触发 Listener.trigger，在同一个 microtask tick
+        // 内连续调用 insert 多次。React 18 自动批处理下，普通的 setState 只会保留最后一次，
+        // 导致 N-1 条消息丢失。改用函数式 setState 读取 prevState，避免读取过期 state。
+        this.setState((prevState) => {
+            const data = [...prevState.data];
+            //是否有我自己发送的，如果有，直接自动scroll到底
+            let hasFromMe = false;
+            //记录系统消息的条数，不应该计算进入未读消息。
+            let systemMessageCount = 0;
+            const me = Delegate.user.getMine().userId;
+            const toInsert = newMessages.reduce((prv, cur) => {
+                if (
+                    !hasFromMe &&
+                    me &&
+                    cur.from &&
+                    me == cur.from &&
+                    cur.data &&
+                    !(cur.data.isSystem && cur.data.isSystem == true)
+                ) {
+                    hasFromMe = true;
+                }
+                if (cur.data.isSystem && cur.data.isSystem == true) {
+                    systemMessageCount += 1;
+                }
+                const { messageId, innerId } = cur;
+                if ((messageId && this.ids.has(messageId)) || (innerId && this.innerIds.has(innerId))) {
+                    const index = data.findIndex((i) => {
+                        return (
+                            (messageId && i.messageId === messageId) ||
+                            (innerId && i.innerId === innerId)
+                        );
+                    });
+                    if (index >= 0) {
+                        data[index] = cur;
+                    }
+                    return prv;
+                } else {
+                    this.ids.add(messageId);
+                    this.innerIds.add(innerId);
+                    prv.push(cur);
+                    return prv;
+                }
+            }, []);
+            if (!hasFromMe && this.listOffsetY > 30) {
+                this.reservedData = [...toInsert.reverse(), ...this.reservedData];
+                return {
+                    newUnreadMessageCount:
+                        newMessages.length + prevState.newUnreadMessageCount - systemMessageCount,
+                };
+            } else {
+                const result = [...toInsert.reverse(), ...this.reservedData, ...data];
+                this.reservedData = [];
+                return { data: result, newUnreadMessageCount: 0 };
+            }
+        }, this.scrollToTop);
     };
 }
 
