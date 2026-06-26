@@ -24,7 +24,7 @@ export async function sendMessage(
     ext: object = {},
     isSystem: boolean = false
 ): Promise<void> {
-    ext = { ...ext, innerId: message.innerId };
+    ext = { ...ext, innerId: message.innerId, from: message.from };
     const sendEventName = [Event.Base, Event.SendMessage, imId];
     if (!delegate.model.Conversation.getOne(imId, false)) {
         await delegate.model.Conversation.loadItem(imId, chatType);
