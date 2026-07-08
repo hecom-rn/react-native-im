@@ -56,6 +56,7 @@ export default class extends React.PureComponent {
                     renderHiddenItem={this._renderHiddenItem.bind(this)}
                     ListHeaderComponent={this._renderFakeSearchBar()}
                     rightOpenValue={-281}
+                    recalculateHiddenLayout={true}
                     keyExtractor={(item) => item.imId}
                 />
             )
