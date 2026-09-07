@@ -9,8 +9,6 @@ import {
     BackHandler,
     Image,
     Keyboard,
-    KeyboardAvoidingView,
-    StatusBar,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -193,11 +191,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     render() {
         const { imId, chatType } = this.props;
         return (
-            <KeyboardAvoidingView
-                behavior={'padding'}
-                keyboardVerticalOffset={StatusBar.currentHeight * 2}
-                style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}
-            >
+            <View style={[styles.view, { backgroundColor: delegate.style.viewBackgroundColor }]}>
                 {this._setNaviBar()}
                 <TouchableWithoutFeedback
                     disabled={!this.state.keyboardShow}
@@ -223,7 +217,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
                     onClose={this._onCloseMenu.bind(this)}
                     actionList={this.state.actionList}
                 />
-            </KeyboardAvoidingView>
+            </View>
         );
     }
 
