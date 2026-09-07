@@ -69,7 +69,8 @@ export default class extends React.PureComponent<Props, State> {
             Listener.trigger(voiceListenerKey);
             setTimeout(() => {
                 const {message: {data: {localPath, remotePath, duration}}} = this.props;
-                this.audioRecorderPlayer?.startPlayer(localPath || remotePath, { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0' }).then(() => {
+                // 本地录音文件在发送完成后即被删除，remotePath 才是可靠播放源，仅作兜底
+                this.audioRecorderPlayer?.startPlayer(remotePath || localPath, { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0' }).then(() => {
                     console.log('successfully finished playing');
                     if (duration > 1000) {
                         setTimeout(() => {
