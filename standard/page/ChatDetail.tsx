@@ -9,6 +9,7 @@ import {
     BackHandler,
     Image,
     Keyboard,
+    Platform,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -110,7 +111,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             this._setKeyboardStatus.bind(this, true)
         );
         this.listeners[index + 1] = Keyboard.addListener(
-            'keyboardWillHide',
+            // RNOH 键盘观察者只发出 keyboardDid 系事件，Will 系在鸿蒙上永不触发
+            Platform.OS === 'harmony' ? 'keyboardDidHide' : 'keyboardWillHide',
             this._setKeyboardStatus.bind(this, false)
         );
     };
