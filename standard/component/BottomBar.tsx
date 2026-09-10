@@ -65,6 +65,7 @@ export default class extends React.PureComponent<Props, State> {
     protected audioRecorderPlayer?: AudioRecorderPlayer;
     protected audioPath = '';
     protected duration = 0;
+    protected recordStartAt = 0;
     protected safeAreaBottom = 0;
 
     state = {
@@ -360,6 +361,7 @@ export default class extends React.PureComponent<Props, State> {
         if (!this.audioRecorderPlayer) {
             this.audioRecorderPlayer = new AudioRecorderPlayer();
         }
+        this.recordStartAt = Date.now();
         this.setState({ isRecording: true });
         const audioSet: AudioSet = {
             AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -398,7 +400,9 @@ export default class extends React.PureComponent<Props, State> {
         const { onSendMessage } = this.props;
         this.audioRecorderPlayer.removeRecordBackListener();
         await this.audioRecorderPlayer.stopRecorder();
-        const time = Math.floor(this.duration / 1000);
+        // 鸿蒙录音回调存在偶发不回调的竞态，录音时长以按住说话的墙钟时间为准
+        const duration = Date.now() - this.recordStartAt;
+        const time = Math.floor(duration / 1000);
         if (time < 1) {
             Toast.show(t('i18n_im_a59f5356a3fad0af'));
             return;
@@ -406,7 +410,7 @@ export default class extends React.PureComponent<Props, State> {
         const message = {
             type: delegate.config.messageType.voice,
             body: {
-                duration: this.duration,
+                duration: duration,
                 localPath: this.audioPath,
             },
         };
