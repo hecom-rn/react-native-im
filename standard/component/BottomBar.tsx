@@ -558,9 +558,10 @@ export default class extends React.PureComponent<Props, State> {
 
     protected checkMicroPhonePermission = (permissionName: string) => {
         return check(permissionName)
-            .then(result => result === RESULTS.GRANTED ? RESULTS.GRANTED :
-                request(permissionName))
-            .then(result => {
+            .then((result) =>
+                result === RESULTS.GRANTED ? RESULTS.GRANTED : request(permissionName)
+            )
+            .then((result) => {
                 if (result === RESULTS.GRANTED) {
                     this.setState({
                         showSpeech: !this.state.showSpeech,
@@ -573,17 +574,20 @@ export default class extends React.PureComponent<Props, State> {
                     Toast.show(t('i18n_im_0089f124e7fec588'));
                 }
             });
-    }
+    };
 
     protected checkIosMicroPhonePermission = () => {
         return this.checkMicroPhonePermission(PERMISSIONS.IOS.MICROPHONE);
-    }
+    };
 
     protected checkAndroidMicroPhonePermission = () => {
         return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
-            .then(granted => granted ? PermissionsAndroid.RESULTS.GRANTED :
-                PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO))
-            .then(granted => {
+            .then((granted) =>
+                granted
+                    ? PermissionsAndroid.RESULTS.GRANTED
+                    : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
+            )
+            .then((granted) => {
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     this.setState({
                         showSpeech: !this.state.showSpeech,
@@ -596,11 +600,11 @@ export default class extends React.PureComponent<Props, State> {
                     Toast.show(t('i18n_im_0089f124e7fec588'));
                 }
             });
-    }
+    };
 
     protected checkHarmonyMicroPhonePermission = () => {
         return this.checkMicroPhonePermission('ohos.permission.MICROPHONE');
-    }
+    };
 
     protected _onSwitchSpeechKeyboard() {
         if (!this.state.showSpeech) {
