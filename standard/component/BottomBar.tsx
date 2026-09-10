@@ -79,12 +79,17 @@ export default class extends React.PureComponent<Props, State> {
     };
 
     componentDidMount() {
+        // RNOH 键盘观察者只发出 keyboardDidShow/keyboardDidHide，Will 系事件在鸿蒙上永不触发
+        const keyboardShowEvent =
+            Platform.OS === 'harmony' ? 'keyboardDidShow' : 'keyboardWillShow';
+        const keyboardHideEvent =
+            Platform.OS === 'harmony' ? 'keyboardDidHide' : 'keyboardWillHide';
         this.listenKeyboardShow = Keyboard.addListener(
-            'keyboardWillShow',
+            keyboardShowEvent,
             this._keyboardShow.bind(this)
         );
         this.listenKeyboardHide = Keyboard.addListener(
-            'keyboardWillHide',
+            keyboardHideEvent,
             this._keyboardHide.bind(this)
         );
     }
