@@ -410,7 +410,8 @@ export default class extends React.PureComponent<Props, State> {
                 localPath: this.audioPath,
             },
         };
-        onSendMessage(message).finally(async () => {
+        // 类型契约允许宿主返回 void，包一层避免其未返回 Promise 时 .finally 崩溃
+        Promise.resolve(onSendMessage(message)).finally(async () => {
             const exists = await RNFS.exists(this.audioPath);
             if (exists) {
                 // 在鸿蒙上不会删除上一次文件，而是追加，所以这里需要主动删除
