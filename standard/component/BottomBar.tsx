@@ -65,6 +65,7 @@ export default class extends React.PureComponent<Props, State> {
     protected audioRecorderPlayer?: AudioRecorderPlayer;
     protected audioPath = '';
     protected duration = 0;
+    protected recordStartAt = 0;
     protected safeAreaBottom = 0;
 
     state = {
@@ -360,6 +361,7 @@ export default class extends React.PureComponent<Props, State> {
         if (!this.audioRecorderPlayer) {
             this.audioRecorderPlayer = new AudioRecorderPlayer();
         }
+        this.recordStartAt = Date.now();
         this.setState({ isRecording: true });
         const audioSet: AudioSet = {
             AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -398,7 +400,9 @@ export default class extends React.PureComponent<Props, State> {
         const { onSendMessage } = this.props;
         this.audioRecorderPlayer.removeRecordBackListener();
         await this.audioRecorderPlayer.stopRecorder();
-        const time = Math.floor(this.duration / 1000);
+        // 鸿蒙录音回调存在偶发不回调的竞态，录音时长以按住说话的墙钟时间为准
+        const duration = Date.now() - this.recordStartAt;
+        const time = Math.floor(duration / 1000);
         if (time < 1) {
             Toast.show(t('i18n_im_a59f5356a3fad0af'));
             return;
@@ -406,11 +410,18 @@ export default class extends React.PureComponent<Props, State> {
         const message = {
             type: delegate.config.messageType.voice,
             body: {
-                duration: this.duration,
+                duration: duration,
                 localPath: this.audioPath,
             },
         };
-        onSendMessage(message);
+        // 类型契约允许宿主返回 void，包一层避免其未返回 Promise 时 .finally 崩溃
+        Promise.resolve(onSendMessage(message)).finally(async () => {
+            const exists = await RNFS.exists(this.audioPath);
+            if (exists) {
+                // 在鸿蒙上不会删除上一次文件，而是追加，所以这里需要主动删除
+                await RNFS.unlink(this.audioPath);
+            }
+        });
     }
 
     protected _onPickEmoji(text: string, isDelete: boolean) {
