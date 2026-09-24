@@ -78,9 +78,7 @@ export async function loadItem(imId: string, chatType: Conversation.ChatType, en
             },
         };
     } else {
-        if (rootNode[imId].chatType !== chatType) {
-            rootNode[imId].chatType = chatType;
-        }
+        rootNode[imId].chatType = chatType;
         rootNode[imId].unreadMessagesCount = result.unreadMessagesCount || 0;
         const oldMessage = rootNode[imId].latestMessage;
         if (!oldMessage) {
