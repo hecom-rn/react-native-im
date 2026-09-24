@@ -381,9 +381,10 @@ export default class extends React.PureComponent<Props, State> {
             AudioChannelsHarmony: 2,
         };
         const uri = Platform.select({
-            android: `${RNFS.CachesDirectoryPath}/imTempAudio.m4a`,
-            default: 'imTempAudio.m4a',
+            android: `${RNFS.CachesDirectoryPath}/imTempAudio_${Date.now()}.m4a`,
+            default: `imTempAudio_${Date.now()}.m4a`,
         });
+        this._cleanupStaleRecordings();
         this.audioRecorderPlayer.startRecorder(
             uri,
             audioSet,
@@ -393,6 +394,25 @@ export default class extends React.PureComponent<Props, State> {
                 this.duration = e.currentPosition;
             });
         });
+    }
+
+    // 录音文件名带时间戳后不再复用覆盖，开始新录音时顺带清理 1 小时前的历史临时录音，
+    // 避免缓存目录随使用线性膨胀（正在上传中的近期文件不会被清理）
+    protected _cleanupStaleRecordings() {
+        RNFS.readDir(RNFS.CachesDirectoryPath)
+            .then((items) => {
+                const now = Date.now();
+                items.forEach((item) => {
+                    if (
+                        item.name.indexOf('imTempAudio_') === 0 &&
+                        item.mtime &&
+                        now - item.mtime.getTime() > 60 * 60 * 1000
+                    ) {
+                        RNFS.unlink(item.path).catch(() => {});
+                    }
+                });
+            })
+            .catch(() => {});
     }
 
     protected async _onEndRecording() {
