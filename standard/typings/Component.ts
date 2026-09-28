@@ -47,7 +47,7 @@ export interface SendMessageParams<T = any> {
 }
 
 export interface BottomBarProps extends Props.Navigation, Props.Conversation {
-    onSendMessage: (message: SendMessageParams) => void;
+    onSendMessage: (message: SendMessageParams) => Promise<unknown> | void;
     batchOptionMode: boolean;
     onBatchForward:()=>void;
 }

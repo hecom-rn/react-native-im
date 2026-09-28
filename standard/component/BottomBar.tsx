@@ -65,6 +65,7 @@ export default class extends React.PureComponent<Props, State> {
     protected audioRecorderPlayer?: AudioRecorderPlayer;
     protected audioPath = '';
     protected duration = 0;
+    protected recordStartAt = 0;
     protected safeAreaBottom = 0;
 
     state = {
@@ -79,12 +80,17 @@ export default class extends React.PureComponent<Props, State> {
     };
 
     componentDidMount() {
+        // RNOH 键盘观察者只发出 keyboardDidShow/keyboardDidHide，Will 系事件在鸿蒙上永不触发
+        const keyboardShowEvent =
+            Platform.OS === 'harmony' ? 'keyboardDidShow' : 'keyboardWillShow';
+        const keyboardHideEvent =
+            Platform.OS === 'harmony' ? 'keyboardDidHide' : 'keyboardWillHide';
         this.listenKeyboardShow = Keyboard.addListener(
-            'keyboardWillShow',
+            keyboardShowEvent,
             this._keyboardShow.bind(this)
         );
         this.listenKeyboardHide = Keyboard.addListener(
-            'keyboardWillHide',
+            keyboardHideEvent,
             this._keyboardHide.bind(this)
         );
     }
@@ -355,6 +361,7 @@ export default class extends React.PureComponent<Props, State> {
         if (!this.audioRecorderPlayer) {
             this.audioRecorderPlayer = new AudioRecorderPlayer();
         }
+        this.recordStartAt = Date.now();
         this.setState({ isRecording: true });
         const audioSet: AudioSet = {
             AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -413,7 +420,9 @@ export default class extends React.PureComponent<Props, State> {
         const { onSendMessage } = this.props;
         this.audioRecorderPlayer.removeRecordBackListener();
         await this.audioRecorderPlayer.stopRecorder();
-        const time = Math.floor(this.duration / 1000);
+        // 鸿蒙录音回调存在偶发不回调的竞态，录音时长以按住说话的墙钟时间为准
+        const duration = Date.now() - this.recordStartAt;
+        const time = Math.floor(duration / 1000);
         if (time < 1) {
             Toast.show(t('i18n_im_a59f5356a3fad0af'));
             return;
@@ -421,11 +430,18 @@ export default class extends React.PureComponent<Props, State> {
         const message = {
             type: delegate.config.messageType.voice,
             body: {
-                duration: this.duration,
+                duration: duration,
                 localPath: this.audioPath,
             },
         };
-        onSendMessage(message);
+        // 类型契约允许宿主返回 void，包一层避免其未返回 Promise 时 .finally 崩溃
+        Promise.resolve(onSendMessage(message)).finally(async () => {
+            const exists = await RNFS.exists(this.audioPath);
+            if (exists) {
+                // 在鸿蒙上不会删除上一次文件，而是追加，所以这里需要主动删除
+                await RNFS.unlink(this.audioPath);
+            }
+        });
     }
 
     protected _onPickEmoji(text: string, isDelete: boolean) {
@@ -573,9 +589,10 @@ export default class extends React.PureComponent<Props, State> {
 
     protected checkMicroPhonePermission = (permissionName: string) => {
         return check(permissionName)
-            .then(result => result === RESULTS.GRANTED ? RESULTS.GRANTED :
-                request(permissionName))
-            .then(result => {
+            .then((result) =>
+                result === RESULTS.GRANTED ? RESULTS.GRANTED : request(permissionName)
+            )
+            .then((result) => {
                 if (result === RESULTS.GRANTED) {
                     this.setState({
                         showSpeech: !this.state.showSpeech,
@@ -588,17 +605,20 @@ export default class extends React.PureComponent<Props, State> {
                     Toast.show(t('i18n_im_0089f124e7fec588'));
                 }
             });
-    }
+    };
 
     protected checkIosMicroPhonePermission = () => {
         return this.checkMicroPhonePermission(PERMISSIONS.IOS.MICROPHONE);
-    }
+    };
 
     protected checkAndroidMicroPhonePermission = () => {
         return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
-            .then(granted => granted ? PermissionsAndroid.RESULTS.GRANTED :
-                PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO))
-            .then(granted => {
+            .then((granted) =>
+                granted
+                    ? PermissionsAndroid.RESULTS.GRANTED
+                    : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO)
+            )
+            .then((granted) => {
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     this.setState({
                         showSpeech: !this.state.showSpeech,
@@ -611,11 +631,11 @@ export default class extends React.PureComponent<Props, State> {
                     Toast.show(t('i18n_im_0089f124e7fec588'));
                 }
             });
-    }
+    };
 
     protected checkHarmonyMicroPhonePermission = () => {
         return this.checkMicroPhonePermission('ohos.permission.MICROPHONE');
-    }
+    };
 
     protected _onSwitchSpeechKeyboard() {
         if (!this.state.showSpeech) {

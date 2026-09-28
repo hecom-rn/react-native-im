@@ -1,14 +1,15 @@
 import { TimeUtils } from '@hecom/aDate';
 import { t } from '@hecom/basecore/util/i18n';
 import Listener from '@hecom/listener';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { StackActions } from '@react-navigation/native';
 import React from 'react';
 import {
     Alert,
     BackHandler,
-    Clipboard,
     Image,
     Keyboard,
+    Platform,
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -88,7 +89,10 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
     }
 
     _registerListener = () => {
-        this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this._onBackPress);
+        this.backHandlerSubscription = BackHandler.addEventListener(
+            'hardwareBackPress',
+            this._onBackPress
+        );
         [
             [Event.SendMessage, this._onReceiveMessage.bind(this)],
             [Event.ReceiveMessage, this._onReceiveMessage.bind(this)],
@@ -107,7 +111,8 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
             this._setKeyboardStatus.bind(this, true)
         );
         this.listeners[index + 1] = Keyboard.addListener(
-            'keyboardWillHide',
+            // RNOH 键盘观察者只发出 keyboardDid 系事件，Will 系在鸿蒙上永不触发
+            Platform.OS === 'harmony' ? 'keyboardDidHide' : 'keyboardWillHide',
             this._setKeyboardStatus.bind(this, false)
         );
     };
@@ -354,7 +359,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     _onSendMessage(imId, chatType, { type, body, ...other }, sendCallBackFunc?) {
         const message = this._generateMessage(type, body, other);
-        this._sendMessage(
+        return this._sendMessage(
             imId,
             chatType,
             message,
@@ -365,7 +370,7 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
     _sendMessage(imId, chatType, message, sendFunc, sendCallBackFunc?) {
         const isCurrent = this.props.imId === imId;
-        sendFunc(imId, chatType, message)
+        return sendFunc(imId, chatType, message)
             .then(() => {
                 if (isCurrent) {
                     this._markAllRead();
@@ -587,9 +592,6 @@ export default class ChatDetail extends React.PureComponent<ChatDetailProps> {
 
 const styles = StyleSheet.create({
     view: {
-        flex: 1,
-    },
-    innerview: {
         flex: 1,
     },
     fixedList: {

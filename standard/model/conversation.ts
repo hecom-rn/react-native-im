@@ -78,6 +78,9 @@ export async function loadItem(imId: string, chatType: Conversation.ChatType, en
             },
         };
     } else {
+        if (rootNode[imId].chatType !== chatType) {
+            rootNode[imId].chatType = chatType;
+        }
         rootNode[imId].unreadMessagesCount = result.unreadMessagesCount || 0;
         const oldMessage = rootNode[imId].latestMessage;
         if (!oldMessage) {
@@ -229,7 +232,7 @@ export async function createOne(memberUserIds: string | string[]): Promise<Conve
     } else {
         const imId = members[0];
         const existItem = getOne(imId, false);
-        if (existItem) {
+        if (existItem && existItem.chatType === chatType) {
             return simpleExport(existItem);
         } else {
             return await loadItem(imId, chatType);
