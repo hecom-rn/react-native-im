@@ -299,7 +299,10 @@ export default class extends React.PureComponent<Props, State> {
 
     _renderTimeLabel(isLeft: boolean) {
         const time = Math.floor(this.props.message.data.duration / 1000);
-        const margin = Math.min(this.props.maxWidth, time * 3) + 10;
+        // margin 触顶值必须为时长文本（约 35pt）与图标、四向固定间距（约 55pt）留位：
+        // 触顶到 maxWidth 会把文本和图标推出气泡边界，长语音（>1 分钟）时
+        // iOS 气泡渲染成空白、Android 气泡布局塌陷（icon 挤到头像下方）
+        const margin = Math.min(this.props.maxWidth - 110, time * 3) + 10;
         const style = isLeft ? {
             marginRight: margin,
             marginLeft: 10,
