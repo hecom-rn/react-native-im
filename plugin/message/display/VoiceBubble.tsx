@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, InteractionManager, StyleSheet, View, Text } from 'react-native';
+import { ActivityIndicator, Image, InteractionManager, Platform, StyleSheet, View, Text } from 'react-native';
 import { Typings } from '../../../standard';
 import Listener from '@hecom/listener';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
@@ -10,6 +10,20 @@ const voiceListenerKey = 'react-native-im_VoiceBubble_voice_listener_key'
 const voiceHttpHeaders = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0',
 };
+
+// 播放入参需按平台适配原生模块的路径解析规则：
+// iOS（react-native-audio-recorder-player）只认 http(s)/file:// 链接，或「Caches 目录下的相对文件名」；
+// 直接传绝对路径会被再次拼接 Caches 前缀，生成一个并不存在的文件地址，
+// AVPlayer 拿不到媒体 → 播放无声，且 startPlayer 正常 resolve，界面不会有任何报错。
+// 故 iOS 传 file:// 绝对路径（走 URL(string:) 分支），Android 保持裸绝对路径（MediaPlayer.setDataSource 需要裸路径）。
+function toPlayerPath(path: string): string {
+    if (Platform.OS !== 'ios') return path;
+    if (path.indexOf('file://') === 0 || path.indexOf('http') === 0) return path;
+    // 相对文件名：原生会按 Caches 目录解析，保持原样即可
+    if (path.indexOf('/') !== 0) return path;
+    // encodeURI 防止路径中出现空格等非法字符导致原生 URL(string:) 返回 nil
+    return 'file://' + encodeURI(path);
+}
 
 function localPathOf(message: Typings.Message.General): string | undefined {
     return message.data.localPath;
@@ -163,7 +177,7 @@ export default class extends React.PureComponent<Props, State> {
     protected async _play(path: string, seq: number, duration: number, canRetry: boolean = false) {
         try {
             const isRemote = path.indexOf('http') === 0;
-            await this.audioRecorderPlayer?.startPlayer(path, isRemote ? voiceHttpHeaders : undefined);
+            await this.audioRecorderPlayer?.startPlayer(toPlayerPath(path), isRemote ? voiceHttpHeaders : undefined);
         } catch (e) {
             if (seq !== this.actionSeq) return;
             this.audioRecorderPlayer?.stopPlayer?.();
