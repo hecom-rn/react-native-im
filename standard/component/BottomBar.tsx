@@ -436,9 +436,14 @@ export default class extends React.PureComponent<Props, State> {
         };
         // 类型契约允许宿主返回 void，包一层避免其未返回 Promise 时 .finally 崩溃
         Promise.resolve(onSendMessage(message)).finally(async () => {
+            // 仅鸿蒙需要主动删除：鸿蒙录音不覆盖而是追加，不删会串进下一次录音；
+            // iOS/Android 删除会让「发送后立即播放自己的语音」命中已删除文件
+            // （AVPlayer 静默无声无提示），历史临时文件由 _cleanupStaleRecordings 兜底清理
+            if (Platform.OS !== 'harmony') {
+                return;
+            }
             const exists = await RNFS.exists(this.audioPath);
             if (exists) {
-                // 在鸿蒙上不会删除上一次文件，而是追加，所以这里需要主动删除
                 await RNFS.unlink(this.audioPath);
             }
         });

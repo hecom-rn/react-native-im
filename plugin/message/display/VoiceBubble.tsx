@@ -177,6 +177,13 @@ export default class extends React.PureComponent<Props, State> {
     protected async _play(path: string, seq: number, duration: number, canRetry: boolean = false) {
         try {
             const isRemote = path.indexOf('http') === 0;
+            // AVPlayer 对不存在的本地文件不报错，startPlayer 正常 resolve 而播放无声，
+            // 上面的 canRetry 重试只覆盖 reject 场景盖不到它；播前校验存在性，
+            // 失效时抛出走 catch 的重新下载流程（发送方刚发的语音即此场景：
+            // 预下载拿到的录音临时文件在发送完成后已被删除）
+            if (!isRemote && !(await RNFS.exists(path))) {
+                throw new Error(`voice file missing: ${path}`);
+            }
             await this.audioRecorderPlayer?.startPlayer(toPlayerPath(path), isRemote ? voiceHttpHeaders : undefined);
         } catch (e) {
             if (seq !== this.actionSeq) return;
