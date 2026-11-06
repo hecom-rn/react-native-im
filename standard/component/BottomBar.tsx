@@ -434,19 +434,11 @@ export default class extends React.PureComponent<Props, State> {
                 localPath: this.audioPath,
             },
         };
-        // 类型契约允许宿主返回 void，包一层避免其未返回 Promise 时 .finally 崩溃
-        Promise.resolve(onSendMessage(message)).finally(async () => {
-            // 仅鸿蒙需要主动删除：鸿蒙录音不覆盖而是追加，不删会串进下一次录音；
-            // iOS/Android 删除会让「发送后立即播放自己的语音」命中已删除文件
-            // （AVPlayer 静默无声无提示），历史临时文件由 _cleanupStaleRecordings 兜底清理
-            if (Platform.OS !== 'harmony') {
-                return;
-            }
-            const exists = await RNFS.exists(this.audioPath);
-            if (exists) {
-                await RNFS.unlink(this.audioPath);
-            }
-        });
+        // 三端统一发送后不删录音临时文件：录音文件名带时间戳不复用，鸿蒙录音库
+        // 3.7.2 起为覆盖写（华为工单 P41046 修复），不存在串音；删除会让「发送后
+        // 立即播放自己的语音」命中已删除文件走多余的网络下载（此前仅删鸿蒙即因此
+        // 多一次下载），历史临时文件由 _cleanupStaleRecordings 兜底清理
+        onSendMessage(message);
     }
 
     protected _onPickEmoji(text: string, isDelete: boolean) {
